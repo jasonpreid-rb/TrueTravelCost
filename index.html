@@ -1005,18 +1005,46 @@
     estimateTags.forEach((id) => { $(id).hidden = true; });
   }
 
-  async function initLookup() {
-    let sample;
+  // Talks to whichever AI backend is available: the Claude artifact
+  // capability when this page is running inside claude.ai, or a
+  // same-origin /api/estimate endpoint (see api/estimate.js) when
+  // deployed standalone. Same prompt, same expected JSON shape either way.
+  let claudeSample = null;
+
+  async function estimate(prompt) {
+    if (claudeSample) {
+      return await claudeSample.json(prompt, { modelTier: 'default' });
+    }
+    let res;
     try {
-      sample = (typeof claude !== 'undefined' && claude.use) ? await claude.use('sample') : null;
+      res = await fetch('/api/estimate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt })
+      });
     } catch (e) {
-      sample = null;
+      const err = new Error('Network error reaching /api/estimate');
+      err.code = 'network_error';
+      throw err;
     }
-    if (!sample) {
-      lookupBtn.disabled = true;
-      setLookupStatus('AI lookup isn\u2019t available in this view \u2014 fill in the numbers below by hand.');
-      return;
+    let body = {};
+    try { body = await res.json(); } catch (e) { /* leave body empty */ }
+    if (!res.ok) {
+      const err = new Error(body.message || ('Request failed with status ' + res.status));
+      err.code = body.error || 'upstream_error';
+      throw err;
     }
+    return body.data;
+  }
+
+  async function initLookup() {
+    try {
+      claudeSample = (typeof claude !== 'undefined' && claude.use) ? await claude.use('sample') : null;
+    } catch (e) {
+      claudeSample = null;
+    }
+    // No early disable here: when claudeSample is null (running outside
+    // claude.ai) we fall back to /api/estimate at click time instead.
 
     lookupBtn.addEventListener('click', async () => {
       const make = ($('vehMake').value || '').trim();
@@ -1089,7 +1117,7 @@
       ].join('');
 
       try {
-        const data = await sample.json(prompt, { modelTier: 'default' });
+        const data = await estimate(prompt);
 
         if (isAuto) {
           metric = data.unitSystem !== 'imperial';
@@ -1129,7 +1157,10 @@
           refused: 'Couldn\u2019t produce an estimate for that input \u2014 check the vehicle and locations.',
           invalid_json: 'Got an unreadable answer \u2014 try again.',
           sampling_disabled: 'AI lookup isn\u2019t available on this account.',
-          upstream_error: 'Something went wrong \u2014 try again.'
+          upstream_error: 'Something went wrong talking to the AI backend \u2014 try again.',
+          network_error: 'Couldn\u2019t reach the AI backend \u2014 check your connection and try again.',
+          server_misconfigured: 'The AI backend isn\u2019t configured yet (missing API key on the server).',
+          bad_request: 'Something was wrong with that request \u2014 try again.'
         };
         setLookupStatus(copy[e.code] || ('Couldn\u2019t get an estimate (' + e.code + ').'), 'err');
       } finally {

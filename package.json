@@ -1,0 +1,10 @@
+{
+  "name": "route-cost",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Vehicle trip cost calculator with an OpenAI-backed cost estimator.",
+  "engines": {
+    "node": ">=18"
+  }
+}

@@ -1,56 +1,105 @@
 # Route Cost — deployment package
 
-One file, no build step: `index.html` is the entire site (HTML, CSS and JS
-inline, Google Fonts loaded from Google's CDN). Drop it on any static host.
+A vehicle trip cost calculator with an AI-powered estimate feature,
+backed by your own OpenAI API key.
 
-## Deploy it
+```
+.
+├── index.html          the whole front end — HTML, CSS and JS inline
+├── api/
+│   └── estimate.js     serverless function that calls OpenAI (keeps your key server-side)
+├── package.json
+└── .env.example         documents the environment variables you need
+```
 
-Pick whichever you already use:
+## How the AI estimate works now
 
-- **Netlify / Vercel** — drag the `index.html` file (or the folder) onto
-  their web dashboard, or run `netlify deploy` / `vercel` from this folder.
-- **GitHub Pages** — push this folder to a repo, enable Pages on the
-  `main` branch, done.
-- **Your own server / S3 / Cloudflare Pages / rippingbombs.com hosting** —
-  copy `index.html` into the web root (or a subfolder if you want it at
-  e.g. `/tools/route-cost/`). No server-side code, no dependencies to
-  install.
+The "Calculate trip cost" button asks an AI model for distance, fuel
+consumption, a regional fuel price, maintenance, tyre cost/lifespan and
+likely tolls for the vehicle + route you enter. On the deployed site,
+that call goes to `api/estimate.js`, a small serverless function that:
 
-## What still works outside claude.ai — and what doesn't
+1. Receives the prompt from the browser
+2. Calls OpenAI's Chat Completions API server-side, using an API key
+   that's never exposed to visitors
+3. Returns the parsed JSON back to the page
 
-This started life as a Claude Artifact, which gave it two features backed
-by claude.ai's own infrastructure:
+The frontend is written to work in two places without any code changes:
+if it detects it's running inside a claude.ai Artifact, it uses that
+platform's built-in AI capability directly; everywhere else (your own
+domain), it automatically falls back to `POST /api/estimate`. You don't
+need to do anything to enable this — it's automatic.
 
-- **"Calculate trip cost"** (the AI estimate for distance, fuel, service,
-  tyres and tolls)
-- **"Save this trip" / the Saved trips list**
+## Deploy it (Vercel)
 
-Both depend on a `window.claude` object that only exists inside the
-claude.ai artifact viewer. The code already checks for it and fails
-gracefully — on your own domain, `window.claude` won't exist, so:
+Vercel is the easiest fit here because `/api/*.js` files become
+serverless functions with zero configuration — no separate backend to
+stand up.
 
-- The **"Calculate trip cost"** button will detect this on load and
-  disable itself with the message *"AI lookup isn't available in this
-  view — fill in the numbers below by hand."*
-- **"Save this trip"** and the saved-trips list will do the same.
+1. Push this folder to a GitHub repo (or run `vercel` from inside it
+   directly — the CLI can deploy without git).
+2. Import the repo in Vercel, or run `vercel --prod` from this folder.
+3. In the Vercel project's **Settings → Environment Variables**, add:
+   - `OPENAI_API_KEY` — your key from platform.openai.com (required)
+   - `OPENAI_MODEL` — optional, defaults to `gpt-5-mini` if unset
+4. Redeploy after adding the env vars (Vercel doesn't pick up new ones
+   on an already-running deployment).
 
-Everything else works with zero backend: manual entry across all the
-detail panels (distance, fuel, maintenance, tyres, tolls), unit and
-currency switching, the live cost breakdown, the "Open in Google Maps"
-link, the schematic route diagram, and "Copy summary" to clipboard.
+That's it — `index.html` and `api/estimate.js` are both live at your
+Vercel URL, same origin, no CORS setup needed.
 
-### If you want the AI estimate to work on your own domain
+### Local testing
 
-That needs a small server-side piece — a backend endpoint on your own
-infrastructure that holds an Anthropic API key and proxies the request
-(the browser can't call the Anthropic API directly with a key embedded
-in the page; that would expose the key to every visitor). Happy to build
-that endpoint plus the small change to `index.html` to call it, if you
-want to go that route — just say the word.
+```
+npm i -g vercel     # if you don't already have it
+vercel dev
+```
 
-### If you want a real embedded Google Map instead of the link-out
+This runs the static file and the `/api/estimate` function together
+locally, using a `.env` file (copy `.env.example` to `.env` and fill in
+your key — `.env` is for local dev only, never deploy it or commit it).
 
-On your own domain there's no sandbox restriction, so you could add
-Google's official Maps Embed API or JavaScript API with your own API key
-and billing. That's a separate, small build task — let me know if you'd
-like it added.
+## Deploying somewhere other than Vercel
+
+- **Netlify**: move `api/estimate.js` to `netlify/functions/estimate.js`
+  and change its export to Netlify's `exports.handler = async (event) => {...}`
+  signature (different from Vercel's `(req, res)` — the request/response
+  handling needs a small rewrite, not just a file move). Set the same
+  env vars in Netlify's dashboard. Happy to write that version if you'll
+  be hosting on Netlify instead.
+- **Your own Node server / rippingbombs.com infrastructure**: the logic
+  in `api/estimate.js` is plain Node with the global `fetch` — wrap it
+  in an Express route (`app.post('/api/estimate', ...)`) or similar and
+  it'll work the same way. Static `index.html` can be served from
+  anywhere alongside it.
+- **A static host with no server at all** (GitHub Pages, S3, etc.): the
+  AI estimate feature specifically needs *some* server to hold the API
+  key, so plain static hosting won't support it — everything else on
+  the page (manual entry, the Maps link, the route diagram, copy
+  summary) still works with zero backend if you'd rather skip this part.
+
+## Cost & usage notes
+
+- Every click of "Calculate trip cost" is one OpenAI API call, billed
+  to your account under normal OpenAI pricing for whichever model you
+  set in `OPENAI_MODEL`.
+- There's no rate limiting on `api/estimate.js` yet — anyone who can
+  reach your deployed URL can trigger calls (and cost). Worth adding
+  before this gets real traffic: e.g. a simple per-IP rate limit, or
+  gating the button behind login. Say the word if you want that added.
+- Responses are capped by OpenAI's own token limits for the model; the
+  prompt asks for a small, fixed-shape JSON object, so this shouldn't
+  be a practical concern.
+
+## Still claude.ai-only
+
+**"Save this trip"** and the **Saved trips** list still only work
+inside a claude.ai Artifact — they use that platform's shared document
+storage, which isn't something this deployment has access to. On your
+own domain that button greys itself out automatically (same graceful-
+fallback pattern as everything else here) — the rest of
+the page — including the OpenAI-backed estimate — works fully
+standalone. If you want save/share working on your own site too,
+that's a similar shape to the estimate feature: a small backend
+endpoint plus a real database (or even just a lightweight one like
+Vercel KV or a Postgres add-on) — happy to build that next if useful.
