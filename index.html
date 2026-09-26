@@ -7,6 +7,11 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
 <style>
   :root {
     --bg: #14171A;
@@ -23,6 +28,7 @@
     --green-tyre: #7FA86B;
     --radius-sm: 3px;
     --radius-md: 6px;
+    --logo-filter: invert(1) brightness(1.4);
     --font-display: 'Space Grotesk', sans-serif;
     --font-body: 'IBM Plex Sans', sans-serif;
     --font-mono: 'IBM Plex Mono', monospace;
@@ -38,6 +44,7 @@
       --line: #D8D4CB;
       --text: #1A1D1F;
       --muted: #6B6F72;
+      --logo-filter: none;
     }
   }
   :root[data-theme="light"] {
@@ -47,6 +54,7 @@
     --line: #D8D4CB;
     --text: #1A1D1F;
     --muted: #6B6F72;
+    --logo-filter: none;
   }
   * { box-sizing: border-box; }
   html, body { height: 100%; }
@@ -73,6 +81,18 @@
     margin-bottom: 36px;
     border-bottom: 1px solid var(--line);
     padding-bottom: 20px;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .site-logo {
+    width: 44px;
+    height: 44px;
+    object-fit: contain;
+    filter: var(--logo-filter);
+    flex-shrink: 0;
   }
   header.top h1 {
     font-family: var(--font-display);
@@ -475,9 +495,12 @@
 <div class="wrap">
 
   <header class="top">
-    <div>
-      <h1>Route cost</h1>
-      <p>Work out what a drive actually costs — fuel, wear on the car, tyres, and whatever the road charges you along the way.</p>
+    <div class="brand">
+      <img src="/truetravelcost-elephant-logo.png" alt="TrueTravelCost" class="site-logo">
+      <div>
+        <h1>Route cost</h1>
+        <p>Work out what a drive actually costs — fuel, wear on the car, tyres, and whatever the road charges you along the way.</p>
+      </div>
     </div>
     <button class="theme-toggle" id="themeToggle" type="button">dark / light</button>
   </header>
@@ -494,13 +517,13 @@
             <div>
               <label for="vehMake">Make</label>
               <div class="num-input">
-                <input type="text" id="vehMake" value="Volkswagen" style="text-align:left; font-family: var(--font-body);">
+                <input type="text" id="vehMake" value="Volkswagen" list="vehMakeList" autocomplete="off" style="text-align:left; font-family: var(--font-body);">
               </div>
             </div>
             <div>
               <label for="vehModel">Model</label>
               <div class="num-input">
-                <input type="text" id="vehModel" value="Golf" style="text-align:left; font-family: var(--font-body);">
+                <input type="text" id="vehModel" value="Golf" list="vehModelList" autocomplete="off" style="text-align:left; font-family: var(--font-body);">
               </div>
             </div>
           </div>
@@ -527,13 +550,13 @@
             <div>
               <label for="journeyFrom">From</label>
               <div class="num-input">
-                <input type="text" id="journeyFrom" value="Munich, Germany" style="text-align:left; font-family: var(--font-body);">
+                <input type="text" id="journeyFrom" value="Munich, Germany" list="destinationsList" autocomplete="off" style="text-align:left; font-family: var(--font-body);">
               </div>
             </div>
             <div>
               <label for="journeyTo">To</label>
               <div class="num-input">
-                <input type="text" id="journeyTo" value="Salzburg, Austria" style="text-align:left; font-family: var(--font-body);">
+                <input type="text" id="journeyTo" value="Salzburg, Austria" list="destinationsList" autocomplete="off" style="text-align:left; font-family: var(--font-body);">
               </div>
             </div>
           </div>
@@ -757,6 +780,74 @@
   <footer class="legend">
     Figures are estimates based on what you enter — actual costs vary with driving conditions, vehicle condition, and local prices.
   </footer>
+
+  <datalist id="vehMakeList">
+    <option value="Volkswagen"><option value="Toyota"><option value="Ford"><option value="BMW">
+    <option value="Mercedes-Benz"><option value="Audi"><option value="Honda"><option value="Hyundai">
+    <option value="Kia"><option value="Nissan"><option value="Mazda"><option value="Subaru">
+    <option value="Volvo"><option value="Peugeot"><option value="Renault"><option value="Opel">
+    <option value="Škoda"><option value="SEAT"><option value="Fiat"><option value="Citroën">
+    <option value="Chevrolet"><option value="Tesla"><option value="Porsche"><option value="Jeep">
+    <option value="Land Rover"><option value="Mini"><option value="Suzuki"><option value="Mitsubishi">
+    <option value="Lexus"><option value="Jaguar"><option value="Dacia"><option value="Alfa Romeo">
+    <option value="Chrysler"><option value="Dodge"><option value="GMC"><option value="Buick">
+    <option value="Cadillac"><option value="Lincoln"><option value="Infiniti"><option value="Acura">
+    <option value="Genesis"><option value="Polestar"><option value="Rivian"><option value="Lucid">
+  </datalist>
+
+  <datalist id="vehModelList">
+    <option value="Golf"><option value="Polo"><option value="Passat"><option value="Tiguan"><option value="ID.4">
+    <option value="Corolla"><option value="Camry"><option value="RAV4"><option value="Yaris"><option value="Hilux">
+    <option value="Focus"><option value="Fiesta"><option value="Mustang"><option value="Explorer"><option value="F-150">
+    <option value="3 Series"><option value="5 Series"><option value="X3"><option value="X5">
+    <option value="C-Class"><option value="E-Class"><option value="A-Class"><option value="GLC">
+    <option value="A3"><option value="A4"><option value="A6"><option value="Q5">
+    <option value="Civic"><option value="Accord"><option value="CR-V">
+    <option value="Elantra"><option value="Tucson"><option value="Santa Fe">
+    <option value="Sportage"><option value="Sorento"><option value="Rio">
+    <option value="Qashqai"><option value="Juke"><option value="X-Trail">
+    <option value="CX-5"><option value="Mazda3"><option value="Outback"><option value="Forester">
+    <option value="XC60"><option value="XC90">
+    <option value="208"><option value="308"><option value="2008">
+    <option value="Clio"><option value="Mégane"><option value="Captur">
+    <option value="Corsa"><option value="Astra">
+    <option value="Octavia"><option value="Fabia"><option value="Kodiaq">
+    <option value="Ibiza"><option value="Leon"><option value="Arona">
+    <option value="500"><option value="Panda">
+    <option value="C3"><option value="C4">
+    <option value="Cruze"><option value="Model 3"><option value="Model Y"><option value="Model S">
+    <option value="Macan"><option value="Cayenne">
+    <option value="Cherokee"><option value="Range Rover"><option value="Discovery">
+    <option value="Cooper"><option value="Swift"><option value="Vitara">
+    <option value="Outlander"><option value="ASX">
+    <option value="IS"><option value="RX"><option value="F-Type"><option value="XE">
+    <option value="Duster"><option value="Sandero">
+    <option value="Giulia"><option value="Stelvio">
+    <option value="300"><option value="Charger">
+    <option value="Sierra"><option value="Enclave"><option value="Escalade">
+    <option value="Q50"><option value="MDX"><option value="G70">
+    <option value="i3"><option value="i4"><option value="Taycan"><option value="R1T"><option value="Air">
+  </datalist>
+
+  <datalist id="destinationsList">
+    <option value="Munich, Germany"><option value="Salzburg, Austria"><option value="Berlin, Germany">
+    <option value="Vienna, Austria"><option value="Zurich, Switzerland"><option value="Geneva, Switzerland">
+    <option value="Paris, France"><option value="Lyon, France"><option value="Nice, France">
+    <option value="London, UK"><option value="Amsterdam, Netherlands"><option value="Brussels, Belgium">
+    <option value="Milan, Italy"><option value="Rome, Italy"><option value="Venice, Italy"><option value="Florence, Italy">
+    <option value="Barcelona, Spain"><option value="Madrid, Spain"><option value="Lisbon, Portugal">
+    <option value="Prague, Czech Republic"><option value="Budapest, Hungary"><option value="Warsaw, Poland">
+    <option value="Copenhagen, Denmark"><option value="Stockholm, Sweden"><option value="Oslo, Norway"><option value="Helsinki, Finland">
+    <option value="Dublin, Ireland"><option value="Innsbruck, Austria">
+    <option value="Frankfurt, Germany"><option value="Hamburg, Germany"><option value="Cologne, Germany">
+    <option value="Stuttgart, Germany"><option value="Nuremberg, Germany"><option value="Augsburg, Germany">
+    <option value="New York, USA"><option value="Los Angeles, USA"><option value="San Francisco, USA">
+    <option value="Chicago, USA"><option value="Miami, USA">
+    <option value="Toronto, Canada"><option value="Vancouver, Canada">
+    <option value="Sydney, Australia"><option value="Melbourne, Australia">
+    <option value="Auckland, New Zealand"><option value="Wellington, New Zealand">
+    <option value="Tokyo, Japan"><option value="Singapore">
+  </datalist>
 
 </div>
 
