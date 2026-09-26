@@ -18,7 +18,7 @@ export default async function handler(req, res) {
   }
 
   const geocode = async (query) => {
-    const url = 'https://nominatim.openstreetmap.org/search?format=json&limit=1&q=' + encodeURIComponent(query);
+    const url = 'https://nominatim.openstreetmap.org/search?format=json&limit=1&addressdetails=1&q=' + encodeURIComponent(query);
     const r = await fetch(url, {
       headers: {
         // Nominatim's usage policy requires an identifying User-Agent.
@@ -30,11 +30,16 @@ export default async function handler(req, res) {
     if (!Array.isArray(data) || !data.length) {
       throw Object.assign(new Error('location_not_found'), { code: 'location_not_found' });
     }
-    return [parseFloat(data[0].lon), parseFloat(data[0].lat)]; // ORS wants [lon, lat]
+    return {
+      coord: [parseFloat(data[0].lon), parseFloat(data[0].lat)], // ORS wants [lon, lat]
+      countryCode: (data[0].address && data[0].address.country_code) ? data[0].address.country_code.toUpperCase() : null
+    };
   };
 
   try {
-    const [fromCoord, toCoord] = await Promise.all([geocode(from), geocode(to)]);
+    const [fromLoc, toLoc] = await Promise.all([geocode(from), geocode(to)]);
+    const fromCoord = fromLoc.coord;
+    const toCoord = toLoc.coord;
 
     const orsRes = await fetch('https://api.openrouteservice.org/v2/directions/driving-car', {
       method: 'POST',
@@ -60,7 +65,9 @@ export default async function handler(req, res) {
 
     return res.status(200).json({
       distanceKm: summary.distance / 1000,
-      durationMin: summary.duration / 60
+      durationMin: summary.duration / 60,
+      fromCountry: fromLoc.countryCode,
+      toCountry: toLoc.countryCode
     });
   } catch (e) {
     return res.status(502).json({ error: e.code || 'network_error' });

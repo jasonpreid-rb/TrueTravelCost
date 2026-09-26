@@ -1481,6 +1481,39 @@
     calculate();
   }
 
+  // Country \u2192 currency & unit system, using the free geocoding data from /api/route.
+  // Lets "auto-detect region" work without any AI call.
+  const regionByCountry = {
+    US: { curr: '$', metric: false }, LR: { curr: '$', metric: false }, MM: { curr: 'K', metric: false },
+    GB: { curr: '\u00a3', metric: false },
+    NZ: { curr: 'NZ$', metric: true }, AU: { curr: 'A$', metric: true },
+    CA: { curr: 'C$', metric: true }, JP: { curr: '\u00a5', metric: true }, CN: { curr: '\u00a5', metric: true },
+    CH: { curr: 'CHF', metric: true }, SE: { curr: 'kr', metric: true }, NO: { curr: 'kr', metric: true },
+    DK: { curr: 'kr', metric: true }, PL: { curr: 'z\u0142', metric: true }, CZ: { curr: 'K\u010d', metric: true },
+    HU: { curr: 'Ft', metric: true }, SG: { curr: 'S$', metric: true }, IN: { curr: '\u20b9', metric: true },
+    ZA: { curr: 'R', metric: true }, MX: { curr: '$', metric: true }, BR: { curr: 'R$', metric: true },
+    KR: { curr: '\u20a9', metric: true }
+    // anything not listed (most of the EU, IE, etc.) defaults to \u20ac / metric below
+  };
+  function regionFor(countryCode) {
+    if (!countryCode) return null;
+    return regionByCountry[countryCode] || { curr: '\u20ac', metric: true };
+  }
+
+  let currencyUserEdited = false;
+  currencyInput.addEventListener('input', () => { currencyUserEdited = true; });
+
+  function applyRegionFromCountry(countryCode) {
+    if (!autoRegion.checked || currencyUserEdited) return;
+    const region = regionFor(countryCode);
+    if (!region) return;
+    currencyInput.value = region.curr;
+    unitSystem.value = region.metric ? 'metric' : 'imperial';
+    updateUnitLabels();
+    applyRouteDistance(); // distance unit may have just changed
+    calculate();
+  }
+
   let routeDebounce = null;
   function scheduleRouteFetch() {
     const from = journeyFromEl.value.trim();
@@ -1498,6 +1531,7 @@
         const data = await res.json();
         if (typeof data.distanceKm === 'number') {
           lastRouteKm = data.distanceKm;
+          applyRegionFromCountry(data.fromCountry);
           applyRouteDistance();
         }
       } catch (e) {
