@@ -365,6 +365,293 @@
 
   <div class="grid">
     <div>
+      <div class="vehicles-head" style="margin-top:22px;">
+        <div>
+          <h2>Vehicles to compare</h2>
+          <p>Start with one car, or add up to three to compare side by side on the same journey.</p>
+        </div>
+        <button class="add-vehicle-btn" id="addVehicleBtn" type="button">+ Add a vehicle</button>
+      </div>
+
+      <div class="vehicles-row" id="vehiclesRow">
+
+        <!-- Vehicle 1 -->
+        <div class="vehicle-card" id="vehicleCard1" data-idx="1">
+          <div class="vc-head">
+            <span class="vc-label">Vehicle A<span class="best-flag" id="bestFlag1">Best value</span></span>
+          </div>
+          <div class="row two">
+            <div>
+              <label for="vehMake1">Make</label>
+              <div class="num-input"><input type="text" id="vehMake1" value="Volkswagen" list="vehModelHelperList" autocomplete="off" class="text-left"></div>
+            </div>
+            <div>
+              <label for="vehModel1">Model</label>
+              <div class="num-input"><input type="text" id="vehModel1" value="Golf" list="vehModelList" autocomplete="off" class="text-left"></div>
+            </div>
+          </div>
+          <div class="row two">
+            <div>
+              <label for="vehTrim1">Trim / engine <span style="color:var(--gold);">(required for an accurate cost)</span></label>
+              <div class="num-input"><input type="text" id="vehTrim1" value="" placeholder="e.g. GTI, TDI" class="text-left"></div>
+            </div>
+            <div>
+              <label for="vehYear1">Year</label>
+              <div class="num-input"><input type="number" id="vehYear1" value="2021" min="1980" max="2027" step="1"></div>
+            </div>
+          </div>
+          <button class="lookup-btn" id="lookupBtn1" type="button">Auto-fill with AI</button>
+          <div class="lookup-status" id="lookupStatus1"></div>
+          <hr class="div">
+          <div class="row single">
+            <div>
+              <label for="fuelType1">Runs on</label>
+              <select id="fuelType1" class="unit-select">
+                <option value="liquid">Petrol / diesel</option>
+                <option value="electric">Electric</option>
+              </select>
+            </div>
+          </div>
+          <div class="row two">
+            <div>
+              <label for="consumption1" id="consLabel1">Consumption<span class="estimated-tag" id="tagCons1" hidden>AI est.</span></label>
+              <div class="num-input">
+                <input type="number" id="consumption1" value="7.5" min="0" step="0.1">
+                <span class="unit" id="consUnitLabel1">L/100km</span>
+              </div>
+            </div>
+            <div>
+              <label for="fuelPrice1" id="fuelPriceLabel1">Fuel price<span class="estimated-tag" id="tagFuelPrice1" hidden>AI est.</span></label>
+              <div class="num-input">
+                <input type="number" id="fuelPrice1" value="1.75" min="0" step="0.01">
+                <span class="unit" id="fuelPriceUnitLabel1">€/L</span>
+              </div>
+            </div>
+          </div>
+          <div class="row two">
+            <div>
+              <label for="maintAnnual1">Annual maintenance<span class="estimated-tag" id="tagMaint1" hidden>AI est.</span></label>
+              <div class="num-input">
+                <input type="number" id="maintAnnual1" value="900" min="0" step="10">
+                <span class="unit" id="maintCurrencyLabel1">€</span>
+              </div>
+            </div>
+            <div>
+              <label for="maintDistance1" id="maintDistLabel1">Annual distance</label>
+              <div class="num-input">
+                <input type="number" id="maintDistance1" value="15000" min="1" step="100">
+                <span class="unit" id="maintDistUnitLabel1">km</span>
+              </div>
+            </div>
+          </div>
+          <div class="row two">
+            <div>
+              <label for="tyreSetCost1">Tyre set cost<span class="estimated-tag" id="tagTyre1" hidden>AI est.</span></label>
+              <div class="num-input">
+                <input type="number" id="tyreSetCost1" value="480" min="0" step="10">
+                <span class="unit" id="tyreCurrencyLabel1">€</span>
+              </div>
+            </div>
+            <div>
+              <label for="tyreLife1" id="tyreLifeLabel1">Tyre lifespan</label>
+              <div class="num-input">
+                <input type="number" id="tyreLife1" value="40000" min="1" step="1000">
+                <span class="unit" id="tyreLifeUnitLabel1">km</span>
+              </div>
+            </div>
+          </div>
+          <div class="vc-mini-total">
+            <span class="vc-name">Total for this trip</span>
+            <span class="vc-amt" id="vcAmt1">€0.00</span>
+          </div>
+        </div>
+
+        <!-- Vehicle 2 -->
+        <div class="vehicle-card" id="vehicleCard2" data-idx="2" hidden>
+          <div class="vc-head">
+            <span class="vc-label">Vehicle B<span class="best-flag" id="bestFlag2">Best value</span></span>
+            <button class="vc-remove" type="button" data-remove="2">Remove</button>
+          </div>
+          <div class="row two">
+            <div>
+              <label for="vehMake2">Make</label>
+              <div class="num-input"><input type="text" id="vehMake2" value="Toyota" list="vehModelHelperList" autocomplete="off" class="text-left"></div>
+            </div>
+            <div>
+              <label for="vehModel2">Model</label>
+              <div class="num-input"><input type="text" id="vehModel2" value="Corolla" list="vehModelList" autocomplete="off" class="text-left"></div>
+            </div>
+          </div>
+          <div class="row two">
+            <div>
+              <label for="vehTrim2">Trim / engine <span style="color:var(--gold);">(required for an accurate cost)</span></label>
+              <div class="num-input"><input type="text" id="vehTrim2" value="" placeholder="e.g. Hybrid" class="text-left"></div>
+            </div>
+            <div>
+              <label for="vehYear2">Year</label>
+              <div class="num-input"><input type="number" id="vehYear2" value="2021" min="1980" max="2027" step="1"></div>
+            </div>
+          </div>
+          <button class="lookup-btn" id="lookupBtn2" type="button">Auto-fill with AI</button>
+          <div class="lookup-status" id="lookupStatus2"></div>
+          <hr class="div">
+          <div class="row single">
+            <div>
+              <label for="fuelType2">Runs on</label>
+              <select id="fuelType2" class="unit-select">
+                <option value="liquid">Petrol / diesel</option>
+                <option value="electric">Electric</option>
+              </select>
+            </div>
+          </div>
+          <div class="row two">
+            <div>
+              <label for="consumption2" id="consLabel2">Consumption<span class="estimated-tag" id="tagCons2" hidden>AI est.</span></label>
+              <div class="num-input">
+                <input type="number" id="consumption2" value="6.0" min="0" step="0.1">
+                <span class="unit" id="consUnitLabel2">L/100km</span>
+              </div>
+            </div>
+            <div>
+              <label for="fuelPrice2" id="fuelPriceLabel2">Fuel price<span class="estimated-tag" id="tagFuelPrice2" hidden>AI est.</span></label>
+              <div class="num-input">
+                <input type="number" id="fuelPrice2" value="1.75" min="0" step="0.01">
+                <span class="unit" id="fuelPriceUnitLabel2">€/L</span>
+              </div>
+            </div>
+          </div>
+          <div class="row two">
+            <div>
+              <label for="maintAnnual2">Annual maintenance<span class="estimated-tag" id="tagMaint2" hidden>AI est.</span></label>
+              <div class="num-input">
+                <input type="number" id="maintAnnual2" value="550" min="0" step="10">
+                <span class="unit" id="maintCurrencyLabel2">€</span>
+              </div>
+            </div>
+            <div>
+              <label for="maintDistance2" id="maintDistLabel2">Annual distance</label>
+              <div class="num-input">
+                <input type="number" id="maintDistance2" value="15000" min="1" step="100">
+                <span class="unit" id="maintDistUnitLabel2">km</span>
+              </div>
+            </div>
+          </div>
+          <div class="row two">
+            <div>
+              <label for="tyreSetCost2">Tyre set cost<span class="estimated-tag" id="tagTyre2" hidden>AI est.</span></label>
+              <div class="num-input">
+                <input type="number" id="tyreSetCost2" value="320" min="0" step="10">
+                <span class="unit" id="tyreCurrencyLabel2">€</span>
+              </div>
+            </div>
+            <div>
+              <label for="tyreLife2" id="tyreLifeLabel2">Tyre lifespan</label>
+              <div class="num-input">
+                <input type="number" id="tyreLife2" value="45000" min="1" step="1000">
+                <span class="unit" id="tyreLifeUnitLabel2">km</span>
+              </div>
+            </div>
+          </div>
+          <div class="vc-mini-total">
+            <span class="vc-name">Total for this trip</span>
+            <span class="vc-amt" id="vcAmt2">€0.00</span>
+          </div>
+        </div>
+
+        <!-- Vehicle 3 -->
+        <div class="vehicle-card" id="vehicleCard3" data-idx="3" hidden>
+          <div class="vc-head">
+            <span class="vc-label">Vehicle C<span class="best-flag" id="bestFlag3">Best value</span></span>
+            <button class="vc-remove" type="button" data-remove="3">Remove</button>
+          </div>
+          <div class="row two">
+            <div>
+              <label for="vehMake3">Make</label>
+              <div class="num-input"><input type="text" id="vehMake3" value="Tesla" list="vehModelHelperList" autocomplete="off" class="text-left"></div>
+            </div>
+            <div>
+              <label for="vehModel3">Model</label>
+              <div class="num-input"><input type="text" id="vehModel3" value="Model 3" list="vehModelList" autocomplete="off" class="text-left"></div>
+            </div>
+          </div>
+          <div class="row two">
+            <div>
+              <label for="vehTrim3">Trim / engine <span style="color:var(--gold);">(required for an accurate cost)</span></label>
+              <div class="num-input"><input type="text" id="vehTrim3" value="" placeholder="e.g. Long Range" class="text-left"></div>
+            </div>
+            <div>
+              <label for="vehYear3">Year</label>
+              <div class="num-input"><input type="number" id="vehYear3" value="2022" min="1980" max="2027" step="1"></div>
+            </div>
+          </div>
+          <button class="lookup-btn" id="lookupBtn3" type="button">Auto-fill with AI</button>
+          <div class="lookup-status" id="lookupStatus3"></div>
+          <hr class="div">
+          <div class="row single">
+            <div>
+              <label for="fuelType3">Runs on</label>
+              <select id="fuelType3" class="unit-select">
+                <option value="liquid">Petrol / diesel</option>
+                <option value="electric" selected>Electric</option>
+              </select>
+            </div>
+          </div>
+          <div class="row two">
+            <div>
+              <label for="consumption3" id="consLabel3">Consumption<span class="estimated-tag" id="tagCons3" hidden>AI est.</span></label>
+              <div class="num-input">
+                <input type="number" id="consumption3" value="15.5" min="0" step="0.1">
+                <span class="unit" id="consUnitLabel3">kWh/100km</span>
+              </div>
+            </div>
+            <div>
+              <label for="fuelPrice3" id="fuelPriceLabel3">Energy price<span class="estimated-tag" id="tagFuelPrice3" hidden>AI est.</span></label>
+              <div class="num-input">
+                <input type="number" id="fuelPrice3" value="0.32" min="0" step="0.01">
+                <span class="unit" id="fuelPriceUnitLabel3">€/kWh</span>
+              </div>
+            </div>
+          </div>
+          <div class="row two">
+            <div>
+              <label for="maintAnnual3">Annual maintenance<span class="estimated-tag" id="tagMaint3" hidden>AI est.</span></label>
+              <div class="num-input">
+                <input type="number" id="maintAnnual3" value="750" min="0" step="10">
+                <span class="unit" id="maintCurrencyLabel3">€</span>
+              </div>
+            </div>
+            <div>
+              <label for="maintDistance3" id="maintDistLabel3">Annual distance</label>
+              <div class="num-input">
+                <input type="number" id="maintDistance3" value="15000" min="1" step="100">
+                <span class="unit" id="maintDistUnitLabel3">km</span>
+              </div>
+            </div>
+          </div>
+          <div class="row two">
+            <div>
+              <label for="tyreSetCost3">Tyre set cost<span class="estimated-tag" id="tagTyre3" hidden>AI est.</span></label>
+              <div class="num-input">
+                <input type="number" id="tyreSetCost3" value="750" min="0" step="10">
+                <span class="unit" id="tyreCurrencyLabel3">€</span>
+              </div>
+            </div>
+            <div>
+              <label for="tyreLife3" id="tyreLifeLabel3">Tyre lifespan</label>
+              <div class="num-input">
+                <input type="number" id="tyreLife3" value="30000" min="1" step="1000">
+                <span class="unit" id="tyreLifeUnitLabel3">km</span>
+              </div>
+            </div>
+          </div>
+          <div class="vc-mini-total">
+            <span class="vc-name">Total for this trip</span>
+            <span class="vc-amt" id="vcAmt3">€0.00</span>
+          </div>
+        </div>
+
+      </div>
+
 
       <section class="panel">
         <div class="field-group">
@@ -465,292 +752,6 @@
         </section>
       </details>
 
-      <div class="vehicles-head" style="margin-top:22px;">
-        <div>
-          <h2>Vehicles to compare</h2>
-          <p>Start with one car, or add up to three to compare side by side on the same journey.</p>
-        </div>
-        <button class="add-vehicle-btn" id="addVehicleBtn" type="button">+ Add a vehicle</button>
-      </div>
-
-      <div class="vehicles-row" id="vehiclesRow">
-
-        <!-- Vehicle 1 -->
-        <div class="vehicle-card" id="vehicleCard1" data-idx="1">
-          <div class="vc-head">
-            <span class="vc-label">Vehicle A<span class="best-flag" id="bestFlag1">Best value</span></span>
-          </div>
-          <div class="row two">
-            <div>
-              <label for="vehMake1">Make</label>
-              <div class="num-input"><input type="text" id="vehMake1" value="Volkswagen" list="vehModelHelperList" autocomplete="off" class="text-left"></div>
-            </div>
-            <div>
-              <label for="vehModel1">Model</label>
-              <div class="num-input"><input type="text" id="vehModel1" value="Golf" list="vehModelList" autocomplete="off" class="text-left"></div>
-            </div>
-          </div>
-          <div class="row two">
-            <div>
-              <label for="vehTrim1">Trim (optional)</label>
-              <div class="num-input"><input type="text" id="vehTrim1" value="" placeholder="e.g. GTI, TDI" class="text-left"></div>
-            </div>
-            <div>
-              <label for="vehYear1">Year</label>
-              <div class="num-input"><input type="number" id="vehYear1" value="2021" min="1980" max="2027" step="1"></div>
-            </div>
-          </div>
-          <button class="lookup-btn" id="lookupBtn1" type="button">Auto-fill with AI</button>
-          <div class="lookup-status" id="lookupStatus1"></div>
-          <hr class="div">
-          <div class="row single">
-            <div>
-              <label for="fuelType1">Runs on</label>
-              <select id="fuelType1" class="unit-select">
-                <option value="liquid">Petrol / diesel</option>
-                <option value="electric">Electric</option>
-              </select>
-            </div>
-          </div>
-          <div class="row two">
-            <div>
-              <label for="consumption1" id="consLabel1">Consumption<span class="estimated-tag" id="tagCons1" hidden>AI est.</span></label>
-              <div class="num-input">
-                <input type="number" id="consumption1" value="7.5" min="0" step="0.1">
-                <span class="unit" id="consUnitLabel1">L/100km</span>
-              </div>
-            </div>
-            <div>
-              <label for="fuelPrice1" id="fuelPriceLabel1">Fuel price<span class="estimated-tag" id="tagFuelPrice1" hidden>AI est.</span></label>
-              <div class="num-input">
-                <input type="number" id="fuelPrice1" value="1.75" min="0" step="0.01">
-                <span class="unit" id="fuelPriceUnitLabel1">€/L</span>
-              </div>
-            </div>
-          </div>
-          <div class="row two">
-            <div>
-              <label for="maintAnnual1">Annual maintenance<span class="estimated-tag" id="tagMaint1" hidden>AI est.</span></label>
-              <div class="num-input">
-                <input type="number" id="maintAnnual1" value="900" min="0" step="10">
-                <span class="unit" id="maintCurrencyLabel1">€</span>
-              </div>
-            </div>
-            <div>
-              <label for="maintDistance1" id="maintDistLabel1">Annual distance</label>
-              <div class="num-input">
-                <input type="number" id="maintDistance1" value="15000" min="1" step="100">
-                <span class="unit" id="maintDistUnitLabel1">km</span>
-              </div>
-            </div>
-          </div>
-          <div class="row two">
-            <div>
-              <label for="tyreSetCost1">Tyre set cost<span class="estimated-tag" id="tagTyre1" hidden>AI est.</span></label>
-              <div class="num-input">
-                <input type="number" id="tyreSetCost1" value="480" min="0" step="10">
-                <span class="unit" id="tyreCurrencyLabel1">€</span>
-              </div>
-            </div>
-            <div>
-              <label for="tyreLife1" id="tyreLifeLabel1">Tyre lifespan</label>
-              <div class="num-input">
-                <input type="number" id="tyreLife1" value="40000" min="1" step="1000">
-                <span class="unit" id="tyreLifeUnitLabel1">km</span>
-              </div>
-            </div>
-          </div>
-          <div class="vc-mini-total">
-            <span class="vc-name">Total for this trip</span>
-            <span class="vc-amt" id="vcAmt1">€0.00</span>
-          </div>
-        </div>
-
-        <!-- Vehicle 2 -->
-        <div class="vehicle-card" id="vehicleCard2" data-idx="2" hidden>
-          <div class="vc-head">
-            <span class="vc-label">Vehicle B<span class="best-flag" id="bestFlag2">Best value</span></span>
-            <button class="vc-remove" type="button" data-remove="2">Remove</button>
-          </div>
-          <div class="row two">
-            <div>
-              <label for="vehMake2">Make</label>
-              <div class="num-input"><input type="text" id="vehMake2" value="Toyota" list="vehModelHelperList" autocomplete="off" class="text-left"></div>
-            </div>
-            <div>
-              <label for="vehModel2">Model</label>
-              <div class="num-input"><input type="text" id="vehModel2" value="Corolla" list="vehModelList" autocomplete="off" class="text-left"></div>
-            </div>
-          </div>
-          <div class="row two">
-            <div>
-              <label for="vehTrim2">Trim (optional)</label>
-              <div class="num-input"><input type="text" id="vehTrim2" value="" placeholder="e.g. Hybrid" class="text-left"></div>
-            </div>
-            <div>
-              <label for="vehYear2">Year</label>
-              <div class="num-input"><input type="number" id="vehYear2" value="2021" min="1980" max="2027" step="1"></div>
-            </div>
-          </div>
-          <button class="lookup-btn" id="lookupBtn2" type="button">Auto-fill with AI</button>
-          <div class="lookup-status" id="lookupStatus2"></div>
-          <hr class="div">
-          <div class="row single">
-            <div>
-              <label for="fuelType2">Runs on</label>
-              <select id="fuelType2" class="unit-select">
-                <option value="liquid">Petrol / diesel</option>
-                <option value="electric">Electric</option>
-              </select>
-            </div>
-          </div>
-          <div class="row two">
-            <div>
-              <label for="consumption2" id="consLabel2">Consumption<span class="estimated-tag" id="tagCons2" hidden>AI est.</span></label>
-              <div class="num-input">
-                <input type="number" id="consumption2" value="6.0" min="0" step="0.1">
-                <span class="unit" id="consUnitLabel2">L/100km</span>
-              </div>
-            </div>
-            <div>
-              <label for="fuelPrice2" id="fuelPriceLabel2">Fuel price<span class="estimated-tag" id="tagFuelPrice2" hidden>AI est.</span></label>
-              <div class="num-input">
-                <input type="number" id="fuelPrice2" value="1.75" min="0" step="0.01">
-                <span class="unit" id="fuelPriceUnitLabel2">€/L</span>
-              </div>
-            </div>
-          </div>
-          <div class="row two">
-            <div>
-              <label for="maintAnnual2">Annual maintenance<span class="estimated-tag" id="tagMaint2" hidden>AI est.</span></label>
-              <div class="num-input">
-                <input type="number" id="maintAnnual2" value="550" min="0" step="10">
-                <span class="unit" id="maintCurrencyLabel2">€</span>
-              </div>
-            </div>
-            <div>
-              <label for="maintDistance2" id="maintDistLabel2">Annual distance</label>
-              <div class="num-input">
-                <input type="number" id="maintDistance2" value="15000" min="1" step="100">
-                <span class="unit" id="maintDistUnitLabel2">km</span>
-              </div>
-            </div>
-          </div>
-          <div class="row two">
-            <div>
-              <label for="tyreSetCost2">Tyre set cost<span class="estimated-tag" id="tagTyre2" hidden>AI est.</span></label>
-              <div class="num-input">
-                <input type="number" id="tyreSetCost2" value="320" min="0" step="10">
-                <span class="unit" id="tyreCurrencyLabel2">€</span>
-              </div>
-            </div>
-            <div>
-              <label for="tyreLife2" id="tyreLifeLabel2">Tyre lifespan</label>
-              <div class="num-input">
-                <input type="number" id="tyreLife2" value="45000" min="1" step="1000">
-                <span class="unit" id="tyreLifeUnitLabel2">km</span>
-              </div>
-            </div>
-          </div>
-          <div class="vc-mini-total">
-            <span class="vc-name">Total for this trip</span>
-            <span class="vc-amt" id="vcAmt2">€0.00</span>
-          </div>
-        </div>
-
-        <!-- Vehicle 3 -->
-        <div class="vehicle-card" id="vehicleCard3" data-idx="3" hidden>
-          <div class="vc-head">
-            <span class="vc-label">Vehicle C<span class="best-flag" id="bestFlag3">Best value</span></span>
-            <button class="vc-remove" type="button" data-remove="3">Remove</button>
-          </div>
-          <div class="row two">
-            <div>
-              <label for="vehMake3">Make</label>
-              <div class="num-input"><input type="text" id="vehMake3" value="Tesla" list="vehModelHelperList" autocomplete="off" class="text-left"></div>
-            </div>
-            <div>
-              <label for="vehModel3">Model</label>
-              <div class="num-input"><input type="text" id="vehModel3" value="Model 3" list="vehModelList" autocomplete="off" class="text-left"></div>
-            </div>
-          </div>
-          <div class="row two">
-            <div>
-              <label for="vehTrim3">Trim (optional)</label>
-              <div class="num-input"><input type="text" id="vehTrim3" value="" placeholder="e.g. Long Range" class="text-left"></div>
-            </div>
-            <div>
-              <label for="vehYear3">Year</label>
-              <div class="num-input"><input type="number" id="vehYear3" value="2022" min="1980" max="2027" step="1"></div>
-            </div>
-          </div>
-          <button class="lookup-btn" id="lookupBtn3" type="button">Auto-fill with AI</button>
-          <div class="lookup-status" id="lookupStatus3"></div>
-          <hr class="div">
-          <div class="row single">
-            <div>
-              <label for="fuelType3">Runs on</label>
-              <select id="fuelType3" class="unit-select">
-                <option value="liquid">Petrol / diesel</option>
-                <option value="electric" selected>Electric</option>
-              </select>
-            </div>
-          </div>
-          <div class="row two">
-            <div>
-              <label for="consumption3" id="consLabel3">Consumption<span class="estimated-tag" id="tagCons3" hidden>AI est.</span></label>
-              <div class="num-input">
-                <input type="number" id="consumption3" value="15.5" min="0" step="0.1">
-                <span class="unit" id="consUnitLabel3">kWh/100km</span>
-              </div>
-            </div>
-            <div>
-              <label for="fuelPrice3" id="fuelPriceLabel3">Energy price<span class="estimated-tag" id="tagFuelPrice3" hidden>AI est.</span></label>
-              <div class="num-input">
-                <input type="number" id="fuelPrice3" value="0.32" min="0" step="0.01">
-                <span class="unit" id="fuelPriceUnitLabel3">€/kWh</span>
-              </div>
-            </div>
-          </div>
-          <div class="row two">
-            <div>
-              <label for="maintAnnual3">Annual maintenance<span class="estimated-tag" id="tagMaint3" hidden>AI est.</span></label>
-              <div class="num-input">
-                <input type="number" id="maintAnnual3" value="750" min="0" step="10">
-                <span class="unit" id="maintCurrencyLabel3">€</span>
-              </div>
-            </div>
-            <div>
-              <label for="maintDistance3" id="maintDistLabel3">Annual distance</label>
-              <div class="num-input">
-                <input type="number" id="maintDistance3" value="15000" min="1" step="100">
-                <span class="unit" id="maintDistUnitLabel3">km</span>
-              </div>
-            </div>
-          </div>
-          <div class="row two">
-            <div>
-              <label for="tyreSetCost3">Tyre set cost<span class="estimated-tag" id="tagTyre3" hidden>AI est.</span></label>
-              <div class="num-input">
-                <input type="number" id="tyreSetCost3" value="750" min="0" step="10">
-                <span class="unit" id="tyreCurrencyLabel3">€</span>
-              </div>
-            </div>
-            <div>
-              <label for="tyreLife3" id="tyreLifeLabel3">Tyre lifespan</label>
-              <div class="num-input">
-                <input type="number" id="tyreLife3" value="30000" min="1" step="1000">
-                <span class="unit" id="tyreLifeUnitLabel3">km</span>
-              </div>
-            </div>
-          </div>
-          <div class="vc-mini-total">
-            <span class="vc-name">Total for this trip</span>
-            <span class="vc-amt" id="vcAmt3">€0.00</span>
-          </div>
-        </div>
-
-      </div>
 
     </div>
 
@@ -1352,6 +1353,11 @@
           var isPrimary = (i === 1);
 
           if (!make || !model) { setStatus(v.lookupStatus, 'Enter at least a make and model first.', 'err'); return; }
+          if (!trim) {
+            setStatus(v.lookupStatus, 'Enter a trim/engine first \u2014 it makes a real difference to the cost (e.g. a GTI vs. a base-engine Golf).', 'err');
+            v.trim.focus();
+            return;
+          }
           if (!from || !to) { setStatus(v.lookupStatus, 'Enter where the journey starts and ends above.', 'err'); return; }
 
           v.lookupBtn.disabled = true;
