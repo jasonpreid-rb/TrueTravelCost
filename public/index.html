@@ -794,6 +794,8 @@
     <option value="Chrysler"><option value="Dodge"><option value="GMC"><option value="Buick">
     <option value="Cadillac"><option value="Lincoln"><option value="Infiniti"><option value="Acura">
     <option value="Genesis"><option value="Polestar"><option value="Rivian"><option value="Lucid">
+    <option value="Ferrari"><option value="Lamborghini"><option value="Aston Martin"><option value="Bentley">
+    <option value="Rolls-Royce"><option value="Maserati"><option value="McLaren"><option value="Bugatti">
   </datalist>
 
   <datalist id="vehModelList"></datalist>
@@ -1312,12 +1314,14 @@
           updateUnitLabels();
         }
 
-        if (typeof data.distance === 'number') { distance.value = round(data.distance, 0); $('tagDistance').hidden = false; }
+        if (typeof data.distance === 'number' && $('tagDistance').dataset.source !== 'route') {
+          distance.value = round(data.distance, 0); $('tagDistance').dataset.source = 'ai'; $('tagDistance').textContent = 'AI est.'; $('tagDistance').hidden = false;
+        }
         if (typeof data.fuelConsumption === 'number') { consumption.value = round(data.fuelConsumption, 1); $('tagCons').hidden = false; }
         if (typeof data.fuelPricePerUnit === 'number') { fuelPrice.value = round(data.fuelPricePerUnit, 2); $('tagFuelPrice').hidden = false; }
-        if (typeof data.annualMaintenanceCost === 'number') { maintAnnual.value = round(data.annualMaintenanceCost, 0); $('tagMaint').hidden = false; }
+        if (typeof data.annualMaintenanceCost === 'number') { maintAnnual.value = round(data.annualMaintenanceCost, 0); $('tagMaint').dataset.source = 'ai'; $('tagMaint').textContent = 'AI est.'; $('tagMaint').hidden = false; }
         if (typeof data.annualDistance === 'number') maintDistance.value = round(data.annualDistance, 0);
-        if (typeof data.tyreSetCost === 'number') { tyreSetCost.value = round(data.tyreSetCost, 0); $('tagTyre').hidden = false; }
+        if (typeof data.tyreSetCost === 'number') { tyreSetCost.value = round(data.tyreSetCost, 0); $('tagTyre').dataset.source = 'ai'; $('tagTyre').textContent = 'AI est.'; $('tagTyre').hidden = false; }
         if (typeof data.tyreLifespan === 'number') tyreLife.value = round(data.tyreLifespan, 0);
         if (typeof data.estimatedTolls === 'number') { tolls.value = round(data.estimatedTolls, 0); $('tagTolls').hidden = false; }
 
@@ -1387,7 +1391,9 @@
 
   initLookup();
 
-  // manual edits clear the "AI est." tag for the field being changed
+  // manual edits clear the "AI est." tag for the field being changed, and mark it as
+  // user-owned so the vehicle-tier fallback below won't overwrite it later
+  const userEdited = { maintAnnual: false, tyreSetCost: false, distance: false };
   [
     [distance, 'tagDistance'],
     [consumption, 'tagCons'], [fuelPrice, 'tagFuelPrice'],
@@ -1395,8 +1401,115 @@
     [tyreSetCost, 'tagTyre'],
     [tolls, 'tagTolls']
   ].forEach(([el, tagId]) => {
-    el.addEventListener('input', () => { $(tagId).hidden = true; });
+    el.addEventListener('input', () => {
+      $(tagId).hidden = true;
+      delete $(tagId).dataset.source;
+      if (el === maintAnnual) userEdited.maintAnnual = true;
+      if (el === tyreSetCost) userEdited.tyreSetCost = true;
+      if (el === distance) userEdited.distance = true;
+    });
   });
+
+  // --- Vehicle-tier fallback for maintenance & tyre cost ---
+  // Works with zero AI calls: a Ferrari and a Corolla get different typical
+  // costs instead of the same flat default. The real AI lookup (when available)
+  // still gives trim-specific numbers and overrides these.
+  const vehMake = $('vehMake');
+  const tierByMake = {
+    'Dacia': 'economy', 'Fiat': 'economy', 'Suzuki': 'economy', 'Citroën': 'economy',
+    'Renault': 'economy', 'Kia': 'economy', 'Hyundai': 'economy', 'Chevrolet': 'economy',
+    'Nissan': 'economy', 'Mitsubishi': 'economy', 'Mazda': 'economy', 'Toyota': 'economy',
+    'Opel': 'economy', 'SEAT': 'economy', 'Škoda': 'economy', 'Honda': 'economy', 'Peugeot': 'economy',
+    'Audi': 'premium', 'BMW': 'premium', 'Mercedes-Benz': 'premium', 'Volvo': 'premium',
+    'Lexus': 'premium', 'Infiniti': 'premium', 'Acura': 'premium', 'Genesis': 'premium',
+    'Mini': 'premium', 'Jaguar': 'premium', 'Land Rover': 'premium', 'Alfa Romeo': 'premium',
+    'Cadillac': 'premium', 'Lincoln': 'premium', 'Polestar': 'premium', 'Rivian': 'premium',
+    'Lucid': 'premium', 'Tesla': 'premium', 'Porsche': 'premium',
+    'Ferrari': 'exotic', 'Lamborghini': 'exotic', 'Aston Martin': 'exotic', 'Bentley': 'exotic',
+    'Rolls-Royce': 'exotic', 'Maserati': 'exotic', 'McLaren': 'exotic', 'Bugatti': 'exotic'
+    // anything not listed (VW, Ford, Jeep, Dodge, GMC, Buick, Subaru, etc.) uses 'mainstream'
+  };
+  const tierDefaults = {
+    economy:    { maint: 550,  tyreCost: 320,  tyreLife: 45000 },
+    mainstream: { maint: 900,  tyreCost: 480,  tyreLife: 40000 },
+    premium:    { maint: 1500, tyreCost: 750,  tyreLife: 30000 },
+    exotic:     { maint: 6500, tyreCost: 2200, tyreLife: 12000 }
+  };
+
+  function applyVehicleTierDefaults(make) {
+    const key = Object.keys(tierByMake).find(k => k.toLowerCase() === make.trim().toLowerCase());
+    const tier = tierByMake[key] || 'mainstream';
+    const d = tierDefaults[tier];
+    let changed = false;
+
+    if (!userEdited.maintAnnual && $('tagMaint').dataset.source !== 'ai') {
+      maintAnnual.value = d.maint;
+      $('tagMaint').textContent = 'Typical for class';
+      $('tagMaint').dataset.source = 'tier';
+      $('tagMaint').hidden = false;
+      changed = true;
+    }
+    if (!userEdited.tyreSetCost && $('tagTyre').dataset.source !== 'ai') {
+      tyreSetCost.value = d.tyreCost;
+      tyreLife.value = d.tyreLife;
+      $('tagTyre').textContent = 'Typical for class';
+      $('tagTyre').dataset.source = 'tier';
+      $('tagTyre').hidden = false;
+      changed = true;
+    }
+    if (changed) calculate();
+  }
+
+  vehMake.addEventListener('input', () => applyVehicleTierDefaults(vehMake.value));
+  applyVehicleTierDefaults(vehMake.value);
+
+  // --- Real driving distance via /api/route (free: Nominatim + OpenRouteService) ---
+  // Fills the Distance field automatically once both From and To are filled in,
+  // no AI credits required. A real routed distance always wins over an AI guess
+  // or the plain default; only a manual edit to Distance overrides it.
+  let lastRouteKm = null;
+
+  function applyRouteDistance() {
+    if (lastRouteKm == null || userEdited.distance) return;
+    const metric = unitSystem.value === 'metric';
+    const oneWay = metric ? lastRouteKm : lastRouteKm * 0.621371;
+    const total = roundTrip.checked ? oneWay * 2 : oneWay;
+    distance.value = round(total, 0);
+    $('tagDistance').textContent = 'Live route';
+    $('tagDistance').dataset.source = 'route';
+    $('tagDistance').hidden = false;
+    calculate();
+  }
+
+  let routeDebounce = null;
+  function scheduleRouteFetch() {
+    const from = journeyFromEl.value.trim();
+    const to = journeyToEl.value.trim();
+    if (!from || !to) return;
+    clearTimeout(routeDebounce);
+    routeDebounce = setTimeout(async () => {
+      try {
+        const res = await fetch('/api/route', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ from, to })
+        });
+        if (!res.ok) return; // quietly leave whatever value is already in Distance
+        const data = await res.json();
+        if (typeof data.distanceKm === 'number') {
+          lastRouteKm = data.distanceKm;
+          applyRouteDistance();
+        }
+      } catch (e) {
+        // offline / network hiccup \u2014 leave existing distance value as-is
+      }
+    }, 600);
+  }
+
+  [journeyFromEl, journeyToEl].forEach(el => el.addEventListener('input', scheduleRouteFetch));
+  roundTrip.addEventListener('change', applyRouteDistance);
+  unitSystem.addEventListener('change', applyRouteDistance);
+  scheduleRouteFetch();
 
   // --- Save & share ---
   const saveTripBtn = $('saveTripBtn');
