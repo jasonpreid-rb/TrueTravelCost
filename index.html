@@ -2,36 +2,1340 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Coming Soon</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Route Cost — Trip Cost Calculator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --bg: #14171A;
+    --panel: #1B1F23;
+    --panel-2: #20252A;
+    --line: #33393F;
+    --text: #ECE8E1;
+    --muted: #8A9098;
+    --amber: #E8A33D;
+    --amber-dim: #6B5228;
+    --blue: #4FA8DE;
+    --blue-dim: #274456;
+    --red-toll: #C97064;
+    --green-tyre: #7FA86B;
+    --radius-sm: 3px;
+    --radius-md: 6px;
+    --font-display: 'Space Grotesk', sans-serif;
+    --font-body: 'IBM Plex Sans', sans-serif;
+    --font-mono: 'IBM Plex Mono', monospace;
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) {
+      --bg: #F1EFEA;
+      --panel: #FFFFFF;
+      --panel-2: #F7F5F0;
+      --line: #D8D4CB;
+      --text: #1A1D1F;
+      --muted: #6B6F72;
+    }
+  }
+  :root[data-theme="light"] {
+    --bg: #F1EFEA;
+    --panel: #FFFFFF;
+    --panel-2: #F7F5F0;
+    --line: #D8D4CB;
+    --text: #1A1D1F;
+    --muted: #6B6F72;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); }
   body {
-    height: 100vh;
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+
+  header.top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 24px;
+    margin-bottom: 36px;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 20px;
+  }
+  header.top h1 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(28px, 4vw, 38px);
+    letter-spacing: -0.01em;
+    margin: 0 0 6px;
+  }
+  header.top p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 15px;
+    max-width: 46ch;
+    line-height: 1.5;
+  }
+  .theme-toggle {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--muted);
+    background: transparent;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    padding: 7px 10px;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .theme-toggle:hover { color: var(--text); border-color: var(--muted); }
+
+  .grid {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 28px;
+    align-items: start;
+  }
+  @media (max-width: 860px) {
+    .grid { grid-template-columns: 1fr; }
+  }
+
+  section.panel {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    padding: 24px 24px 8px;
+  }
+  section.panel + section.panel { margin-top: 20px; }
+
+  .field-group h2 {
+    font-family: var(--font-display);
+    font-size: 15px;
+    font-weight: 600;
+    margin: 0 0 4px;
+  }
+  .field-group .hint {
+    color: var(--muted);
+    font-size: 12.5px;
+    margin: 0 0 16px;
+    line-height: 1.5;
+  }
+
+  .row {
+    display: grid;
+    grid-template-columns: 1fr 128px;
+    gap: 12px;
+    align-items: end;
+    margin-bottom: 16px;
+  }
+  .row.single { grid-template-columns: 1fr; }
+  .row.three { grid-template-columns: 1fr 1fr; }
+
+  label {
+    display: block;
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+
+  .num-input {
+    position: relative;
     display: flex;
     align-items: center;
-    justify-content: center;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    background: #0a0a0a;
-    color: #f5f5f5;
-    text-align: center;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    background: var(--panel-2);
+    overflow: hidden;
   }
-  h1 {
-    font-size: clamp(1.8rem, 5vw, 3rem);
+  .num-input input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: 15px;
+    padding: 10px 10px;
+    text-align: right;
+    min-width: 0;
+  }
+  .num-input .unit {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--muted);
+    padding: 0 10px 0 4px;
+    white-space: nowrap;
+  }
+  .num-input:focus-within { border-color: var(--amber); }
+
+  select.unit-select {
+    width: 100%;
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 13px;
+    padding: 10px 8px;
+    outline: none;
+  }
+  select.unit-select:focus { border-color: var(--amber); }
+
+  hr.div {
+    border: none;
+    border-top: 1px solid var(--line);
+    margin: 20px 0;
+  }
+
+  /* Trip meter (output) */
+  .meter {
+    position: sticky;
+    top: 20px;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    padding: 24px;
+  }
+  .meter h2 {
+    font-family: var(--font-display);
+    font-size: 14px;
     font-weight: 600;
-    letter-spacing: -0.02em;
+    margin: 0 0 2px;
+    color: var(--muted);
   }
-  p {
-    margin-top: 0.75rem;
-    color: #888;
-    font-size: 1rem;
+  .meter .total-readout {
+    font-family: var(--font-mono);
+    font-size: clamp(36px, 6vw, 48px);
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    margin: 6px 0 2px;
+    line-height: 1.1;
+    word-break: break-word;
+  }
+  .meter .per-unit {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 20px;
+  }
+
+  .bars {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  .bar-row {
+    display: grid;
+    grid-template-columns: 72px 1fr 64px;
+    gap: 10px;
+    align-items: center;
+    font-size: 12.5px;
+  }
+  .bar-row .label { color: var(--muted); }
+  .bar-track {
+    height: 8px;
+    background: var(--panel-2);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .bar-fill { height: 100%; border-radius: 2px; transition: width 0.4s ease; }
+  .bar-row .amount { font-family: var(--font-mono); text-align: right; }
+
+  .fuel-fill { background: var(--amber); }
+  .maint-fill { background: var(--blue); }
+  .tyre-fill { background: var(--green-tyre); }
+  .toll-fill { background: var(--red-toll); }
+
+  /* AI vehicle lookup */
+  .lookup-btn {
+    font-family: var(--font-body);
+    font-size: 13.5px;
+    font-weight: 500;
+    color: var(--bg);
+    background: var(--amber);
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 11px 16px;
+    cursor: pointer;
+    width: 100%;
+  }
+  .lookup-btn:hover { filter: brightness(1.08); }
+  .lookup-btn:disabled { opacity: 0.55; cursor: default; filter: none; }
+
+  .lookup-status {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 10px;
+    min-height: 16px;
+    line-height: 1.5;
+  }
+  .lookup-status.err { color: var(--red-toll); }
+  .lookup-status.ok { color: var(--green-tyre); }
+
+  .maps-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--blue);
+    text-decoration: none;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    padding: 8px 12px;
+  }
+  .maps-link:hover { border-color: var(--blue); }
+
+  .route-overview {
+    margin-top: 18px;
+    padding-top: 18px;
+    border-top: 1px solid var(--line);
+  }
+  .route-overview h3 {
+    font-family: var(--font-display);
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--muted);
+    margin: 0 0 10px;
+    text-transform: none;
+  }
+  .route-overview svg { width: 100%; height: auto; display: block; }
+  .route-overview .route-note {
+    font-size: 11.5px;
+    color: var(--muted);
+    margin: 8px 0 0;
+    line-height: 1.5;
+  }
+
+  .assumptions {
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid var(--line);
+    font-size: 12.5px;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+  .assumptions dt { display: inline; color: var(--muted); }
+  .assumptions dd { display: inline; margin: 0; color: var(--text); }
+  .assumptions .assumption-row { display: block; }
+  .assumptions .assumption-row .k {
+    display: inline-block;
+    width: 88px;
+    color: var(--muted);
+  }
+
+  .meter-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 18px;
+  }
+  .ghost-btn {
+    flex: 1;
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+    background: transparent;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    padding: 9px 10px;
+    cursor: pointer;
+  }
+  .ghost-btn:hover { border-color: var(--amber); color: var(--amber); }
+  .ghost-btn:disabled { opacity: 0.5; cursor: default; }
+  .meter-actions-status {
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    color: var(--muted);
+    margin-top: 8px;
+    min-height: 14px;
+  }
+  .meter-actions-status.ok { color: var(--green-tyre); }
+  .meter-actions-status.err { color: var(--red-toll); }
+
+  .saved-trips {
+    margin-top: 20px;
+  }
+  .saved-trips h2 {
+    font-family: var(--font-display);
+    font-size: 15px;
+    font-weight: 600;
+    margin: 0 0 4px;
+  }
+  .saved-trips .hint { color: var(--muted); font-size: 12.5px; margin: 0 0 14px; }
+  .trip-row {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    gap: 12px;
+    align-items: center;
+    padding: 12px 0;
+    border-top: 1px solid var(--line);
+    font-size: 13px;
+  }
+  .trip-row:first-of-type { border-top: none; }
+  .trip-row .trip-info .trip-route { font-weight: 500; }
+  .trip-row .trip-info .trip-meta { color: var(--muted); font-size: 11.5px; margin-top: 2px; }
+  .trip-row .trip-total { font-family: var(--font-mono); white-space: nowrap; }
+  .trip-row .trip-load {
+    font-family: var(--font-body);
+    font-size: 12px;
+    color: var(--blue);
+    background: transparent;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    padding: 6px 10px;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .trip-row .trip-load:hover { border-color: var(--blue); }
+
+  .estimated-tag {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--bg);
+    background: var(--amber);
+    border-radius: 2px;
+    padding: 1px 5px;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+
+  /* Fine-tune collapsible section */
+  details.fine-tune summary {
+    cursor: pointer;
+    list-style: none;
+    font-family: var(--font-display);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--muted);
+    padding: 14px 4px;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  details.fine-tune summary::-webkit-details-marker { display: none; }
+  details.fine-tune summary::before {
+    content: '+';
+    font-family: var(--font-mono);
+    font-size: 15px;
+    color: var(--amber);
+    width: 14px;
+  }
+  details.fine-tune[open] summary::before { content: '\2212'; }
+  details.fine-tune summary:hover { color: var(--text); }
+
+  table.breakdown {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  table.breakdown td {
+    padding: 7px 0;
+    border-top: 1px solid var(--line);
+  }
+  table.breakdown td:first-child { color: var(--muted); }
+  table.breakdown td:last-child { text-align: right; font-family: var(--font-mono); }
+  table.breakdown tr:first-child td { border-top: none; }
+
+  .empty-note {
+    font-size: 12.5px;
+    color: var(--muted);
+    line-height: 1.5;
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid var(--line);
+  }
+
+  footer.legend {
+    margin-top: 28px;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.6;
   }
 </style>
 </head>
 <body>
-  <div>
-    <h1>Something's coming</h1>
-    <p>This site is under construction.</p>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <h1>Route cost</h1>
+      <p>Work out what a drive actually costs — fuel, wear on the car, tyres, and whatever the road charges you along the way.</p>
+    </div>
+    <button class="theme-toggle" id="themeToggle" type="button">dark / light</button>
+  </header>
+
+  <div class="grid">
+    <div>
+
+      <section class="panel">
+        <div class="field-group">
+          <h2>Vehicle &amp; journey</h2>
+          <p class="hint">Enter what you're driving and where you're going — it'll estimate the distance, fuel, service and tyre costs, and likely tolls. Everything it fills in stays editable below.</p>
+
+          <div class="row three">
+            <div>
+              <label for="vehMake">Make</label>
+              <div class="num-input">
+                <input type="text" id="vehMake" value="Volkswagen" style="text-align:left; font-family: var(--font-body);">
+              </div>
+            </div>
+            <div>
+              <label for="vehModel">Model</label>
+              <div class="num-input">
+                <input type="text" id="vehModel" value="Golf" style="text-align:left; font-family: var(--font-body);">
+              </div>
+            </div>
+          </div>
+
+          <div class="row three">
+            <div>
+              <label for="vehTrim">Trim / engine (optional)</label>
+              <div class="num-input">
+                <input type="text" id="vehTrim" value="" placeholder="e.g. GTI, 2.0 TDI, 1.5 TSI 150hp" style="text-align:left; font-family: var(--font-body);">
+              </div>
+            </div>
+            <div>
+              <label for="vehYear">Year (optional)</label>
+              <div class="num-input">
+                <input type="number" id="vehYear" value="2021" min="1980" max="2027" step="1">
+              </div>
+            </div>
+          </div>
+          <p class="hint" style="margin-top:-8px;">Worth filling in if you're comparing trims of the same model — a GTI and a base-engine Golf cost very differently to run.</p>
+
+          <hr class="div">
+
+          <div class="row three">
+            <div>
+              <label for="journeyFrom">From</label>
+              <div class="num-input">
+                <input type="text" id="journeyFrom" value="Munich, Germany" style="text-align:left; font-family: var(--font-body);">
+              </div>
+            </div>
+            <div>
+              <label for="journeyTo">To</label>
+              <div class="num-input">
+                <input type="text" id="journeyTo" value="Salzburg, Austria" style="text-align:left; font-family: var(--font-body);">
+              </div>
+            </div>
+          </div>
+
+          <div class="row single" style="margin-bottom: 12px;">
+            <a href="#" id="mapsLink" target="_blank" rel="noopener" class="maps-link">Open this route in Google Maps ↗</a>
+          </div>
+
+          <div class="row single" style="margin-bottom: 12px;">
+            <label style="display:flex; align-items:center; gap:8px; cursor:pointer; margin-bottom:0;">
+              <input type="checkbox" id="roundTrip" style="width:15px; height:15px; accent-color: var(--amber);">
+              <span>Round trip (there and back)</span>
+            </label>
+          </div>
+
+          <hr class="div">
+
+          <div class="row single" style="margin-bottom: 10px;">
+            <label style="display:flex; align-items:center; gap:8px; cursor:pointer; margin-bottom:0;">
+              <input type="checkbox" id="autoRegion" checked style="width:15px; height:15px; accent-color: var(--amber);">
+              <span>Auto-detect currency &amp; units from the journey (Europe, US, NZ, Australia, etc.)</span>
+            </label>
+          </div>
+
+          <div class="row three" id="manualCurrencyRow" hidden>
+            <div>
+              <label for="currency">Currency symbol</label>
+              <div class="num-input">
+                <input type="text" id="currency" value="€" maxlength="3" style="text-align:left; font-family: var(--font-body);">
+              </div>
+            </div>
+            <div style="align-self:end;">
+              <p class="hint" style="margin:0 0 10px;">Units are set in <em>Fine-tune the numbers</em> below.</p>
+            </div>
+          </div>
+
+          <button class="lookup-btn" id="lookupBtn" type="button">Calculate trip cost</button>
+          <div class="lookup-status" id="lookupStatus"></div>
+          <dl class="assumptions" id="assumptions" hidden></dl>
+        </div>
+      </section>
+
+      <details class="fine-tune">
+        <summary>Fine-tune the numbers</summary>
+        <div class="fine-tune-body">
+
+      <section class="panel">
+        <div class="field-group">
+          <h2>Distance &amp; fuel</h2>
+          <p class="hint">Enter the trip distance and how the vehicle drinks.</p>
+
+          <div class="row three">
+            <div>
+              <label for="distance">Trip distance<span class="estimated-tag" id="tagDistance" hidden>AI est.</span></label>
+              <div class="num-input">
+                <input type="number" id="distance" value="500" min="0" step="1">
+                <span class="unit" id="distUnitLabel">km</span>
+              </div>
+            </div>
+            <div>
+              <label for="unitSystem">Units</label>
+              <select id="unitSystem" class="unit-select">
+                <option value="metric">Metric (km, L)</option>
+                <option value="imperial">Imperial (mi, gal)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="row three">
+            <div>
+              <label for="consumption" id="consLabel">Consumption<span class="estimated-tag" id="tagCons" hidden>AI est.</span></label>
+              <div class="num-input">
+                <input type="number" id="consumption" value="7.5" min="0" step="0.1">
+                <span class="unit" id="consUnitLabel">L/100km</span>
+              </div>
+            </div>
+            <div>
+              <label for="fuelPrice" id="fuelPriceLabel">Fuel price<span class="estimated-tag" id="tagFuelPrice" hidden>AI est.</span></label>
+              <div class="num-input">
+                <input type="number" id="fuelPrice" value="1.75" min="0" step="0.01">
+                <span class="unit" id="fuelPriceUnitLabel">€/L</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="field-group">
+          <h2>Maintenance</h2>
+          <p class="hint">What the car costs to keep running, spread over how far it's driven — servicing, repairs, fluids.</p>
+          <div class="row three">
+            <div>
+              <label for="maintAnnual">Annual maintenance cost<span class="estimated-tag" id="tagMaint" hidden>AI est.</span></label>
+              <div class="num-input">
+                <input type="number" id="maintAnnual" value="900" min="0" step="10">
+                <span class="unit" id="maintCurrencyLabel">€</span>
+              </div>
+            </div>
+            <div>
+              <label for="maintDistance" id="maintDistLabel">Annual distance driven</label>
+              <div class="num-input">
+                <input type="number" id="maintDistance" value="15000" min="1" step="100">
+                <span class="unit" id="maintDistUnitLabel">km</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <hr class="div">
+
+        <div class="field-group">
+          <h2>Tyres</h2>
+          <p class="hint">Cost of a full set, divided by how long a set lasts.</p>
+          <div class="row three">
+            <div>
+              <label for="tyreSetCost">Cost per tyre set<span class="estimated-tag" id="tagTyre" hidden>AI est.</span></label>
+              <div class="num-input">
+                <input type="number" id="tyreSetCost" value="480" min="0" step="10">
+                <span class="unit" id="tyreCurrencyLabel">€</span>
+              </div>
+            </div>
+            <div>
+              <label for="tyreLife" id="tyreLifeLabel">Tyre lifespan</label>
+              <div class="num-input">
+                <input type="number" id="tyreLife" value="40000" min="1" step="1000">
+                <span class="unit" id="tyreLifeUnitLabel">km</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="field-group">
+          <h2>Tolls &amp; extras</h2>
+          <p class="hint">Flat costs for this specific trip — road tolls, ferries, parking.</p>
+          <div class="row three">
+            <div>
+              <label for="tolls">Road tolls / ferries<span class="estimated-tag" id="tagTolls" hidden>AI est.</span></label>
+              <div class="num-input">
+                <input type="number" id="tolls" value="18" min="0" step="1">
+                <span class="unit" id="tollsCurrencyLabel">€</span>
+              </div>
+            </div>
+            <div>
+              <label for="extras">Parking / other</label>
+              <div class="num-input">
+                <input type="number" id="extras" value="0" min="0" step="1">
+                <span class="unit" id="extrasCurrencyLabel">€</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+        </div>
+      </details>
+
+    </div>
+
+    <div class="meter">
+      <h2>Total for this trip</h2>
+      <div class="total-readout" id="totalReadout">€ 0.00</div>
+      <div class="per-unit" id="perUnitReadout">€0.000 / km</div>
+
+      <div class="route-overview" id="routeOverview" hidden>
+        <h3>Route overview</h3>
+        <svg id="routeSvg" viewBox="0 0 400 90" xmlns="http://www.w3.org/2000/svg"></svg>
+        <p class="route-note">Schematic, not to scale &mdash; use the Google Maps link above for the actual route.</p>
+      </div>
+
+      <div class="bars" id="barsWrap">
+        <div class="bar-row">
+          <span class="label">Fuel</span>
+          <div class="bar-track"><div class="bar-fill fuel-fill" id="fuelBar" style="width:0%"></div></div>
+          <span class="amount" id="fuelAmt">€0.00</span>
+        </div>
+        <div class="bar-row">
+          <span class="label">Maint.</span>
+          <div class="bar-track"><div class="bar-fill maint-fill" id="maintBar" style="width:0%"></div></div>
+          <span class="amount" id="maintAmt">€0.00</span>
+        </div>
+        <div class="bar-row">
+          <span class="label">Tyres</span>
+          <div class="bar-track"><div class="bar-fill tyre-fill" id="tyreBar" style="width:0%"></div></div>
+          <span class="amount" id="tyreAmt">€0.00</span>
+        </div>
+        <div class="bar-row">
+          <span class="label">Tolls+</span>
+          <div class="bar-track"><div class="bar-fill toll-fill" id="tollBar" style="width:0%"></div></div>
+          <span class="amount" id="tollAmt">€0.00</span>
+        </div>
+      </div>
+
+      <table class="breakdown">
+        <tbody>
+          <tr><td>Fuel</td><td id="tblFuel">€0.00</td></tr>
+          <tr><td>Maintenance</td><td id="tblMaint">€0.00</td></tr>
+          <tr><td>Tyres</td><td id="tblTyre">€0.00</td></tr>
+          <tr><td>Tolls &amp; extras</td><td id="tblToll">€0.00</td></tr>
+        </tbody>
+      </table>
+
+      <p class="empty-note">Maintenance and tyre costs are spread per distance unit from your annual figures, then applied to this trip's distance. Adjust any field and the total updates as you type.</p>
+
+      <div class="meter-actions">
+        <button class="ghost-btn" id="saveTripBtn" type="button">Save this trip</button>
+        <button class="ghost-btn" id="copyTripBtn" type="button">Copy summary</button>
+      </div>
+      <div class="meter-actions-status" id="meterActionsStatus"></div>
+    </div>
   </div>
+
+  <section class="panel saved-trips" id="savedTripsPanel" hidden>
+    <h2>Saved trips</h2>
+    <p class="hint">Visible to anyone with access to this page. Click a trip to load it back into the calculator.</p>
+    <div id="savedTripsList"></div>
+  </section>
+
+  <footer class="legend">
+    Figures are estimates based on what you enter — actual costs vary with driving conditions, vehicle condition, and local prices.
+  </footer>
+
+</div>
+
+<script>
+(function () {
+  const $ = (id) => document.getElementById(id);
+
+  const distance = $('distance');
+  const unitSystem = $('unitSystem');
+  const consumption = $('consumption');
+  const fuelPrice = $('fuelPrice');
+  const maintAnnual = $('maintAnnual');
+  const maintDistance = $('maintDistance');
+  const tyreSetCost = $('tyreSetCost');
+  const tyreLife = $('tyreLife');
+  const tolls = $('tolls');
+  const extras = $('extras');
+  const currencyInput = $('currency');
+  const roundTrip = $('roundTrip');
+
+  const distUnitLabel = $('distUnitLabel');
+  const consLabel = $('consLabel');
+  const consUnitLabel = $('consUnitLabel');
+  const fuelPriceLabel = $('fuelPriceLabel');
+  const fuelPriceUnitLabel = $('fuelPriceUnitLabel');
+  const maintDistLabel = $('maintDistLabel');
+  const maintDistUnitLabel = $('maintDistUnitLabel');
+  const tyreLifeLabel = $('tyreLifeLabel');
+  const tyreLifeUnitLabel = $('tyreLifeUnitLabel');
+
+  const currencyLabels = ['maintCurrencyLabel','tyreCurrencyLabel','tollsCurrencyLabel','extrasCurrencyLabel'];
+
+  function fmt(n) {
+    if (!isFinite(n)) return '0.00';
+    return n.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
+  function updateUnitLabels() {
+    const metric = unitSystem.value === 'metric';
+    const distU = metric ? 'km' : 'mi';
+    const curr = currencyInput.value || '€';
+
+    distUnitLabel.textContent = distU;
+    consLabel.firstChild.textContent = metric ? 'Consumption' : 'Fuel economy';
+    consUnitLabel.textContent = metric ? 'L/100km' : 'mpg';
+    fuelPriceLabel.firstChild.textContent = 'Fuel price';
+    fuelPriceUnitLabel.textContent = metric ? curr + '/L' : curr + '/gal';
+    maintDistLabel.textContent = 'Annual distance driven';
+    maintDistUnitLabel.textContent = distU;
+    tyreLifeLabel.textContent = 'Tyre lifespan';
+    tyreLifeUnitLabel.textContent = distU;
+
+    currencyLabels.forEach((id) => { $(id).textContent = curr; });
+
+    // sensible defaults when switching systems (only if still at prior default-ish values)
+  }
+
+  function calculate() {
+    const metric = unitSystem.value === 'metric';
+    const curr = currencyInput.value || '€';
+    const dist = parseFloat(distance.value) || 0;
+    const cons = parseFloat(consumption.value) || 0;
+    const price = parseFloat(fuelPrice.value) || 0;
+    const mAnnual = parseFloat(maintAnnual.value) || 0;
+    const mDist = parseFloat(maintDistance.value) || 1;
+    const tSet = parseFloat(tyreSetCost.value) || 0;
+    const tLife = parseFloat(tyreLife.value) || 1;
+    const tollsV = parseFloat(tolls.value) || 0;
+    const extrasV = parseFloat(extras.value) || 0;
+
+    let fuelCost;
+    if (metric) {
+      fuelCost = (dist / 100) * cons * price;
+    } else {
+      fuelCost = cons > 0 ? (dist / cons) * price : 0;
+    }
+
+    const maintPerUnit = mAnnual / mDist;
+    const tyrePerUnit = tSet / tLife;
+
+    const maintCost = maintPerUnit * dist;
+    const tyreCost = tyrePerUnit * dist;
+    const tollCost = tollsV + extrasV;
+
+    const total = fuelCost + maintCost + tyreCost + tollCost;
+    const perUnit = dist > 0 ? total / dist : 0;
+
+    $('totalReadout').textContent = curr + ' ' + fmt(total);
+    $('perUnitReadout').textContent = curr + perUnit.toFixed(3) + ' / ' + (metric ? 'km' : 'mi');
+
+    $('tblFuel').textContent = curr + fmt(fuelCost);
+    $('tblMaint').textContent = curr + fmt(maintCost);
+    $('tblTyre').textContent = curr + fmt(tyreCost);
+    $('tblToll').textContent = curr + fmt(tollCost);
+
+    $('fuelAmt').textContent = curr + fmt(fuelCost);
+    $('maintAmt').textContent = curr + fmt(maintCost);
+    $('tyreAmt').textContent = curr + fmt(tyreCost);
+    $('tollAmt').textContent = curr + fmt(tollCost);
+
+    const max = Math.max(fuelCost, maintCost, tyreCost, tollCost, 0.0001);
+    $('fuelBar').style.width = (fuelCost / max * 100) + '%';
+    $('maintBar').style.width = (maintCost / max * 100) + '%';
+    $('tyreBar').style.width = (tyreCost / max * 100) + '%';
+    $('tollBar').style.width = (tollCost / max * 100) + '%';
+  }
+
+  function onUnitSystemChange() {
+    // swap sensible defaults between metric/imperial so numbers stay plausible
+    const metric = unitSystem.value === 'metric';
+    if (metric) {
+      distance.value = 500;
+      consumption.value = 7.5;
+      fuelPrice.value = 1.75;
+      maintDistance.value = 15000;
+      tyreLife.value = 40000;
+    } else {
+      distance.value = 300;
+      consumption.value = 32;
+      fuelPrice.value = 6.60;
+      maintDistance.value = 10000;
+      tyreLife.value = 25000;
+    }
+    updateUnitLabels();
+    calculate();
+  }
+
+  [distance, consumption, fuelPrice, maintAnnual, maintDistance, tyreSetCost, tyreLife, tolls, extras].forEach((el) => {
+    el.addEventListener('input', calculate);
+  });
+  currencyInput.addEventListener('input', () => { updateUnitLabels(); calculate(); });
+  unitSystem.addEventListener('change', onUnitSystemChange);
+
+  // --- Google Maps link + schematic route overview ---
+  const journeyFromEl = $('journeyFrom');
+  const journeyToEl = $('journeyTo');
+  const mapsLink = $('mapsLink');
+  const routeOverview = $('routeOverview');
+  const routeSvg = $('routeSvg');
+
+  function updateMapsLink() {
+    const from = journeyFromEl.value.trim();
+    const to = journeyToEl.value.trim();
+    if (from && to) {
+      mapsLink.href = 'https://www.google.com/maps/dir/?api=1&origin=' +
+        encodeURIComponent(from) + '&destination=' + encodeURIComponent(to) + '&travelmode=driving';
+    } else {
+      mapsLink.href = '#';
+    }
+  }
+
+  function drawRouteOverview() {
+    const from = journeyFromEl.value.trim();
+    const to = journeyToEl.value.trim();
+    if (!from || !to) { routeOverview.hidden = true; return; }
+
+    const distVal = distance.value;
+    const distU = unitSystem.value === 'metric' ? 'km' : 'mi';
+    const isRT = roundTrip.checked;
+    const truncate = (s, n) => (s.length > n ? s.slice(0, n - 1) + '\u2026' : s);
+
+    const svgNs = 'http://www.w3.org/2000/svg';
+    routeSvg.innerHTML = '';
+    const midLabel = (distVal ? distVal + ' ' + distU : '') + (isRT ? ' \u00b7 round trip' : '');
+
+    const line = document.createElementNS(svgNs, 'line');
+    line.setAttribute('x1', '40'); line.setAttribute('y1', '45');
+    line.setAttribute('x2', '360'); line.setAttribute('y2', '45');
+    line.setAttribute('stroke', 'var(--amber)');
+    line.setAttribute('stroke-width', '2');
+    line.setAttribute('stroke-dasharray', '2 6');
+    line.setAttribute('stroke-linecap', 'round');
+    routeSvg.appendChild(line);
+
+    [ [40, from], [360, to] ].forEach(([cx, label]) => {
+      const dot = document.createElementNS(svgNs, 'circle');
+      dot.setAttribute('cx', cx); dot.setAttribute('cy', '45'); dot.setAttribute('r', '6');
+      dot.setAttribute('fill', 'var(--bg)');
+      dot.setAttribute('stroke', 'var(--amber)');
+      dot.setAttribute('stroke-width', '2.5');
+      routeSvg.appendChild(dot);
+
+      const text = document.createElementNS(svgNs, 'text');
+      text.setAttribute('x', cx);
+      text.setAttribute('y', cx === 40 ? '70' : '70');
+      text.setAttribute('text-anchor', cx === 40 ? 'start' : 'end');
+      text.setAttribute('font-family', 'var(--font-body)');
+      text.setAttribute('font-size', '11');
+      text.setAttribute('fill', 'var(--text)');
+      text.textContent = truncate(label, 20);
+      routeSvg.appendChild(text);
+    });
+
+    if (midLabel) {
+      const midText = document.createElementNS(svgNs, 'text');
+      midText.setAttribute('x', '200'); midText.setAttribute('y', '28');
+      midText.setAttribute('text-anchor', 'middle');
+      midText.setAttribute('font-family', 'var(--font-mono)');
+      midText.setAttribute('font-size', '11');
+      midText.setAttribute('fill', 'var(--muted)');
+      midText.textContent = midLabel;
+      routeSvg.appendChild(midText);
+    }
+
+    if (isRT) {
+      const back = document.createElementNS(svgNs, 'path');
+      back.setAttribute('d', 'M 360 55 L 40 62');
+      back.setAttribute('stroke', 'var(--blue)');
+      back.setAttribute('stroke-width', '1.5');
+      back.setAttribute('stroke-dasharray', '1 5');
+      back.setAttribute('fill', 'none');
+      back.setAttribute('stroke-linecap', 'round');
+      routeSvg.appendChild(back);
+    }
+
+    routeOverview.hidden = false;
+  }
+
+  [journeyFromEl, journeyToEl].forEach((el) => el.addEventListener('input', () => { updateMapsLink(); drawRouteOverview(); }));
+  roundTrip.addEventListener('change', drawRouteOverview);
+  unitSystem.addEventListener('change', drawRouteOverview);
+
+  updateMapsLink();
+  drawRouteOverview();
+
+  updateUnitLabels();
+  calculate();
+
+  // --- AI trip lookup ---
+  const lookupBtn = $('lookupBtn');
+  const lookupStatus = $('lookupStatus');
+  const autoRegion = $('autoRegion');
+  const manualCurrencyRow = $('manualCurrencyRow');
+  const estimateTags = ['tagDistance', 'tagCons', 'tagFuelPrice', 'tagMaint', 'tagTyre', 'tagTolls'];
+
+  autoRegion.addEventListener('change', () => {
+    manualCurrencyRow.hidden = autoRegion.checked;
+  });
+
+  function setLookupStatus(msg, cls) {
+    lookupStatus.textContent = msg;
+    lookupStatus.className = 'lookup-status' + (cls ? ' ' + cls : '');
+  }
+
+  function clearEstimateTags() {
+    estimateTags.forEach((id) => { $(id).hidden = true; });
+  }
+
+  async function initLookup() {
+    let sample;
+    try {
+      sample = (typeof claude !== 'undefined' && claude.use) ? await claude.use('sample') : null;
+    } catch (e) {
+      sample = null;
+    }
+    if (!sample) {
+      lookupBtn.disabled = true;
+      setLookupStatus('AI lookup isn\u2019t available in this view \u2014 fill in the numbers below by hand.');
+      return;
+    }
+
+    lookupBtn.addEventListener('click', async () => {
+      const make = ($('vehMake').value || '').trim();
+      const model = ($('vehModel').value || '').trim();
+      const trim = ($('vehTrim').value || '').trim();
+      const year = ($('vehYear').value || '').trim();
+      const from = ($('journeyFrom').value || '').trim();
+      const to = ($('journeyTo').value || '').trim();
+      const isRoundTrip = roundTrip.checked;
+      const isAuto = autoRegion.checked;
+
+      if (!make || !model) {
+        setLookupStatus('Enter at least a make and model first.', 'err');
+        return;
+      }
+      if (!from || !to) {
+        setLookupStatus('Enter where the journey starts and ends.', 'err');
+        return;
+      }
+
+      lookupBtn.disabled = true;
+      setLookupStatus('Thinking\u2026');
+
+      const vehicleDesc = (year ? year + ' ' : '') + make + ' ' + model + (trim ? ' (' + trim + ')' : '');
+
+      let unitsInstruction, schemaExtra, metric, curr, distUnit;
+
+      if (isAuto) {
+        unitsInstruction = 'Pick whichever units and currency are natural for the region this journey is in ' +
+          '(e.g. km/litres/EUR or GBP for most of Europe, miles/gallons/USD for the United States, ' +
+          'km/litres/NZD for New Zealand, km/litres/AUD for Australia, and so on \u2014 use your judgement for anywhere else) ' +
+          'and state exactly what you picked in the reply.';
+        schemaExtra = [
+          '  "unitSystem": "metric" | "imperial",  // whichever you picked for this region',
+          '  "currencySymbol": string,        // e.g. "€", "$", "£", "NZ$", "A$" \u2014 whatever you picked',
+        ];
+      } else {
+        metric = unitSystem.value === 'metric';
+        curr = currencyInput.value || '€';
+        distUnit = metric ? 'km' : 'miles';
+        unitsInstruction = 'Use ' + (metric ? 'fuel consumption in L/100km, distances in km' : 'fuel economy in mpg, distances in miles') +
+          ', and price everything in ' + curr + '.';
+        schemaExtra = [];
+      }
+
+      const prompt = [
+        'You help estimate what a specific car journey will cost. Give realistic, ',
+        'typical-case figures (not best-case or worst-case) using your general ',
+        'geographic and automotive knowledge, and take the specific trim/engine into ',
+        'account if one is given \u2014 a hot hatch or diesel variant costs differently to run ',
+        'than a base petrol version of the same model. This is a rough planning estimate, ',
+        'not a routed calculation \u2014 make your best reasonable judgment.',
+        '\n\nVehicle: ' + vehicleDesc,
+        '\nJourney: from ' + from + ' to ' + to + (isRoundTrip ? ' and back (round trip)' : ' (one way)'),
+        '\n' + unitsInstruction,
+        '\n\nReply with ONLY a JSON object, no other text, in exactly this shape:',
+        '{',
+        ...schemaExtra,
+        '  "distance": number,              // driving distance for the journey above (already doubled if round trip)',
+        '  "fuelConsumption": number,       // fuel consumption typical for this exact trim',
+        '  "fuelPricePerUnit": number,      // typical fuel price for the region driven through',
+        '  "annualMaintenanceCost": number, // typical yearly servicing + repairs for this exact trim',
+        '  "annualDistance": number,        // assumed yearly distance this is based on',
+        '  "tyreSetCost": number,           // cost of a full set of 4 tyres sized for this trim',
+        '  "tyreLifespan": number,          // typical tyre life',
+        '  "estimatedTolls": number,        // likely road tolls / vignettes / ferries for this specific route (0 if unlikely to have any)',
+        '  "regionAssumed": string,         // the country/region you assumed for pricing norms',
+        '  "note": string                   // one short sentence on what drives the estimate (route character, trim-specific traits)',
+        '}'
+      ].join('');
+
+      try {
+        const data = await sample.json(prompt, { modelTier: 'default' });
+
+        if (isAuto) {
+          metric = data.unitSystem !== 'imperial';
+          unitSystem.value = metric ? 'metric' : 'imperial';
+          curr = typeof data.currencySymbol === 'string' && data.currencySymbol ? data.currencySymbol : currencyInput.value;
+          currencyInput.value = curr;
+          distUnit = metric ? 'km' : 'miles';
+          updateUnitLabels();
+        }
+
+        if (typeof data.distance === 'number') { distance.value = round(data.distance, 0); $('tagDistance').hidden = false; }
+        if (typeof data.fuelConsumption === 'number') { consumption.value = round(data.fuelConsumption, 1); $('tagCons').hidden = false; }
+        if (typeof data.fuelPricePerUnit === 'number') { fuelPrice.value = round(data.fuelPricePerUnit, 2); $('tagFuelPrice').hidden = false; }
+        if (typeof data.annualMaintenanceCost === 'number') { maintAnnual.value = round(data.annualMaintenanceCost, 0); $('tagMaint').hidden = false; }
+        if (typeof data.annualDistance === 'number') maintDistance.value = round(data.annualDistance, 0);
+        if (typeof data.tyreSetCost === 'number') { tyreSetCost.value = round(data.tyreSetCost, 0); $('tagTyre').hidden = false; }
+        if (typeof data.tyreLifespan === 'number') tyreLife.value = round(data.tyreLifespan, 0);
+        if (typeof data.estimatedTolls === 'number') { tolls.value = round(data.estimatedTolls, 0); $('tagTolls').hidden = false; }
+
+        const noteText = typeof data.note === 'string' ? ' ' + data.note : '';
+        setLookupStatus('Estimated ' + from + ' \u2192 ' + to + '.' + noteText, 'ok');
+        renderAssumptions({
+          distance: distance.value, distUnit,
+          region: typeof data.regionAssumed === 'string' ? data.regionAssumed : '',
+          tolls: tolls.value, curr,
+          currencyMode: isAuto ? 'auto-detected' : 'manual',
+          roundTrip: isRoundTrip
+        });
+        calculate();
+        drawRouteOverview();
+      } catch (e) {
+        clearEstimateTags();
+        $('assumptions').hidden = true;
+        const copy = {
+          not_granted: 'AI lookup declined \u2014 allow it to use this feature.',
+          rate_limited: 'Too many requests right now \u2014 try again shortly.',
+          refused: 'Couldn\u2019t produce an estimate for that input \u2014 check the vehicle and locations.',
+          invalid_json: 'Got an unreadable answer \u2014 try again.',
+          sampling_disabled: 'AI lookup isn\u2019t available on this account.',
+          upstream_error: 'Something went wrong \u2014 try again.'
+        };
+        setLookupStatus(copy[e.code] || ('Couldn\u2019t get an estimate (' + e.code + ').'), 'err');
+      } finally {
+        lookupBtn.disabled = false;
+      }
+    });
+  }
+
+  function renderAssumptions({ distance, distUnit, region, tolls, curr, currencyMode, roundTrip }) {
+    const box = $('assumptions');
+    box.innerHTML = '';
+    const rows = [
+      ['Distance used', distance + ' ' + distUnit + (roundTrip ? ' (round trip)' : ' (one way)')],
+      ['Region assumed', region || '\u2014'],
+      ['Currency & units', curr + ' / ' + distUnit + (currencyMode ? ' (' + currencyMode + ')' : '')],
+      ['Tolls assumed', curr + tolls]
+    ];
+    rows.forEach(([k, v]) => {
+      const row = document.createElement('div');
+      row.className = 'assumption-row';
+      const dt = document.createElement('dt');
+      dt.className = 'k';
+      dt.textContent = k + ':';
+      const dd = document.createElement('dd');
+      dd.textContent = v;
+      row.appendChild(dt);
+      row.appendChild(dd);
+      box.appendChild(row);
+    });
+    box.hidden = false;
+  }
+
+  function round(n, d) {
+    const f = Math.pow(10, d);
+    return Math.round(n * f) / f;
+  }
+
+  initLookup();
+
+  // manual edits clear the "AI est." tag for the field being changed
+  [
+    [distance, 'tagDistance'],
+    [consumption, 'tagCons'], [fuelPrice, 'tagFuelPrice'],
+    [maintAnnual, 'tagMaint'],
+    [tyreSetCost, 'tagTyre'],
+    [tolls, 'tagTolls']
+  ].forEach(([el, tagId]) => {
+    el.addEventListener('input', () => { $(tagId).hidden = true; });
+  });
+
+  // --- Save & share ---
+  const saveTripBtn = $('saveTripBtn');
+  const copyTripBtn = $('copyTripBtn');
+  const meterActionsStatus = $('meterActionsStatus');
+  const savedTripsPanel = $('savedTripsPanel');
+  const savedTripsList = $('savedTripsList');
+
+  function setMeterStatus(msg, cls) {
+    meterActionsStatus.textContent = msg;
+    meterActionsStatus.className = 'meter-actions-status' + (cls ? ' ' + cls : '');
+  }
+
+  function fieldSnapshot() {
+    return {
+      vehMake: $('vehMake').value, vehModel: $('vehModel').value, vehTrim: $('vehTrim').value, vehYear: $('vehYear').value,
+      journeyFrom: $('journeyFrom').value, journeyTo: $('journeyTo').value,
+      roundTrip: roundTrip.checked, autoRegion: autoRegion.checked,
+      unitSystem: unitSystem.value, currency: currencyInput.value,
+      distance: distance.value, consumption: consumption.value, fuelPrice: fuelPrice.value,
+      maintAnnual: maintAnnual.value, maintDistance: maintDistance.value,
+      tyreSetCost: tyreSetCost.value, tyreLife: tyreLife.value,
+      tolls: tolls.value, extras: extras.value,
+      totalDisplay: $('totalReadout').textContent
+    };
+  }
+
+  function applySnapshot(s) {
+    $('vehMake').value = s.vehMake || ''; $('vehModel').value = s.vehModel || ''; $('vehTrim').value = s.vehTrim || ''; $('vehYear').value = s.vehYear || '';
+    $('journeyFrom').value = s.journeyFrom || ''; $('journeyTo').value = s.journeyTo || '';
+    roundTrip.checked = !!s.roundTrip;
+    autoRegion.checked = s.autoRegion !== false;
+    manualCurrencyRow.hidden = autoRegion.checked;
+    unitSystem.value = s.unitSystem || 'metric'; currencyInput.value = s.currency || '€';
+    updateUnitLabels();
+    distance.value = s.distance || 0; consumption.value = s.consumption || 0; fuelPrice.value = s.fuelPrice || 0;
+    maintAnnual.value = s.maintAnnual || 0; maintDistance.value = s.maintDistance || 1;
+    tyreSetCost.value = s.tyreSetCost || 0; tyreLife.value = s.tyreLife || 1;
+    tolls.value = s.tolls || 0; extras.value = s.extras || 0;
+    clearEstimateTags();
+    $('assumptions').hidden = true;
+    calculate();
+    updateMapsLink();
+    drawRouteOverview();
+  }
+
+  function summaryText(s) {
+    const distU = s.unitSystem === 'metric' ? 'km' : 'mi';
+    return [
+      (s.vehYear ? s.vehYear + ' ' : '') + s.vehMake + ' ' + s.vehModel + (s.vehTrim ? ' (' + s.vehTrim + ')' : ''),
+      s.journeyFrom + ' \u2192 ' + s.journeyTo + (s.roundTrip ? ' (round trip)' : ''),
+      'Distance: ' + s.distance + ' ' + distU,
+      'Total estimated cost: ' + s.totalDisplay
+    ].join('\n');
+  }
+
+  let db = null;
+  (async () => {
+    try {
+      db = (typeof claude !== 'undefined' && claude.use) ? await claude.use('db') : null;
+    } catch (e) {
+      db = null;
+    }
+    if (!db) {
+      saveTripBtn.disabled = true;
+      return;
+    }
+    try {
+      db.collection('trips').orderBy('savedAt', 'desc').limit(20).onSnapshot(
+        (snap) => renderSavedTrips(snap.docs || []),
+        (err) => { /* silent: saved-trips list is a convenience, not core */ }
+      );
+    } catch (e) { /* ignore */ }
+  })();
+
+  function renderSavedTrips(docs) {
+    if (!docs.length) { savedTripsPanel.hidden = true; return; }
+    savedTripsPanel.hidden = false;
+    savedTripsList.innerHTML = '';
+    docs.forEach((d) => {
+      const data = d.data ? d.data() : d;
+      const row = document.createElement('div');
+      row.className = 'trip-row';
+
+      const info = document.createElement('div');
+      info.className = 'trip-info';
+      const route = document.createElement('div');
+      route.className = 'trip-route';
+      route.textContent = (data.vehYear ? data.vehYear + ' ' : '') + data.vehMake + ' ' + data.vehModel + (data.vehTrim ? ' (' + data.vehTrim + ')' : '') + ' \u2014 ' + data.journeyFrom + ' \u2192 ' + data.journeyTo;
+      const meta = document.createElement('div');
+      meta.className = 'trip-meta';
+      const when = data.savedAt ? new Date(data.savedAt).toLocaleDateString() : '';
+      meta.textContent = data.distance + (data.unitSystem === 'metric' ? ' km' : ' mi') + (data.roundTrip ? ' \u00b7 round trip' : '') + (when ? ' \u00b7 ' + when : '');
+      info.appendChild(route);
+      info.appendChild(meta);
+
+      const total = document.createElement('div');
+      total.className = 'trip-total';
+      total.textContent = data.totalDisplay || '';
+
+      const loadBtn = document.createElement('button');
+      loadBtn.className = 'trip-load';
+      loadBtn.type = 'button';
+      loadBtn.textContent = 'Load';
+      loadBtn.addEventListener('click', () => {
+        applySnapshot(data);
+        setMeterStatus('Loaded saved trip.', 'ok');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+
+      row.appendChild(info);
+      row.appendChild(total);
+      row.appendChild(loadBtn);
+      savedTripsList.appendChild(row);
+    });
+  }
+
+  saveTripBtn.addEventListener('click', async () => {
+    if (!db) return;
+    saveTripBtn.disabled = true;
+    setMeterStatus('Saving\u2026');
+    try {
+      const snap = fieldSnapshot();
+      snap.savedAt = Date.now();
+      await db.collection('trips').add(snap);
+      setMeterStatus('Saved \u2014 visible to anyone with this page open.', 'ok');
+    } catch (e) {
+      setMeterStatus('Couldn\u2019t save (' + (e.code || 'error') + ').', 'err');
+    } finally {
+      saveTripBtn.disabled = false;
+    }
+  });
+
+  copyTripBtn.addEventListener('click', async () => {
+    const text = summaryText(fieldSnapshot());
+    try {
+      await navigator.clipboard.writeText(text);
+      setMeterStatus('Summary copied \u2014 paste it anywhere to share.', 'ok');
+    } catch (e) {
+      setMeterStatus('Couldn\u2019t copy automatically \u2014 select and copy manually.', 'err');
+    }
+  });
+
+  // theme toggle
+  const themeToggle = $('themeToggle');
+  themeToggle.addEventListener('click', () => {
+    const root = document.documentElement;
+    const current = root.getAttribute('data-theme');
+    if (current === 'dark') {
+      root.setAttribute('data-theme', 'light');
+    } else if (current === 'light') {
+      root.removeAttribute('data-theme');
+    } else {
+      root.setAttribute('data-theme', 'dark');
+    }
+  });
+})();
+</script>
 </body>
 </html>
