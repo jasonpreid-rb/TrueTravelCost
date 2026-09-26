@@ -499,7 +499,7 @@
       <img src="/truetravelcost-elephant-logo.png" alt="TrueTravelCost" class="site-logo">
       <div>
         <h1>Route cost</h1>
-        <p>Work out what a drive actually costs — fuel, wear on the car, tyres, and whatever the road charges you along the way.</p>
+        <p>See what a drive really costs — fuel, wear on the car, tyres, tolls — so you can weigh it against the train, a flight, or claiming it back from work.</p>
       </div>
     </div>
     <button class="theme-toggle" id="themeToggle" type="button">dark / light</button>
@@ -593,13 +593,14 @@
             </div>
           </div>
 
-          <button class="lookup-btn" id="lookupBtn" type="button">Calculate trip cost</button>
+          <button class="lookup-btn" id="lookupBtn" type="button">Auto-fill with AI (optional)</button>
+          <p class="hint" style="margin-top:8px;">The total below is live from whatever's in <em>Fine-tune the numbers</em> — this button just fills those in for you. Skip it and edit them yourself any time.</p>
           <div class="lookup-status" id="lookupStatus"></div>
           <dl class="assumptions" id="assumptions" hidden></dl>
         </div>
       </section>
 
-      <details class="fine-tune">
+      <details class="fine-tune" id="fineTuneDetails">
         <summary>Fine-tune the numbers</summary>
         <div class="fine-tune-body">
 
@@ -1335,17 +1336,20 @@
         clearEstimateTags();
         $('assumptions').hidden = true;
         const copy = {
-          not_granted: 'AI lookup declined \u2014 allow it to use this feature.',
-          rate_limited: 'Too many requests right now \u2014 try again shortly.',
-          refused: 'Couldn\u2019t produce an estimate for that input \u2014 check the vehicle and locations.',
-          invalid_json: 'Got an unreadable answer \u2014 try again.',
-          sampling_disabled: 'AI lookup isn\u2019t available on this account.',
-          upstream_error: 'Something went wrong talking to the AI backend \u2014 try again.',
-          network_error: 'Couldn\u2019t reach the AI backend \u2014 check your connection and try again.',
-          server_misconfigured: 'The AI backend isn\u2019t configured yet (missing API key on the server).',
-          bad_request: 'Something was wrong with that request \u2014 try again.'
+          not_granted: 'AI lookup declined \u2014 allow it to use this feature, or fill in the numbers yourself below.',
+          rate_limited: 'Too many requests right now \u2014 try again shortly, or fill in the numbers yourself below.',
+          refused: 'Couldn\u2019t produce an estimate for that input \u2014 check the vehicle and locations, or fill in the numbers yourself below.',
+          invalid_json: 'Got an unreadable answer \u2014 try again, or fill in the numbers yourself below.',
+          sampling_disabled: 'AI lookup isn\u2019t available on this account \u2014 fill in the numbers yourself below instead.',
+          upstream_error: 'AI lookup isn\u2019t available right now \u2014 fill in the numbers yourself below instead.',
+          network_error: 'Couldn\u2019t reach the AI backend \u2014 check your connection, or fill in the numbers yourself below.',
+          server_misconfigured: 'AI lookup isn\u2019t set up yet \u2014 fill in the numbers yourself below instead.',
+          bad_request: 'Something was wrong with that request \u2014 try again, or fill in the numbers yourself below.'
         };
-        setLookupStatus(copy[e.code] || ('Couldn\u2019t get an estimate (' + e.code + ').'), 'err');
+        setLookupStatus(copy[e.code] || ('Couldn\u2019t get an estimate \u2014 fill in the numbers yourself below instead.'), 'err');
+        const fineTune = $('fineTuneDetails');
+        fineTune.open = true;
+        fineTune.scrollIntoView({ behavior: 'smooth', block: 'start' });
       } finally {
         lookupBtn.disabled = false;
       }
