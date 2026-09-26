@@ -795,39 +795,131 @@
     <option value="Genesis"><option value="Polestar"><option value="Rivian"><option value="Lucid">
   </datalist>
 
-  <datalist id="vehModelList">
-    <option value="Golf"><option value="Polo"><option value="Passat"><option value="Tiguan"><option value="ID.4">
-    <option value="Corolla"><option value="Camry"><option value="RAV4"><option value="Yaris"><option value="Hilux">
-    <option value="Focus"><option value="Fiesta"><option value="Mustang"><option value="Explorer"><option value="F-150">
-    <option value="3 Series"><option value="5 Series"><option value="X3"><option value="X5">
-    <option value="C-Class"><option value="E-Class"><option value="A-Class"><option value="GLC">
-    <option value="A3"><option value="A4"><option value="A6"><option value="Q5">
-    <option value="Civic"><option value="Accord"><option value="CR-V">
-    <option value="Elantra"><option value="Tucson"><option value="Santa Fe">
-    <option value="Sportage"><option value="Sorento"><option value="Rio">
-    <option value="Qashqai"><option value="Juke"><option value="X-Trail">
-    <option value="CX-5"><option value="Mazda3"><option value="Outback"><option value="Forester">
-    <option value="XC60"><option value="XC90">
-    <option value="208"><option value="308"><option value="2008">
-    <option value="Clio"><option value="Mégane"><option value="Captur">
-    <option value="Corsa"><option value="Astra">
-    <option value="Octavia"><option value="Fabia"><option value="Kodiaq">
-    <option value="Ibiza"><option value="Leon"><option value="Arona">
-    <option value="500"><option value="Panda">
-    <option value="C3"><option value="C4">
-    <option value="Cruze"><option value="Model 3"><option value="Model Y"><option value="Model S">
-    <option value="Macan"><option value="Cayenne">
-    <option value="Cherokee"><option value="Range Rover"><option value="Discovery">
-    <option value="Cooper"><option value="Swift"><option value="Vitara">
-    <option value="Outlander"><option value="ASX">
-    <option value="IS"><option value="RX"><option value="F-Type"><option value="XE">
-    <option value="Duster"><option value="Sandero">
-    <option value="Giulia"><option value="Stelvio">
-    <option value="300"><option value="Charger">
-    <option value="Sierra"><option value="Enclave"><option value="Escalade">
-    <option value="Q50"><option value="MDX"><option value="G70">
-    <option value="i3"><option value="i4"><option value="Taycan"><option value="R1T"><option value="Air">
-  </datalist>
+  <datalist id="vehModelList"></datalist>
+
+  <script>
+    (function () {
+      // Fallback list only — used if the live NHTSA lookup fails or is unavailable (offline, network error, no match).
+      var fallbackModelsByMake = {
+        'Volkswagen': ['Golf','Polo','Passat','Tiguan','Touareg','ID.3','ID.4','T-Roc','Arteon','Jetta','T-Cross'],
+        'Toyota': ['Corolla','Camry','RAV4','Yaris','Hilux','Land Cruiser','Prius','C-HR','Highlander','Supra','Aygo'],
+        'Ford': ['Focus','Fiesta','Mustang','Explorer','F-150','Ranger','Puma','Kuga','Edge','Mustang Mach-E'],
+        'BMW': ['1 Series','2 Series','3 Series','4 Series','5 Series','7 Series','8 Series','X1','X2','X3','X4','X5','X6','X7','M2','M3','M4','M5','M8','i4','i7','iX'],
+        'Mercedes-Benz': ['A-Class','B-Class','C-Class','E-Class','S-Class','CLA','CLS','GLA','GLB','GLC','GLE','GLS','AMG GT','G-Class'],
+        'Audi': ['A1','A3','A4','A5','A6','A7','A8','Q2','Q3','Q4 e-tron','Q5','Q7','Q8','TT','RS3','RS6','e-tron'],
+        'Honda': ['Civic','Accord','CR-V','HR-V','Jazz','Pilot','Type R','e:Ny1'],
+        'Hyundai': ['i10','i20','i30','Elantra','Tucson','Santa Fe','Kona','Ioniq 5','Bayon'],
+        'Kia': ['Rio','Ceed','Sportage','Sorento','Picanto','Stonic','EV6','Niro'],
+        'Nissan': ['Micra','Qashqai','Juke','X-Trail','Leaf','370Z','GT-R','Ariya'],
+        'Mazda': ['Mazda2','Mazda3','Mazda6','CX-3','CX-5','CX-30','CX-60','MX-5'],
+        'Subaru': ['Impreza','Outback','Forester','XV','WRX','BRZ','Crosstrek'],
+        'Volvo': ['S60','S90','V60','V90','XC40','XC60','XC90','EX30'],
+        'Peugeot': ['108','208','308','2008','3008','5008','408'],
+        'Renault': ['Clio','Mégane','Captur','Kadjar','Zoe','Twingo','Austral'],
+        'Opel': ['Corsa','Astra','Insignia','Mokka','Crossland','Grandland'],
+        'Škoda': ['Fabia','Octavia','Superb','Kodiaq','Karoq','Scala','Enyaq'],
+        'SEAT': ['Ibiza','Leon','Arona','Ateca','Tarraco'],
+        'Fiat': ['500','Panda','Tipo','500X','600'],
+        'Citroën': ['C1','C3','C4','C5 Aircross','Berlingo','Ami'],
+        'Chevrolet': ['Cruze','Malibu','Camaro','Corvette','Silverado','Equinox'],
+        'Tesla': ['Model 3','Model S','Model X','Model Y'],
+        'Porsche': ['911','718 Cayman','718 Boxster','Macan','Cayenne','Panamera','Taycan'],
+        'Jeep': ['Renegade','Compass','Cherokee','Grand Cherokee','Wrangler','Avenger'],
+        'Land Rover': ['Range Rover','Range Rover Sport','Range Rover Evoque','Range Rover Velar','Discovery','Discovery Sport','Defender'],
+        'Mini': ['Cooper','Clubman','Countryman','Aceman'],
+        'Suzuki': ['Swift','Vitara','Ignis','S-Cross','Jimny'],
+        'Mitsubishi': ['ASX','Outlander','Eclipse Cross','Colt'],
+        'Lexus': ['IS','ES','RX','NX','UX','LS','LC'],
+        'Jaguar': ['XE','XF','F-Type','F-Pace','E-Pace','I-Pace'],
+        'Dacia': ['Sandero','Duster','Jogger','Spring'],
+        'Alfa Romeo': ['Giulia','Stelvio','Tonale'],
+        'Chrysler': ['300','Pacifica'],
+        'Dodge': ['Charger','Challenger','Durango'],
+        'GMC': ['Sierra','Yukon','Acadia','Terrain'],
+        'Buick': ['Enclave','Encore','Envision'],
+        'Cadillac': ['Escalade','CT5','XT5','Lyriq'],
+        'Lincoln': ['Continental','Navigator','Aviator','Corsair'],
+        'Infiniti': ['Q50','QX60','QX55'],
+        'Acura': ['MDX','RDX','TLX','Integra'],
+        'Genesis': ['G70','G80','GV70','GV80'],
+        'Polestar': ['2','3','4'],
+        'Rivian': ['R1T','R1S'],
+        'Lucid': ['Air','Gravity']
+      };
+      var fallbackModels = Object.keys(fallbackModelsByMake).reduce(function (acc, make) {
+        return acc.concat(fallbackModelsByMake[make]);
+      }, []);
+
+      var vehMakeEl = document.getElementById('vehMake');
+      var vehModelListEl = document.getElementById('vehModelList');
+
+      function setModelOptions(models) {
+        vehModelListEl.innerHTML = models.map(function (m) {
+          return '<option value="' + String(m).replace(/"/g, '&quot;') + '">';
+        }).join('');
+      }
+
+      function findFallbackKey(typed) {
+        var t = typed.trim().toLowerCase();
+        if (!t) return null;
+        var keys = Object.keys(fallbackModelsByMake);
+        for (var i = 0; i < keys.length; i++) {
+          if (keys[i].toLowerCase() === t) return keys[i];
+        }
+        return null;
+      }
+
+      function applyFallback(typedMake) {
+        var key = findFallbackKey(typedMake);
+        setModelOptions(key ? fallbackModelsByMake[key] : fallbackModels);
+      }
+
+      var debounceTimer = null;
+      var lastRequestedMake = null;
+
+      function fetchModelsForMake(make) {
+        var trimmed = make.trim();
+        if (trimmed.length < 2) { setModelOptions(fallbackModels); return; }
+        lastRequestedMake = trimmed;
+        fetch('https://vpic.nhtsa.dot.gov/api/vehicles/GetModelsForMake/' + encodeURIComponent(trimmed) + '?format=json')
+          .then(function (res) {
+            if (!res.ok) throw new Error('vPIC request failed');
+            return res.json();
+          })
+          .then(function (data) {
+            if (lastRequestedMake !== trimmed) return; // a newer keystroke superseded this request
+            var names = (data.Results || [])
+              .map(function (r) { return r.Model_Name; })
+              .filter(Boolean);
+            names = Array.from(new Set(names)).sort();
+            if (names.length) {
+              setModelOptions(names);
+            } else {
+              applyFallback(trimmed);
+            }
+          })
+          .catch(function () {
+            if (lastRequestedMake === trimmed) applyFallback(trimmed);
+          });
+      }
+
+      function scheduleFetch() {
+        clearTimeout(debounceTimer);
+        var make = vehMakeEl.value;
+        debounceTimer = setTimeout(function () { fetchModelsForMake(make); }, 350);
+      }
+
+      vehMakeEl.addEventListener('input', scheduleFetch);
+      vehMakeEl.addEventListener('change', function () {
+        clearTimeout(debounceTimer);
+        fetchModelsForMake(vehMakeEl.value);
+      });
+
+      // populate for whatever Make is pre-filled on load
+      fetchModelsForMake(vehMakeEl.value);
+    })();
+  </script>
+
 
   <datalist id="destinationsList">
     <option value="Munich, Germany"><option value="Salzburg, Austria"><option value="Berlin, Germany">
