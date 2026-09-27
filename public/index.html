@@ -533,7 +533,8 @@
             <div>
               <label for="fuelType1">Runs on</label>
               <select id="fuelType1" class="unit-select">
-                <option value="liquid">Petrol / diesel</option>
+                <option value="petrol">Petrol</option>
+                <option value="diesel">Diesel</option>
                 <option value="hybrid">Hybrid</option>
                 <option value="electric">Electric</option>
               </select>
@@ -624,7 +625,8 @@
             <div>
               <label for="fuelType2">Runs on</label>
               <select id="fuelType2" class="unit-select">
-                <option value="liquid">Petrol / diesel</option>
+                <option value="petrol">Petrol</option>
+                <option value="diesel">Diesel</option>
                 <option value="hybrid">Hybrid</option>
                 <option value="electric">Electric</option>
               </select>
@@ -715,7 +717,8 @@
             <div>
               <label for="fuelType3">Runs on</label>
               <select id="fuelType3" class="unit-select">
-                <option value="liquid">Petrol / diesel</option>
+                <option value="petrol">Petrol</option>
+                <option value="diesel">Diesel</option>
                 <option value="hybrid">Hybrid</option>
                 <option value="electric" selected>Electric</option>
               </select>
@@ -829,7 +832,8 @@
   </section>
 
   <footer class="legend">
-    Figures are estimates based on what you enter — actual costs vary with driving conditions, vehicle condition, and local prices. Not tax or legal advice on mileage reimbursement — check your local rules (e.g. IRS standard mileage rate, HMRC AMAP) for statutory figures.
+    Figures are estimates based on what you enter — actual costs vary with driving conditions, vehicle condition, and local prices. Not tax or legal advice on mileage reimbursement — check your local rules (e.g. IRS standard mileage rate, HMRC AMAP) for statutory figures.<br>
+    European fuel prices: <a href="https://www.fuel-prices.eu/" target="_blank" rel="noopener" style="color:inherit;">fuel-prices.eu</a>, based on the EU Commission Weekly Oil Bulletin (CC BY 4.0).
   </footer>
 
   <datalist id="vehModelHelperList">
@@ -921,6 +925,7 @@
   var exactEvModels = ['ix', 'i4', 'i7', 'id.3', 'id.4', 'id.5', 'id.7', 'ev6', 'ev9', 'taycan', 'ariya', 'zoe', 'leaf', 'bolt', 'inster', 'model 3', 'model s', 'model x', 'model y', 'e-golf'];
   var substrEvModels = ['e-tron', 'ioniq', 'enyaq', 'electric', 'e:ny1', 'eqs', 'eqe', 'eqa', 'eqb', 'niro ev', 'kona electric', 'e-2008', 'ami'];
   var hybridKeywords = ['hybrid', 'phev', 'plug-in', 'plug in', 'gte', 'e-hybrid', 'recharge', 'prius', 'crz', 'cr-z'];
+  var dieselKeywords = ['tdi', 'hdi', 'cdti', 'crdi', 'dci', 'bluetec', 'cdi', 'd4d', 'dtec', 'multijet', 'jtd', 'diesel', 'bluehdi', 'skyactiv-d'];
   function isLikelyElectric(make, model) {
     var m = (make || '').trim().toLowerCase();
     var mo = (model || '').trim().toLowerCase();
@@ -934,10 +939,16 @@
     if (!text.trim()) return false;
     return hybridKeywords.some(function (k) { return text.indexOf(k) !== -1; });
   }
+  function isLikelyDiesel(make, model, trim) {
+    var text = [make, model, trim].map(function (s) { return (s || '').trim().toLowerCase(); }).join(' ');
+    if (!text.trim()) return false;
+    return dieselKeywords.some(function (k) { return text.indexOf(k) !== -1; });
+  }
   function classifyFuelType(make, model, trim) {
     if (isLikelyElectric(make, model)) return 'electric';
     if (isLikelyHybrid(make, model, trim)) return 'hybrid';
-    return 'liquid';
+    if (isLikelyDiesel(make, model, trim)) return 'diesel';
+    return 'petrol';
   }
 
   var vehModelListEl = document.getElementById('vehModelList');
@@ -1017,6 +1028,12 @@
           ? { consumption: 4.8, consUnit: 'L/100km', priceUnit: '/L', price: 1.75 }
           : { consumption: 50, consUnit: 'mpg', priceUnit: '/gal', price: 6.60 };
       }
+      if (fuelType === 'diesel') {
+        return metric
+          ? { consumption: 6.0, consUnit: 'L/100km', priceUnit: '/L', price: 1.68 }
+          : { consumption: 39, mpg: 39, consUnit: 'mpg', priceUnit: '/gal', price: 6.35 };
+      }
+      // petrol (also the fallback for any legacy 'liquid' value in old saved trips)
       return metric
         ? { consumption: 7.5, consUnit: 'L/100km', priceUnit: '/L', price: 1.75 }
         : { consumption: 32, consUnit: 'mpg', priceUnit: '/gal', price: 6.60 };
@@ -1272,6 +1289,7 @@
       if (!userEdited[i].consumption) v.consumption.value = d.consumption;
       if (!userEdited[i].fuelPrice) v.fuelPrice.value = d.price;
       v.tagCons.hidden = true; v.tagFuelPrice.hidden = true;
+      applyLiveFuelPriceToVehicle(i); // prefer the real live price over the static default, if we have one
       updateUnitLabels();
       calculate();
     }
@@ -1342,6 +1360,29 @@
       if (wasMetric !== region.metric) onUnitSystemChange(); else { updateUnitLabels(); calculate(); }
     }
 
+    // ---- live fuel price (fuel-prices.eu, EU Commission Weekly Oil Bulletin) ----
+    var lastFuelPriceData = null;
+    function applyLiveFuelPriceToVehicle(i) {
+      if (!lastFuelPriceData || !autoRegion.checked || currencyInput.value !== '\u20ac') return false;
+      var v = veh(i);
+      var ft = v.fuelType.value;
+      if (ft === 'electric') return false;
+      if (userEdited[i].fuelPrice) return false;
+      var price = (ft === 'diesel') ? lastFuelPriceData.diesel : lastFuelPriceData.petrol;
+      if (!price) return false;
+      v.fuelPrice.value = round(price, 2);
+      v.tagFuelPrice.dataset.source = 'live';
+      v.tagFuelPrice.innerHTML = '<a href="https://www.fuel-prices.eu/" target="_blank" rel="noopener" style="color:inherit; text-decoration:underline;">Live \u00b7 fuel-prices.eu</a>';
+      v.tagFuelPrice.hidden = false;
+      return true;
+    }
+    function applyLiveFuelPrice(fuelPrice) {
+      lastFuelPriceData = fuelPrice;
+      if (!fuelPrice) return;
+      VEH.forEach(applyLiveFuelPriceToVehicle);
+      calculate();
+    }
+
     // ---- live route distance ----
     var lastRouteKm = null;
     function applyRouteDistance() {
@@ -1373,6 +1414,7 @@
               lastRouteKm = data.distanceKm;
               applyRegionFromCountry(data.fromCountry);
               applyRouteDistance();
+              applyLiveFuelPrice(data.fuelPrice);
               setLocationChecks(true);
             } else {
               setLocationChecks(false);
@@ -1489,8 +1531,8 @@
                 currencyMode: isAuto ? 'auto-detected' : 'manual', roundTrip: isRoundTrip
               });
             }
-            if (typeof data.fuelConsumption === 'number') { v.consumption.value = round(data.fuelConsumption, 1); v.tagCons.hidden = false; }
-            if (typeof data.fuelPricePerUnit === 'number') { v.fuelPrice.value = round(data.fuelPricePerUnit, 2); v.tagFuelPrice.hidden = false; }
+            if (typeof data.fuelConsumption === 'number') { v.consumption.value = round(data.fuelConsumption, 1); v.tagCons.dataset.source = 'ai'; v.tagCons.textContent = 'AI est.'; v.tagCons.hidden = false; }
+            if (typeof data.fuelPricePerUnit === 'number') { v.fuelPrice.value = round(data.fuelPricePerUnit, 2); v.tagFuelPrice.dataset.source = 'ai'; v.tagFuelPrice.textContent = 'AI est.'; v.tagFuelPrice.hidden = false; }
             if (typeof data.annualMaintenanceCost === 'number') { v.maintAnnual.value = round(data.annualMaintenanceCost, 0); v.tagMaint.dataset.source = 'ai'; v.tagMaint.textContent = 'AI est.'; v.tagMaint.hidden = false; }
             if (typeof data.annualDistance === 'number') v.maintDistance.value = round(data.annualDistance, 0);
             if (typeof data.tyreSetCost === 'number') { v.tyreSetCost.value = round(data.tyreSetCost, 0); v.tagTyre.dataset.source = 'ai'; v.tagTyre.textContent = 'AI est.'; v.tagTyre.hidden = false; }
@@ -1629,7 +1671,7 @@
       list.slice(0, MAX_VEH).forEach(function (data, idx) {
         var i = VEH[idx], v = veh(i);
         v.make.value = data.make || ''; v.model.value = data.model || ''; v.trim.value = data.trim || ''; v.year.value = data.year || '';
-        v.fuelType.value = data.fuelType || 'liquid';
+        v.fuelType.value = (data.fuelType === 'liquid' ? 'petrol' : data.fuelType) || 'petrol'; // 'liquid' = legacy saved trips before the petrol/diesel split
         v.consumption.value = data.consumption || 0; v.fuelPrice.value = data.fuelPrice || 0;
         v.maintAnnual.value = data.maintAnnual || 0; v.maintDistance.value = data.maintDistance || 1;
         v.tyreSetCost.value = data.tyreSetCost || 0; v.tyreLife.value = data.tyreLife || 1;
