@@ -400,14 +400,14 @@
             <div>
               <label for="journeyFrom">From</label>
               <div class="num-input">
-                <input type="text" id="journeyFrom" value="Munich, Germany" list="destinationsList" autocomplete="off" class="text-left">
+                <input type="text" id="journeyFrom" value="" placeholder="e.g. Munich, Germany" list="destinationsList" autocomplete="off" class="text-left">
                 <span class="location-check" id="journeyFromCheck" hidden title="Location recognized">&#10003;</span>
               </div>
             </div>
             <div>
               <label for="journeyTo">To</label>
               <div class="num-input">
-                <input type="text" id="journeyTo" value="Salzburg, Austria" list="destinationsList" autocomplete="off" class="text-left">
+                <input type="text" id="journeyTo" value="" placeholder="e.g. Salzburg, Austria" list="destinationsList" autocomplete="off" class="text-left">
                 <span class="location-check" id="journeyToCheck" hidden title="Location recognized">&#10003;</span>
               </div>
             </div>
@@ -427,7 +427,7 @@
             <div>
               <label for="distance">Distance<span class="estimated-tag" id="tagDistance" hidden>Live route</span></label>
               <div class="num-input">
-                <input type="number" id="distance" value="500" min="0" step="1">
+                <input type="number" id="distance" list="distanceHelperList" value="500" min="0" step="1">
                 <span class="unit" id="distUnitLabel">km</span>
               </div>
             </div>
@@ -447,7 +447,7 @@
           <div class="row two" id="manualCurrencyRow" hidden>
             <div>
               <label for="currency">Currency symbol</label>
-              <div class="num-input"><input type="text" id="currency" value="€" maxlength="3" class="text-left"></div>
+              <div class="num-input"><input type="text" id="currency" list="currencyHelperList" value="€" maxlength="3" class="text-left"></div>
             </div>
           </div>
 
@@ -521,11 +521,11 @@
           <div class="row two">
             <div>
               <label for="vehTrim1">Trim / engine <span style="color:var(--muted);">(optional — helps detect hybrid/electric)</span></label>
-              <div class="num-input"><input type="text" id="vehTrim1" value="" placeholder="e.g. GTI, TDI" class="text-left"></div>
+              <div class="num-input"><input type="text" id="vehTrim1" list="trimHelperList" value="" placeholder="e.g. GTI, TDI" class="text-left"></div>
             </div>
             <div>
               <label for="vehYear1">Year</label>
-              <div class="num-input"><input type="number" id="vehYear1" value="2021" min="1980" max="2027" step="1"></div>
+              <div class="num-input"><input type="number" id="vehYear1" list="yearHelperList" value="2021" min="1980" max="2027" step="1"></div>
             </div>
           </div>
           <hr class="div">
@@ -567,7 +567,7 @@
             <div>
               <label for="maintDistance1" id="maintDistLabel1">Annual distance</label>
               <div class="num-input">
-                <input type="number" id="maintDistance1" value="15000" min="1" step="100">
+                <input type="number" id="maintDistance1" list="maintDistanceHelperList" value="15000" min="1" step="100">
                 <span class="unit" id="maintDistUnitLabel1">km</span>
               </div>
             </div>
@@ -583,7 +583,7 @@
             <div>
               <label for="tyreLife1" id="tyreLifeLabel1">Tyre lifespan</label>
               <div class="num-input">
-                <input type="number" id="tyreLife1" value="40000" min="1" step="1000">
+                <input type="number" id="tyreLife1" list="tyreLifeHelperList" value="40000" min="1" step="1000">
                 <span class="unit" id="tyreLifeUnitLabel1">km</span>
               </div>
             </div>
@@ -613,11 +613,11 @@
           <div class="row two">
             <div>
               <label for="vehTrim2">Trim / engine <span style="color:var(--muted);">(optional — helps detect hybrid/electric)</span></label>
-              <div class="num-input"><input type="text" id="vehTrim2" value="" placeholder="e.g. Hybrid" class="text-left"></div>
+              <div class="num-input"><input type="text" id="vehTrim2" list="trimHelperList" value="" placeholder="e.g. Hybrid" class="text-left"></div>
             </div>
             <div>
               <label for="vehYear2">Year</label>
-              <div class="num-input"><input type="number" id="vehYear2" value="2021" min="1980" max="2027" step="1"></div>
+              <div class="num-input"><input type="number" id="vehYear2" list="yearHelperList" value="2021" min="1980" max="2027" step="1"></div>
             </div>
           </div>
           <hr class="div">
@@ -659,7 +659,7 @@
             <div>
               <label for="maintDistance2" id="maintDistLabel2">Annual distance</label>
               <div class="num-input">
-                <input type="number" id="maintDistance2" value="15000" min="1" step="100">
+                <input type="number" id="maintDistance2" list="maintDistanceHelperList" value="15000" min="1" step="100">
                 <span class="unit" id="maintDistUnitLabel2">km</span>
               </div>
             </div>
@@ -675,7 +675,7 @@
             <div>
               <label for="tyreLife2" id="tyreLifeLabel2">Tyre lifespan</label>
               <div class="num-input">
-                <input type="number" id="tyreLife2" value="45000" min="1" step="1000">
+                <input type="number" id="tyreLife2" list="tyreLifeHelperList" value="45000" min="1" step="1000">
                 <span class="unit" id="tyreLifeUnitLabel2">km</span>
               </div>
             </div>
@@ -705,11 +705,11 @@
           <div class="row two">
             <div>
               <label for="vehTrim3">Trim / engine <span style="color:var(--muted);">(optional — helps detect hybrid/electric)</span></label>
-              <div class="num-input"><input type="text" id="vehTrim3" value="" placeholder="e.g. Long Range" class="text-left"></div>
+              <div class="num-input"><input type="text" id="vehTrim3" list="trimHelperList" value="" placeholder="e.g. Long Range" class="text-left"></div>
             </div>
             <div>
               <label for="vehYear3">Year</label>
-              <div class="num-input"><input type="number" id="vehYear3" value="2022" min="1980" max="2027" step="1"></div>
+              <div class="num-input"><input type="number" id="vehYear3" list="yearHelperList" value="2022" min="1980" max="2027" step="1"></div>
             </div>
           </div>
           <hr class="div">
@@ -751,7 +751,7 @@
             <div>
               <label for="maintDistance3" id="maintDistLabel3">Annual distance</label>
               <div class="num-input">
-                <input type="number" id="maintDistance3" value="15000" min="1" step="100">
+                <input type="number" id="maintDistance3" list="maintDistanceHelperList" value="15000" min="1" step="100">
                 <span class="unit" id="maintDistUnitLabel3">km</span>
               </div>
             </div>
@@ -767,7 +767,7 @@
             <div>
               <label for="tyreLife3" id="tyreLifeLabel3">Tyre lifespan</label>
               <div class="num-input">
-                <input type="number" id="tyreLife3" value="30000" min="1" step="1000">
+                <input type="number" id="tyreLife3" list="tyreLifeHelperList" value="30000" min="1" step="1000">
                 <span class="unit" id="tyreLifeUnitLabel3">km</span>
               </div>
             </div>
@@ -852,6 +852,39 @@
     <option value="Rolls-Royce"><option value="Maserati"><option value="McLaren"><option value="Bugatti">
   </datalist>
   <datalist id="vehModelList"></datalist>
+
+  <datalist id="distanceHelperList"></datalist>
+  <datalist id="maintDistanceHelperList"></datalist>
+  <datalist id="tyreLifeHelperList"></datalist>
+
+  <datalist id="trimHelperList">
+    <option value="Base"><option value="S"><option value="SE"><option value="SEL"><option value="SL">
+    <option value="Sport"><option value="Sport Line"><option value="Premium"><option value="Limited">
+    <option value="Touring"><option value="Titanium"><option value="Platinum"><option value="Executive">
+    <option value="Comfort"><option value="Elegance"><option value="Style"><option value="Design">
+    <option value="GT"><option value="GTI"><option value="GTD"><option value="GTE"><option value="GTS">
+    <option value="TSI"><option value="TDI"><option value="TFSI"><option value="Turbo"><option value="T-GDi">
+    <option value="Hybrid"><option value="Plug-in Hybrid"><option value="Mild Hybrid"><option value="Long Range">
+    <option value="Performance"><option value="RS"><option value="ST"><option value="N Line"><option value="R-Line">
+    <option value="M Sport"><option value="AMG Line"><option value="S Line"><option value="Type S">
+    <option value="AWD"><option value="4WD"><option value="4MATIC"><option value="Quattro"><option value="xDrive">
+  </datalist>
+
+  <datalist id="yearHelperList">
+    <option value="2027"><option value="2026"><option value="2025"><option value="2024"><option value="2023">
+    <option value="2022"><option value="2021"><option value="2020"><option value="2019"><option value="2018">
+    <option value="2017"><option value="2016"><option value="2015"><option value="2014"><option value="2013">
+    <option value="2012"><option value="2011"><option value="2010">
+  </datalist>
+
+  <datalist id="currencyHelperList">
+    <option value="€"><option value="$"><option value="£"><option value="¥"><option value="A$">
+    <option value="C$"><option value="NZ$"><option value="CHF"><option value="kr"><option value="zł">
+    <option value="Kč"><option value="Ft"><option value="₹"><option value="R"><option value="R$">
+    <option value="₩"><option value="S$"><option value="HK$"><option value="₺"><option value="₴">
+    <option value="Rp"><option value="RM"><option value="฿"><option value="₱"><option value="₦">
+    <option value="د.إ"><option value="MX$">
+  </datalist>
 
   <datalist id="destinationsList">
     <option value="Munich, Germany"><option value="Salzburg, Austria"><option value="Vienna, Austria">
@@ -1046,6 +1079,10 @@
     }
 
     // ---- unit labels ----
+    function setDatalistOptions(id, values) {
+      $(id).innerHTML = values.map(function (v) { return '<option value="' + v + '">'; }).join('');
+    }
+
     function updateUnitLabels() {
       var metric = unitSystem.value === 'metric';
       var distU = metric ? 'km' : 'mi';
@@ -1055,6 +1092,10 @@
       $('tollsCurrencyLabel').textContent = curr;
       $('extrasCurrencyLabel').textContent = curr;
       reimbRateUnitLabel.textContent = curr + '/' + distU;
+
+      setDatalistOptions('distanceHelperList', metric ? [50,100,250,500,750,1000,1500,2000] : [30,60,150,300,500,750,1000,1500]);
+      setDatalistOptions('maintDistanceHelperList', metric ? [8000,10000,12000,15000,20000,25000,30000] : [5000,7500,10000,12000,15000,18000,20000]);
+      setDatalistOptions('tyreLifeHelperList', metric ? [20000,25000,30000,35000,40000,45000,50000,60000] : [12000,15000,20000,25000,30000,35000,40000]);
 
       for (var idx = 0; idx < activeCount; idx++) {
         var i = VEH[idx];
