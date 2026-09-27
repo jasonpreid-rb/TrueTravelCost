@@ -413,6 +413,8 @@
             </div>
           </div>
 
+          <p class="lookup-status" id="routeStatus"></p>
+
           <div class="row single" style="margin-bottom: 12px;">
             <a href="#" id="mapsLink" target="_blank" rel="noopener" class="maps-link">Open this route in Google Maps ↗</a>
           </div>
@@ -457,7 +459,7 @@
             <div>
               <label for="tolls">Road tolls / ferries<span class="estimated-tag" id="tagTolls" hidden>AI est.</span></label>
               <div class="num-input">
-                <input type="number" id="tolls" value="18" min="0" step="1">
+                <input type="number" id="tolls" value="0" min="0" step="1">
                 <span class="unit" id="tollsCurrencyLabel">€</span>
               </div>
             </div>
@@ -1477,8 +1479,10 @@
     function scheduleRouteFetch() {
       var from = journeyFromEl.value.trim(), to = journeyToEl.value.trim();
       setLocationChecks(false);
+      setStatus($('routeStatus'), '', '');
       if (!from || !to) return;
       clearTimeout(routeDebounce);
+      setStatus($('routeStatus'), 'Planning route\u2026', '');
       routeDebounce = setTimeout(function () {
         fetch('/api/route', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ from: from, to: to }) })
           .then(function (res) { return res.ok ? res.json() : null; })
@@ -1489,11 +1493,17 @@
               applyRouteDistance();
               applyLiveFuelPrice(data.fuelPrice);
               setLocationChecks(true);
+              setStatus($('routeStatus'), '', '');
             } else {
               setLocationChecks(false);
+              setStatus($('routeStatus'), '', '');
             }
           })
-          .catch(function () { setLocationChecks(false); /* offline: leave existing distance as-is */ });
+          .catch(function () {
+            setLocationChecks(false);
+            setStatus($('routeStatus'), '', '');
+            /* offline: leave existing distance as-is */
+          });
       }, 600);
     }
     [journeyFromEl, journeyToEl].forEach(function (el) { el.addEventListener('input', scheduleRouteFetch); });
