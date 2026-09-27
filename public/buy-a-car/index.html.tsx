@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Thinking of Buying a Car? Calculate the True Cost | TrueTravelCost</title>
+
+<meta
+name="description"
+content="Thinking of buying a car? Compare the real cost of owning and using a vehicle, including fuel, maintenance, tyres, depreciation and everyday travel."
+
+>
+
+  <link rel="canonical" href="https://truetravelcost.com/buy-a-car/">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap"
+    rel="stylesheet"
+  >
+
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+
+  <header class="top">
+
+```
+<a href="/" class="brand" aria-label="TrueTravelCost home">
+
+  <img
+  src="/truetravelcost-elephant-logo.png"
+  alt="TrueTravelCost"
+  class="site-logo"
+>
+
+  <div class="wordmark-block">
+    <div class="wordmark">TrueTravelCost</div>
+    <div class="tagline">The real cost of getting there.</div>
+    <div class="motto">Compute · Compare · Commute</div>
+  </div>
+
+</a>
+
+<nav class="top-nav" aria-label="Main navigation">
+  <a href="/">Calculator</a>
+  <a href="/buy-a-car/">Buy a Car</a>
+  <a href="/trips-and-commutes/">Trips & Commutes</a>
+  <a href="/how-it-works/">How It Works</a>
+  <a href="/vehicle-running-costs/">Running Costs</a>
+  <a href="/example-report/">Example Report</a>
+  <a href="/methodology/">Methodology</a>
+</nav>
+```
+
+  </header>
+
+  <div class="wrap">
+
+```
+<main>
+
+  <section class="page-hero">
+
+    <p class="eyebrow">Vehicle ownership</p>
+
+    <h1>Thinking of buying a car?</h1>
+
+    <p class="lead">
+      The price on the windscreen is only the beginning. Understand what a
+      vehicle could really cost to own and drive before you make your decision.
+    </p>
+
+  </section>
+
+
+  <div class="content">
+
+    <section>
+
+      <h2>What does a car really cost?</h2>
+
+      <p>
+        Buying a car is usually treated as a single purchase price. But the
+        financial cost continues every time the vehicle is driven.
+      </p>
+
+      <p>
+        Fuel or electricity, servicing, tyres, repairs, vehicle wear and
+        depreciation can all contribute to the real cost of owning and using
+        a vehicle.
+      </p>
+
+      <div class="highlight">
+        <p>
+          <strong>The purchase price doesn't tell the whole story.</strong>
+          The way you use a vehicle can have a major effect on its overall cost.
+        </p>
+      </div>
+
+    </section>
+
+
+    <section>
+
+      <h2>Compare cars based on how you actually drive</h2>
+
+      <p>
+        A vehicle that looks inexpensive to run on paper may produce a very
+        different result once your annual mileage, commute and typical journeys
+        are taken into account.
+      </p>
+
+      <div class="feature-grid">
+
+        <article class="feature">
+          <div class="feature-number">01 / FUEL</div>
+          <h3>Fuel or electricity</h3>
+          <p>
+            Estimate the energy required to cover your typical distance and
+            the associated running cost.
+          </p>
+        </article>
+
+        <article class="feature">
+          <div class="feature-number">02 / MAINTENANCE</div>
+          <h3>Servicing & repairs</h3>
+          <p>
+            Account for the ongoing maintenance that comes with putting
+            kilometres on a vehicle.
+          </p>
+        </article>
+
+        <article class="feature">
+          <div class="feature-number">03 / TYRES</div>
+          <h3>Tyres & wear</h3>
+          <p>
+            Tyres and other wear-related costs can become significant over
+            higher annual mileages.
+          </p>
+        </article>
+
+        <article class="feature">
+          <div class="feature-number">04 / VALUE</div>
+          <h3>Depreciation</h3>
+          <p>
+            Consider the loss in vehicle value rather than looking only at
+            the money spent at the fuel pump.
+          </p>
+        </article>
+
+      </div>
+
+    </section>
+
+
+    <section>
+
+      <h2>What about depreciation?</h2>
+
+      <p>
+        Depreciation is often one of the largest costs associated with vehicle
+        ownership, yet it doesn't appear on a typical fuel-cost calculation.
+      </p>
+
+      <p>
+        A vehicle can lose value because of age, mileage, condition, market
+        demand and changes in the used-car market.
+      </p>
+
+      <p>
+        This means two cars with similar fuel consumption can have very
+        different overall ownership costs.
+      </p>
+
+    </section>
+
+
+    <section>
+
+      <h2>Your commute can change the calculation</h2>
+
+      <p>
+        Consider two vehicles that both cost €25,000 to purchase. If one costs
+        significantly more to operate over your annual driving distance, the
+        difference can accumulate quickly.
+      </p>
+
+      <p>
+        A daily commute is particularly important because a relatively small
+        difference in cost per kilometre can become hundreds or thousands of
+        euros over a year.
+      </p>
+
+      <div class="formula">
+        Annual distance × estimated cost per kilometre
+        = estimated annual travel cost
+      </div>
+
+    </section>
+
+
+    <section>
+
+      <h2>Compare before you buy</h2>
+
+      <p>
+        TrueTravelCost can be used to explore questions such as:
+      </p>
+
+      <ul>
+        <li>Petrol vs diesel</li>
+        <li>Petrol vs hybrid</li>
+        <li>Hybrid vs electric</li>
+        <li>Small car vs SUV</li>
+        <li>New vs used</li>
+        <li>Low-mileage vs high-mileage vehicles</li>
+      </ul>
+
+      <p>
+        The objective isn't simply to find the vehicle with the lowest fuel
+        consumption. It is to understand how different vehicles could affect
+        your total cost of travel.
+      </p>
+
+    </section>
+
+
+    <section>
+
+      <h2>Don't just ask "How much does it cost to buy?"</h2>
+
+      <p>
+        A better question can be:
+      </p>
+
+      <div class="panel">
+
+        <p>
+          <strong>
+            "What will this vehicle actually cost me to own and drive?"
+          </strong>
+        </p>
+
+        <p>
+          That can include the cost of purchasing the vehicle, using it,
+          maintaining it and eventually losing value as it ages.
+        </p>
+
+      </div>
+
+    </section>
+
+
+    <section class="cta">
+
+      <h2>Calculate the true cost of your journey</h2>
+
+      <p>
+        Enter your journey and vehicle details to start estimating what your
+        driving really costs.
+      </p>
+
+      <a class="button" href="/">
+        Open the TrueTravelCost Calculator
+      </a>
+
+    </section>
+
+
+    <section>
+
+      <h2>Explore TrueTravelCost</h2>
+
+      <ul>
+        <li>
+          <a href="/trips-and-commutes/">
+            One-Off Trips & Daily Commutes
+          </a>
+        </li>
+
+        <li>
+          <a href="/vehicle-running-costs/">
+            Vehicle Running Costs
+          </a>
+        </li>
+
+        <li>
+          <a href="/how-it-works/">
+            How TrueTravelCost Works
+          </a>
+        </li>
+
+        <li>
+          <a href="/example-report/">
+            Example Comprehensive Report
+          </a>
+        </li>
+
+        <li>
+          <a href="/methodology/">
+            TrueTravelCost Methodology
+          </a>
+        </li>
+      </ul>
+
+    </section>
+
+  </div>
+
+</main>
+```
+
+  </div>
+
+  <footer>
+
+```
+<div class="footer-links">
+  <a href="/">Calculator</a>
+  <a href="/buy-a-car/">Buy a Car</a>
+  <a href="/trips-and-commutes/">Trips & Commutes</a>
+  <a href="/how-it-works/">How It Works</a>
+  <a href="/vehicle-running-costs/">Running Costs</a>
+  <a href="/example-report/">Example Report</a>
+  <a href="/methodology/">Methodology</a>
+</div>
+
+<p>
+  TrueTravelCost provides estimates for informational purposes.
+  Actual vehicle and journey costs will vary.
+</p>
+```
+
+  </footer>
+
+</body>
+</html>

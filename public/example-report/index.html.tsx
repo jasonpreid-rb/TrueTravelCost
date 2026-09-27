@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Example Comprehensive Travel Cost Report | TrueTravelCost</title>
+  <meta name="description" content="See an example of a comprehensive TrueTravelCost report showing the estimated real cost of a journey, including fuel, maintenance, tyres, depreciation and tolls.">
+  <link rel="canonical" href="https://truetravelcost.com/example-report/">
+</head>
+
+<body>
+
+  <header>
+    <nav>
+      <a href="/">TrueTravelCost</a>
+      <a href="/buy-a-car/">Buying a Car</a>
+      <a href="/trips-and-commutes/">Trips & Commutes</a>
+      <a href="/how-it-works/">How It Works</a>
+      <a href="/vehicle-running-costs/">Vehicle Costs</a>
+      <a href="/example-report/">Example Report</a>
+      <a href="/methodology/">Methodology</a>
+    </nav>
+  </header>
+
+  <main>
+
+```
+<section>
+  <h1>Example Comprehensive Report</h1>
+
+  <p>
+    What if you could see the complete estimated cost of a journey rather
+    than just the fuel bill?
+  </p>
+
+  <p>
+    A comprehensive TrueTravelCost report brings the journey, vehicle and
+    estimated costs together in one detailed report.
+  </p>
+
+  <p>
+    The report below is an example using fictional figures to demonstrate
+    the type of information that can be presented.
+  </p>
+</section>
+
+<section>
+  <h2>Journey Overview</h2>
+
+  <p>
+    <strong>Route:</strong> Munich → Milan
+  </p>
+
+  <p>
+    <strong>Example vehicle:</strong> BMW 320d
+  </p>
+
+  <p>
+    <strong>Example distance:</strong> 493 km
+  </p>
+
+  <p>
+    <strong>Journey type:</strong> One-way
+  </p>
+
+  <p>
+    <strong>All figures on this page are illustrative.</strong>
+  </p>
+</section>
+
+<section>
+  <h2>Estimated True Travel Cost</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Cost</th>
+        <th>Estimated amount</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Fuel</td>
+        <td>€52.40</td>
+      </tr>
+      <tr>
+        <td>Tolls</td>
+        <td>€48.00</td>
+      </tr>
+      <tr>
+        <td>Maintenance</td>
+        <td>€31.60</td>
+      </tr>
+      <tr>
+        <td>Tyres</td>
+        <td>€12.80</td>
+      </tr>
+      <tr>
+        <td>Depreciation / vehicle wear</td>
+        <td>€67.50</td>
+      </tr>
+      <tr>
+        <th>Total estimated journey cost</th>
+        <th>€212.30</th>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>
+    <strong>Estimated cost per kilometre: €0.43</strong>
+  </p>
+</section>
+
+<section>
+  <h2>Fuel Cost vs True Travel Cost</h2>
+
+  <p>
+    The example journey has an estimated fuel cost of €52.40.
+  </p>
+
+  <p>
+    Looking only at fuel would therefore suggest that the journey costs
+    around €52.
+  </p>
+
+  <p>
+    When the other estimated costs are considered, the total rises to
+    approximately €212.
+  </p>
+
+  <p>
+    This illustrates the central idea behind TrueTravelCost:
+    <strong>the cost of travelling isn't necessarily the same as the cost
+    of fuel.</strong>
+  </p>
+</section>
+
+<section>
+  <h2>Cost Breakdown</h2>
+
+  <h3>Fuel — €52.40</h3>
+
+  <p>
+    The estimated fuel requirement for the journey based on the example
+    vehicle's consumption and assumed fuel price.
+  </p>
+
+  <h3>Tolls — €48.00</h3>
+
+  <p>
+    Example route-related toll costs.
+  </p>
+
+  <h3>Maintenance — €31.60</h3>
+
+  <p>
+    An estimated allocation of vehicle maintenance costs based on
+    kilometres travelled.
+  </p>
+
+  <h3>Tyres — €12.80</h3>
+
+  <p>
+    An estimated contribution towards tyre wear and replacement.
+  </p>
+
+  <h3>Depreciation and vehicle wear — €67.50</h3>
+
+  <p>
+    An illustrative estimate representing the effect of vehicle use and
+    mileage on the broader cost of ownership.
+  </p>
+</section>
+
+<section>
+  <h2>What if this wasn't a one-off trip?</h2>
+
+  <p>
+    The same journey can look very different when repeated regularly.
+  </p>
+
+  <p>
+    Imagine making a similar 493-kilometre journey every month.
+  </p>
+
+  <p>
+    At an illustrative €212.30 per journey, twelve journeys would represent
+    approximately €2,547.60 of annual travel cost.
+  </p>
+
+  <p>
+    The actual result would depend on the vehicle, route, prices and
+    frequency of travel.
+  </p>
+
+  <p>
+    <a href="/trips-and-commutes/">Explore one-off trips and daily commutes →</a>
+  </p>
+</section>
+
+<section>
+  <h2>What a comprehensive report could include</h2>
+
+  <p>
+    A full report can bring together significantly more information than a
+    simple journey calculation.
+  </p>
+
+  <ul>
+    <li>Journey overview</li>
+    <li>Route and distance</li>
+    <li>Vehicle information</li>
+    <li>Fuel or energy consumption</li>
+    <li>Fuel or electricity cost</li>
+    <li>Tolls and journey charges</li>
+    <li>Maintenance estimates</li>
+    <li>Tyre costs</li>
+    <li>Vehicle wear</li>
+    <li>Depreciation estimates</li>
+    <li>Total estimated travel cost</li>
+    <li>Cost per kilometre</li>
+    <li>Round-trip calculations</li>
+    <li>Annualised costs for regular journeys</li>
+    <li>Calculation assumptions</li>
+    <li>Methodology and data information</li>
+  </ul>
+</section>
+
+<section>
+  <h2>Useful when you're making a decision</h2>
+
+  <p>
+    A detailed travel cost report isn't only useful after you've decided
+    where to drive.
+  </p>
+
+  <p>
+    It can also help when you're comparing vehicles, considering a new
+    commute or trying to understand the financial impact of regular
+    driving.
+  </p>
+
+  <p>
+    <a href="/buy-a-car/">Thinking of buying a car? →</a>
+  </p>
+</section>
+
+<section>
+  <h2>Important: estimates are not guarantees</h2>
+
+  <p>
+    Vehicle costs vary from driver to driver and from vehicle to vehicle.
+  </p>
+
+  <p>
+    Fuel consumption can change with traffic, weather, speed and driving
+    style. Maintenance and tyre costs vary. Future depreciation cannot be
+    known with certainty.
+  </p>
+
+  <p>
+    A TrueTravelCost report therefore represents an estimate based on the
+    available information and stated assumptions.
+  </p>
+
+  <p>
+    <a href="/methodology/">Read the TrueTravelCost methodology →</a>
+  </p>
+</section>
+
+<section>
+  <h2>Want to calculate your own journey?</h2>
+
+  <p>
+    Start with the free TrueTravelCost calculator.
+  </p>
+
+  <p>
+    <a href="/">Calculate your true travel cost →</a>
+  </p>
+</section>
+
+<section>
+  <h2>Explore TrueTravelCost</h2>
+
+  <ul>
+    <li><a href="/">Travel Cost Calculator</a></li>
+    <li><a href="/buy-a-car/">Thinking of Buying a Car?</a></li>
+    <li><a href="/trips-and-commutes/">One-Off Trips & Daily Commutes</a></li>
+    <li><a href="/how-it-works/">How TrueTravelCost Works</a></li>
+    <li><a href="/vehicle-running-costs/">Vehicle Running Costs</a></li>
+    <li><a href="/methodology/">Our Methodology</a></li>
+  </ul>
+</section>
+```
+
+  </main>
+
+</body>
+</html>

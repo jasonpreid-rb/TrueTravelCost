@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculate One-Off Trips & Daily Commutes | TrueTravelCost</title>
+  <meta name="description" content="Calculate the true cost of one-off road trips, regular journeys and daily commutes. Go beyond fuel to estimate the wider cost of driving.">
+  <link rel="canonical" href="https://truetravelcost.com/trips-and-commutes/">
+</head>
+
+<body>
+
+  <header>
+    <nav>
+      <a href="/">TrueTravelCost</a>
+      <a href="/buy-a-car/">Buying a Car</a>
+      <a href="/trips-and-commutes/">Trips & Commutes</a>
+      <a href="/how-it-works/">How It Works</a>
+      <a href="/vehicle-running-costs/">Vehicle Costs</a>
+      <a href="/example-report/">Example Report</a>
+      <a href="/methodology/">Methodology</a>
+    </nav>
+  </header>
+
+  <main>
+
+```
+<section>
+  <h1>One-off trips and daily commutes</h1>
+
+  <p>
+    Not every journey is the same.
+  </p>
+
+  <p>
+    You might drive hundreds of kilometres for a holiday once a year, or
+    make the same 40-kilometre journey every working day.
+  </p>
+
+  <p>
+    TrueTravelCost helps you understand the cost of both.
+  </p>
+
+  <p>
+    <a href="/">Calculate your journey</a>
+  </p>
+</section>
+
+<section>
+  <h2>Calculate the cost of a one-off trip</h2>
+
+  <p>
+    Planning a road trip, visiting family, travelling to an airport or
+    simply driving somewhere for the day?
+  </p>
+
+  <p>
+    A fuel calculator can tell you approximately how much fuel you'll use.
+    But the fuel bill isn't necessarily the complete cost of making the
+    journey.
+  </p>
+
+  <p>
+    Depending on the vehicle and route, the wider cost can include fuel,
+    maintenance, tyres, wear, depreciation and tolls.
+  </p>
+
+  <p>
+    TrueTravelCost brings these factors together to provide an estimated
+    overall journey cost.
+  </p>
+</section>
+
+<section>
+  <h2>What does your commute really cost?</h2>
+
+  <p>
+    Daily commuting is where small costs can become much more significant.
+  </p>
+
+  <p>
+    Imagine your journey costs an estimated €18 each way.
+  </p>
+
+  <p>
+    One journey doesn't necessarily sound significant. But if that journey
+    is repeated every working day, the annual figure becomes much larger.
+  </p>
+
+  <p>
+    For example:
+  </p>
+
+  <ul>
+    <li>€18 per journey</li>
+    <li>€36 per day for a return trip</li>
+    <li>€180 per five-day working week</li>
+    <li>€3,960 over 220 working days</li>
+  </ul>
+
+  <p>
+    The exact cost will depend on your vehicle, route, prices and
+    assumptions, but the principle is important: <strong>frequency matters.</strong>
+  </p>
+</section>
+
+<section>
+  <h2>From one journey to a year of driving</h2>
+
+  <p>
+    TrueTravelCost can help you look at travel at different scales.
+  </p>
+
+  <ul>
+    <li><strong>One journey</strong> — What does this trip cost?</li>
+    <li><strong>Daily</strong> — What does my regular travel cost each day?</li>
+    <li><strong>Weekly</strong> — What does my routine cost over a week?</li>
+    <li><strong>Monthly</strong> — What does that add up to?</li>
+    <li><strong>Annual</strong> — What could my driving cost over a year?</li>
+  </ul>
+
+  <p>
+    This can be particularly useful when looking at commuting, regular
+    business travel or high-mileage driving.
+  </p>
+</section>
+
+<section>
+  <h2>Fuel isn't the whole story</h2>
+
+  <p>
+    If your car uses 7 litres of fuel per 100 kilometres, that tells you
+    something important about its energy consumption.
+  </p>
+
+  <p>
+    It doesn't tell you everything about what those 100 kilometres cost.
+  </p>
+
+  <p>
+    Every kilometre also contributes to the use of tyres, maintenance and
+    other vehicle-related costs. The vehicle may also lose value as mileage
+    increases.
+  </p>
+
+  <p>
+    That's the reason behind TrueTravelCost: to look beyond the fuel pump
+    and consider the broader cost of travelling by car.
+  </p>
+
+  <p>
+    <a href="/vehicle-running-costs/">Learn about vehicle running costs</a>
+  </p>
+</section>
+
+<section>
+  <h2>Useful for more than commuting</h2>
+
+  <p>
+    The same approach can be used for many different types of journey.
+  </p>
+
+  <ul>
+    <li>Daily work commutes</li>
+    <li>School runs</li>
+    <li>Airport transfers</li>
+    <li>Weekend trips</li>
+    <li>Holiday road trips</li>
+    <li>Regular family journeys</li>
+    <li>Business travel</li>
+    <li>Long-distance visits</li>
+  </ul>
+</section>
+
+<section>
+  <h2>Planning a journey?</h2>
+
+  <p>
+    Enter your route and vehicle into the TrueTravelCost calculator to
+    estimate what your journey could really cost.
+  </p>
+
+  <p>
+    <a href="/">Calculate your true travel cost →</a>
+  </p>
+</section>
+
+<section>
+  <h2>Explore TrueTravelCost</h2>
+
+  <ul>
+    <li><a href="/buy-a-car/">Thinking of Buying a Car?</a></li>
+    <li><a href="/how-it-works/">How TrueTravelCost Works</a></li>
+    <li><a href="/vehicle-running-costs/">Vehicle Running Costs</a></li>
+    <li><a href="/example-report/">View an Example Comprehensive Report</a></li>
+    <li><a href="/methodology/">Our Methodology</a></li>
+  </ul>
+</section>
+```
+
+  </main>
+
+</body>
+</html>

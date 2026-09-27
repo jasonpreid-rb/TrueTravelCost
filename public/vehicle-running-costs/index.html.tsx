@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vehicle Running Costs: What Does a Car Really Cost? | TrueTravelCost</title>
+  <meta name="description" content="What does a car really cost to run? Learn about fuel, maintenance, tyres, depreciation, wear and other vehicle running costs with TrueTravelCost.">
+  <link rel="canonical" href="https://truetravelcost.com/vehicle-running-costs/">
+</head>
+
+<body>
+
+  <header>
+    <nav>
+      <a href="/">TrueTravelCost</a>
+      <a href="/buy-a-car/">Buying a Car</a>
+      <a href="/trips-and-commutes/">Trips & Commutes</a>
+      <a href="/how-it-works/">How It Works</a>
+      <a href="/vehicle-running-costs/">Vehicle Costs</a>
+      <a href="/example-report/">Example Report</a>
+      <a href="/methodology/">Methodology</a>
+    </nav>
+  </header>
+
+  <main>
+
+```
+<section>
+  <h1>Vehicle running costs: what does a car really cost?</h1>
+
+  <p>
+    The cost of driving isn't simply the amount you spend at the fuel pump.
+  </p>
+
+  <p>
+    Every kilometre you drive uses fuel or electricity and contributes to
+    the ongoing cost of maintaining, wearing and eventually replacing your
+    vehicle.
+  </p>
+
+  <p>
+    Understanding these costs can give you a much clearer picture of what
+    your car actually costs to use.
+  </p>
+
+  <p>
+    <a href="/">Calculate your true travel cost →</a>
+  </p>
+</section>
+
+<section>
+  <h2>What are vehicle running costs?</h2>
+
+  <p>
+    Vehicle running costs are the expenses associated with operating and
+    maintaining a vehicle.
+  </p>
+
+  <p>
+    Some are obvious and occur regularly. Others are less visible but can
+    still represent a significant part of the overall cost of ownership.
+  </p>
+
+  <p>
+    Depending on the vehicle and the calculation, running costs can include
+    energy, maintenance, tyres, wear and depreciation.
+  </p>
+</section>
+
+<section>
+  <h2>Fuel and electricity</h2>
+
+  <p>
+    Energy is usually the most visible cost of driving.
+  </p>
+
+  <p>
+    For petrol and diesel vehicles, consumption is commonly expressed as
+    litres per 100 kilometres. Electric vehicles use electricity rather
+    than liquid fuel, with consumption commonly expressed in kWh per
+    100 kilometres.
+  </p>
+
+  <p>
+    The actual cost depends on consumption, distance travelled and the
+    price you pay for your energy.
+  </p>
+</section>
+
+<section>
+  <h2>Maintenance and servicing</h2>
+
+  <p>
+    Cars require ongoing maintenance throughout their lives.
+  </p>
+
+  <p>
+    Servicing, inspections, fluids, brakes and other maintenance work all
+    contribute to the cost of keeping a vehicle operating.
+  </p>
+
+  <p>
+    These expenses don't necessarily appear on every journey, but they are
+    associated with the kilometres the vehicle travels.
+  </p>
+</section>
+
+<section>
+  <h2>Tyres</h2>
+
+  <p>
+    Tyres are another cost directly connected to vehicle use.
+  </p>
+
+  <p>
+    The rate at which tyres wear depends on factors including the vehicle,
+    tyre type, driving style, road conditions and mileage.
+  </p>
+
+  <p>
+    Because tyres eventually need replacing, their expected cost can be
+    considered when estimating the cost of travelling each kilometre.
+  </p>
+</section>
+
+<section>
+  <h2>Vehicle wear</h2>
+
+  <p>
+    Vehicles contain many components that experience wear as they are used.
+  </p>
+
+  <p>
+    Not all of that wear can be attributed precisely to a single journey.
+    However, higher mileage generally means greater use of the vehicle and
+    can contribute to maintenance and replacement costs over its lifetime.
+  </p>
+
+  <p>
+    TrueTravelCost can therefore consider vehicle wear as part of a broader
+    estimate rather than treating fuel as the only cost of driving.
+  </p>
+</section>
+
+<section>
+  <h2>Depreciation</h2>
+
+  <p>
+    Depreciation is the reduction in a vehicle's value over time.
+  </p>
+
+  <p>
+    It can be influenced by age, mileage, condition, specification, market
+    demand and many other factors.
+  </p>
+
+  <p>
+    Unlike fuel, depreciation isn't something you pay at the end of every
+    journey. But it can represent a substantial cost of owning a vehicle.
+  </p>
+
+  <p>
+    For this reason, anyone trying to understand the true cost of vehicle
+    ownership should consider depreciation as well as day-to-day expenses.
+  </p>
+</section>
+
+<section>
+  <h2>Cost per kilometre</h2>
+
+  <p>
+    One useful way to understand vehicle running costs is to look at the
+    estimated cost per kilometre.
+  </p>
+
+  <p>
+    For example, if a vehicle costs an estimated €0.40 per kilometre to
+    operate, a 500-kilometre journey would represent approximately €200 of
+    vehicle-related travel cost before considering any costs outside the
+    calculation.
+  </p>
+
+  <p>
+    The figure can then be used to understand the cost of longer journeys,
+    regular commuting and annual driving.
+  </p>
+</section>
+
+<section>
+  <h2>Why fuel-only calculations can be misleading</h2>
+
+  <p>
+    A fuel-only calculation can be useful when you simply want to know how
+    much fuel a journey will consume.
+  </p>
+
+  <p>
+    But if you're trying to understand the financial impact of driving, it
+    leaves out several other costs associated with using the vehicle.
+  </p>
+
+  <p>
+    That's the distinction TrueTravelCost is designed to make.
+  </p>
+
+  <blockquote>
+    <strong>
+      Fuel cost tells you what you spend on fuel.
+      True travel cost looks at the wider cost of making the journey.
+    </strong>
+  </blockquote>
+</section>
+
+<section>
+  <h2>Vehicle running costs depend on how you drive</h2>
+
+  <p>
+    There isn't one universal running cost for every driver.
+  </p>
+
+  <p>
+    A vehicle driven 5,000 kilometres per year will have a different cost
+    profile from the same vehicle driven 30,000 kilometres.
+  </p>
+
+  <p>
+    City driving, motorway driving, short journeys, long journeys and
+    different driving conditions can also affect actual costs.
+  </p>
+
+  <p>
+    That's why a useful calculation needs to consider both the vehicle and
+    the journeys being made.
+  </p>
+</section>
+
+<section>
+  <h2>Thinking about buying a car?</h2>
+
+  <p>
+    Running costs can be an important part of comparing vehicles before
+    making a purchase.
+  </p>
+
+  <p>
+    The purchase price is only one part of the financial picture. The cost
+    of using the vehicle over several years can also be significant.
+  </p>
+
+  <p>
+    <a href="/buy-a-car/">Thinking of buying a car? →</a>
+  </p>
+</section>
+
+<section>
+  <h2>Calculate your true travel cost</h2>
+
+  <p>
+    Enter your journey and vehicle to see an estimate based on the
+    information available.
+  </p>
+
+  <p>
+    <a href="/">Use the TrueTravelCost calculator →</a>
+  </p>
+</section>
+
+<section>
+  <h2>Explore TrueTravelCost</h2>
+
+  <ul>
+    <li><a href="/buy-a-car/">Thinking of Buying a Car?</a></li>
+    <li><a href="/trips-and-commutes/">One-Off Trips & Daily Commutes</a></li>
+    <li><a href="/how-it-works/">How TrueTravelCost Works</a></li>
+    <li><a href="/example-report/">Example Comprehensive Report</a></li>
+    <li><a href="/methodology/">Our Methodology</a></li>
+  </ul>
+</section>
+```
+
+  </main>
+
+</body>
+</html>

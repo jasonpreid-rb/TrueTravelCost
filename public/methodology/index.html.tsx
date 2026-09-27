@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>TrueTravelCost Methodology | How Travel Costs Are Calculated</title>
+
+<meta
+name="description"
+content="Learn how TrueTravelCost estimates the true cost of driving, including fuel, maintenance, tyres, vehicle wear, depreciation and journey costs."
+
+>
+
+  <link rel="canonical" href="https://truetravelcost.com/methodology/">
+</head>
+
+<body>
+
+  <header>
+    <nav>
+      <a href="/">TrueTravelCost</a> |
+      <a href="/buy-a-car/">Thinking of Buying a Car?</a> |
+      <a href="/trips-and-commutes/">Trips & Commutes</a> |
+      <a href="/how-it-works/">How It Works</a> |
+      <a href="/vehicle-running-costs/">Vehicle Running Costs</a> |
+      <a href="/example-report/">Example Report</a> |
+      <a href="/methodology/">Methodology</a>
+    </nav>
+  </header>
+
+  <main>
+
+```
+<h1>TrueTravelCost Methodology</h1>
+
+<p>
+  TrueTravelCost is designed to estimate the real cost of travelling by vehicle,
+  rather than looking at fuel or electricity alone.
+</p>
+
+<p>
+  Our calculations combine journey information with vehicle-related costs to
+  provide a broader estimate of what a journey actually costs.
+</p>
+
+<h2>What does TrueTravelCost calculate?</h2>
+
+<p>
+  Depending on the information available for a journey and vehicle, the
+  calculation can include:
+</p>
+
+<ul>
+  <li>Fuel or electricity</li>
+  <li>Maintenance and servicing</li>
+  <li>Tyres</li>
+  <li>Vehicle wear</li>
+  <li>Depreciation</li>
+  <li>Tolls and other journey charges</li>
+</ul>
+
+<p>
+  The aim is to move beyond a simple fuel-cost calculation and provide a more
+  realistic estimate of the overall cost associated with travelling a given
+  distance.
+</p>
+
+<h2>1. Journey distance</h2>
+
+<p>
+  The calculation begins with the journey itself. Distance is an important
+  foundation because many vehicle costs increase as the vehicle is driven.
+</p>
+
+<p>
+  Where route information is available, the calculated journey distance can
+  be used as the basis for estimating the costs associated with the trip.
+</p>
+
+<h2>2. Fuel and electricity</h2>
+
+<p>
+  Fuel or electricity costs are estimated using the vehicle's expected
+  consumption and the relevant energy price.
+</p>
+
+<p>
+  For a combustion vehicle, the basic calculation is based on the relationship
+  between distance, fuel consumption and fuel price.
+</p>
+
+<p>
+  For an electric vehicle, the equivalent calculation can use estimated
+  electricity consumption and the applicable electricity cost.
+</p>
+
+<p>
+  Actual consumption can vary considerably depending on driving style,
+  traffic, weather, temperature, vehicle load, speed and road conditions.
+</p>
+
+<h2>3. Maintenance and servicing</h2>
+
+<p>
+  Vehicles require servicing and maintenance throughout their lives.
+  These costs are not normally visible when calculating the fuel cost of a
+  journey, but they are part of the cost of operating a vehicle.
+</p>
+
+<p>
+  TrueTravelCost can estimate a portion of these costs based on vehicle
+  characteristics, expected maintenance requirements and distance travelled.
+</p>
+
+<p>
+  Actual maintenance costs vary according to vehicle age, mileage, condition,
+  manufacturer, workshop prices and individual repair requirements.
+</p>
+
+<h2>4. Tyres</h2>
+
+<p>
+  Tyres are another distance-related vehicle cost.
+</p>
+
+<p>
+  A tyre-cost estimate can be calculated by considering the expected cost of
+  tyres and their approximate useful distance.
+</p>
+
+<p>
+  Tyre life varies depending on the vehicle, tyre type, driving style, road
+  conditions, alignment, weather and other factors.
+</p>
+
+<h2>5. Vehicle wear</h2>
+
+<p>
+  Driving contributes to the gradual wear of a vehicle's components.
+  Brakes, suspension components, drivetrain components and other parts can
+  eventually require replacement or repair.
+</p>
+
+<p>
+  These costs are difficult to assign precisely to a single journey.
+  TrueTravelCost therefore treats them as estimated costs rather than
+  guaranteed expenses.
+</p>
+
+<h2>6. Depreciation</h2>
+
+<p>
+  Depreciation represents the reduction in a vehicle's value over time.
+  Mileage can also contribute to depreciation because higher mileage can
+  affect the market value of a vehicle.
+</p>
+
+<p>
+  Depreciation is one of the most significant costs that can be overlooked
+  when people calculate the cost of driving.
+</p>
+
+<p>
+  Estimating depreciation is inherently less precise than calculating fuel
+  consumption because vehicle values are influenced by factors such as age,
+  mileage, condition, specification, market demand and the wider used-car
+  market.
+</p>
+
+<h2>7. Tolls and journey charges</h2>
+
+<p>
+  Some journeys involve costs that are directly associated with the route,
+  such as toll roads, bridges, tunnels, congestion charges or other travel
+  charges.
+</p>
+
+<p>
+  Where reliable route and pricing information is available, these costs can
+  be incorporated into the overall journey calculation.
+</p>
+
+<h2>From individual costs to true travel cost</h2>
+
+<p>
+  The overall concept can be represented as:
+</p>
+
+<p>
+  <strong>
+    Fuel or Electricity + Maintenance + Tyres + Wear + Depreciation + Journey Costs
+    = Estimated True Travel Cost
+  </strong>
+</p>
+
+<p>
+  The result can then be expressed as a total journey cost or as an estimated
+  cost per kilometre.
+</p>
+
+<h2>Why are these estimates?</h2>
+
+<p>
+  No calculation can know the exact cost of every future repair, tyre
+  replacement, change in fuel price or change in vehicle value.
+</p>
+
+<p>
+  TrueTravelCost therefore provides estimates based on the information
+  available and the assumptions used by the calculation.
+</p>
+
+<p>
+  The purpose is not to suggest that a journey will cost exactly a particular
+  amount. Instead, the goal is to provide a more useful estimate than
+  considering fuel or electricity alone.
+</p>
+
+<h2>What can affect the result?</h2>
+
+<p>
+  Real-world vehicle costs can vary because of:
+</p>
+
+<ul>
+  <li>Driving style</li>
+  <li>Traffic and congestion</li>
+  <li>Weather and temperature</li>
+  <li>Vehicle load</li>
+  <li>Vehicle age and condition</li>
+  <li>Tyre choice and condition</li>
+  <li>Fuel or electricity prices</li>
+  <li>Maintenance and repair prices</li>
+  <li>Annual mileage</li>
+  <li>Vehicle resale value</li>
+  <li>Local taxes, tolls and charges</li>
+  <li>Route selection</li>
+</ul>
+
+<h2>Data and assumptions</h2>
+
+<p>
+  As TrueTravelCost develops, the calculation engine can incorporate
+  increasingly detailed vehicle, route, pricing and ownership data.
+</p>
+
+<p>
+  Where external data is used, the intention is to make the relevant
+  assumptions and data sources transparent so users can understand how
+  estimates have been produced.
+</p>
+
+<p>
+  Different calculations may therefore produce different results depending
+  on the data, assumptions and date on which they are performed.
+</p>
+
+<h2>Designed for real-world decisions</h2>
+
+<p>
+  TrueTravelCost is not intended to produce a single universal cost for every
+  vehicle or journey.
+</p>
+
+<p>
+  Instead, it is designed to help people understand how the cost of travelling
+  changes according to the vehicle they drive, the distance they travel and
+  the way they use it.
+</p>
+
+<p>
+  That makes the calculation useful for one-off trips, regular commutes,
+  annual driving and vehicle-buying decisions.
+</p>
+
+<h2>Want to calculate your own journey?</h2>
+
+<p>
+  Use the TrueTravelCost calculator to estimate the cost of your journey.
+</p>
+
+<p>
+  <a href="/">Calculate Your True Travel Cost</a>
+</p>
+
+<h2>Learn more</h2>
+
+<ul>
+  <li><a href="/how-it-works/">How TrueTravelCost Works</a></li>
+  <li><a href="/vehicle-running-costs/">Vehicle Running Costs</a></li>
+  <li><a href="/trips-and-commutes/">Trips & Daily Commutes</a></li>
+  <li><a href="/buy-a-car/">Thinking of Buying a Car?</a></li>
+  <li><a href="/example-report/">See an Example Comprehensive Report</a></li>
+</ul>
+```
+
+  </main>
+
+  <footer>
+    <p>
+      TrueTravelCost provides estimates for informational purposes.
+      Actual vehicle and journey costs will vary.
+    </p>
+  </footer>
+
+</body>
+</html>
