@@ -79,13 +79,26 @@
     display: flex; justify-content: space-between; align-items: center;
     gap: 20px; padding: 4px 0 22px;
   }
-  .brand { display: flex; align-items: center; gap: 12px; }
-  .site-logo { width: 36px; height: 36px; object-fit: contain; filter: var(--logo-filter); flex-shrink: 0; }
-  .brand .wordmark {
-    font-family: var(--font-display); font-weight: 700; font-size: 17px;
-    color: var(--navy); letter-spacing: -0.01em;
+  .brand { display: flex; align-items: center; gap: 18px; }
+  .site-logo { width: 72px; height: 72px; object-fit: contain; filter: var(--logo-filter); flex-shrink: 0; }
+  .wordmark-block {
+    display: flex; flex-direction: column; gap: 4px;
+    padding-left: 16px; border-left: 1.5px solid var(--line);
   }
-  .brand .wordmark span { color: var(--blue); }
+  .brand .wordmark {
+    font-family: var(--font-display); font-weight: 700; font-size: 24px;
+    color: var(--navy); letter-spacing: 0.01em; line-height: 1.05;
+    text-transform: uppercase;
+  }
+  .brand .tagline {
+    font-family: var(--font-body); font-size: 12.5px; font-weight: 500;
+    color: var(--muted); line-height: 1.3;
+  }
+  .brand .motto {
+    font-family: var(--font-display); font-size: 10.5px; font-weight: 600;
+    letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold);
+    margin-top: 1px;
+  }
   .top-actions { display: flex; align-items: center; gap: 10px; }
   .theme-toggle {
     font-family: var(--font-mono); font-size: 12px; color: var(--muted);
@@ -137,7 +150,6 @@
   .field-group .hint { color: var(--muted); font-size: 12.5px; margin: 0 0 16px; line-height: 1.55; }
 
   .row { display: grid; grid-template-columns: 1fr 128px; gap: 12px; align-items: end; margin-bottom: 16px; }
-  .row[hidden] { display: none; }
   .row.single { grid-template-columns: 1fr; }
   .row.two { grid-template-columns: 1fr 1fr; }
 
@@ -254,7 +266,6 @@
   .meter .per-unit { font-family: var(--font-mono); font-size: 13px; color: var(--muted); margin-bottom: 18px; }
 
   .compare-list { display: flex; flex-direction: column; gap: 14px; margin-bottom: 18px; }
-  .compare-list[hidden] { display: none; }
   .compare-row { }
   .compare-row .cr-top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; gap: 8px; }
   .compare-row .cr-name { font-size: 13px; font-weight: 500; color: var(--text); display: flex; align-items: center; }
@@ -264,17 +275,22 @@
   .compare-row.is-best .compare-fill { background: var(--gold); }
   .compare-row .cr-per-unit { font-family: var(--font-mono); font-size: 11px; color: var(--muted); margin-top: 4px; }
 
-  .ledger-rows { display: flex; flex-direction: column; gap: 14px; margin-bottom: 18px; }
-  .ledger-rows[hidden] { display: none; }
-  .ledger-row .lr-top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; font-size: 13px; }
-  .ledger-row .lr-label { color: var(--muted); }
-  .ledger-row .lr-amt { font-family: var(--font-mono); color: var(--text); }
-  .ledger-row .bar-track { height: 8px; background: var(--panel-2); border-radius: 2px; overflow: hidden; }
-  .ledger-row .bar-fill { height: 100%; border-radius: 2px; transition: width 0.4s ease; }
+  .bars { display: flex; flex-direction: column; gap: 10px; margin-bottom: 18px; }
+  .bar-row { display: grid; grid-template-columns: 72px 1fr 64px; gap: 10px; align-items: center; font-size: 12.5px; }
+  .bar-row .label { color: var(--muted); }
+  .bar-track { height: 8px; background: var(--panel-2); border-radius: 2px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 2px; transition: width 0.4s ease; }
+  .bar-row .amount { font-family: var(--font-mono); text-align: right; }
   .fuel-fill { background: var(--blue); }
   .maint-fill { background: var(--navy); }
   .tyre-fill { background: var(--gold); }
   .toll-fill { background: var(--red); }
+
+  table.breakdown { width: 100%; border-collapse: collapse; font-size: 13px; }
+  table.breakdown td { padding: 7px 0; border-top: 1px solid var(--line); }
+  table.breakdown td:first-child { color: var(--muted); }
+  table.breakdown td:last-child { text-align: right; font-family: var(--font-mono); }
+  table.breakdown tr:first-child td { border-top: none; }
 
   /* Reimbursement ledger */
   .reimb-panel { margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--line); }
@@ -329,6 +345,11 @@
   @media (max-width: 480px) {
     .row.two, .row { grid-template-columns: 1fr; }
     .vehicles-head { flex-direction: column; align-items: flex-start; }
+    header.top { flex-wrap: wrap; }
+    .site-logo { width: 52px; height: 52px; }
+    .wordmark-block { padding-left: 12px; }
+    .brand .wordmark { font-size: 18px; }
+    .brand .motto { display: none; }
   }
 </style>
 </head>
@@ -338,7 +359,11 @@
   <header class="top">
     <div class="brand">
       <img src="/truetravelcost-elephant-logo.png" alt="TrueTravelCost" class="site-logo">
-      <div class="wordmark">TrueTravel<span>Cost</span></div>
+      <div class="wordmark-block">
+        <div class="wordmark">True Travel Cost</div>
+        <div class="tagline">Know what your journey really costs.</div>
+        <div class="motto">Compute &middot; Compare &middot; Commute</div>
+      </div>
     </div>
     <div class="top-actions">
       <button class="theme-toggle" id="themeToggle" type="button">dark / light</button>
@@ -380,11 +405,11 @@
           <div class="row two">
             <div>
               <label for="vehMake1">Make</label>
-              <div class="num-input"><input type="text" id="vehMake1" value="" placeholder="e.g. Volkswagen" list="vehModelHelperList" autocomplete="off" class="text-left"></div>
+              <div class="num-input"><input type="text" id="vehMake1" value="Volkswagen" list="vehModelHelperList" autocomplete="off" class="text-left"></div>
             </div>
             <div>
               <label for="vehModel1">Model</label>
-              <div class="num-input"><input type="text" id="vehModel1" value="" placeholder="e.g. Golf" list="vehModelList" autocomplete="off" class="text-left"></div>
+              <div class="num-input"><input type="text" id="vehModel1" value="Golf" list="vehModelList" autocomplete="off" class="text-left"></div>
             </div>
           </div>
           <div class="row two">
@@ -397,13 +422,14 @@
               <div class="num-input"><input type="number" id="vehYear1" value="2021" min="1980" max="2027" step="1"></div>
             </div>
           </div>
+          <button class="lookup-btn" id="lookupBtn1" type="button">Auto-fill with AI</button>
+          <div class="lookup-status" id="lookupStatus1"></div>
           <hr class="div">
           <div class="row single">
             <div>
               <label for="fuelType1">Runs on</label>
               <select id="fuelType1" class="unit-select">
                 <option value="liquid">Petrol / diesel</option>
-                <option value="hybrid">Hybrid</option>
                 <option value="electric">Electric</option>
               </select>
             </div>
@@ -471,11 +497,11 @@
           <div class="row two">
             <div>
               <label for="vehMake2">Make</label>
-              <div class="num-input"><input type="text" id="vehMake2" value="" placeholder="e.g. Toyota" list="vehModelHelperList" autocomplete="off" class="text-left"></div>
+              <div class="num-input"><input type="text" id="vehMake2" value="Toyota" list="vehModelHelperList" autocomplete="off" class="text-left"></div>
             </div>
             <div>
               <label for="vehModel2">Model</label>
-              <div class="num-input"><input type="text" id="vehModel2" value="" placeholder="e.g. Corolla" list="vehModelList" autocomplete="off" class="text-left"></div>
+              <div class="num-input"><input type="text" id="vehModel2" value="Corolla" list="vehModelList" autocomplete="off" class="text-left"></div>
             </div>
           </div>
           <div class="row two">
@@ -488,13 +514,14 @@
               <div class="num-input"><input type="number" id="vehYear2" value="2021" min="1980" max="2027" step="1"></div>
             </div>
           </div>
+          <button class="lookup-btn" id="lookupBtn2" type="button">Auto-fill with AI</button>
+          <div class="lookup-status" id="lookupStatus2"></div>
           <hr class="div">
           <div class="row single">
             <div>
               <label for="fuelType2">Runs on</label>
               <select id="fuelType2" class="unit-select">
                 <option value="liquid">Petrol / diesel</option>
-                <option value="hybrid">Hybrid</option>
                 <option value="electric">Electric</option>
               </select>
             </div>
@@ -562,11 +589,11 @@
           <div class="row two">
             <div>
               <label for="vehMake3">Make</label>
-              <div class="num-input"><input type="text" id="vehMake3" value="" placeholder="e.g. Tesla" list="vehModelHelperList" autocomplete="off" class="text-left"></div>
+              <div class="num-input"><input type="text" id="vehMake3" value="Tesla" list="vehModelHelperList" autocomplete="off" class="text-left"></div>
             </div>
             <div>
               <label for="vehModel3">Model</label>
-              <div class="num-input"><input type="text" id="vehModel3" value="" placeholder="e.g. Model 3" list="vehModelList" autocomplete="off" class="text-left"></div>
+              <div class="num-input"><input type="text" id="vehModel3" value="Model 3" list="vehModelList" autocomplete="off" class="text-left"></div>
             </div>
           </div>
           <div class="row two">
@@ -579,13 +606,14 @@
               <div class="num-input"><input type="number" id="vehYear3" value="2022" min="1980" max="2027" step="1"></div>
             </div>
           </div>
+          <button class="lookup-btn" id="lookupBtn3" type="button">Auto-fill with AI</button>
+          <div class="lookup-status" id="lookupStatus3"></div>
           <hr class="div">
           <div class="row single">
             <div>
               <label for="fuelType3">Runs on</label>
               <select id="fuelType3" class="unit-select">
                 <option value="liquid">Petrol / diesel</option>
-                <option value="hybrid">Hybrid</option>
                 <option value="electric" selected>Electric</option>
               </select>
             </div>
@@ -754,24 +782,21 @@
       <div class="total-readout" id="totalReadout">€ 0.00</div>
       <div class="per-unit" id="perUnitReadout">€0.000 / km</div>
 
-      <div class="ledger-rows" id="singleBreakdown">
-        <div class="ledger-row">
-          <div class="lr-top"><span class="lr-label">Fuel</span><span class="lr-amt" id="tblFuel">€0.00</span></div>
-          <div class="bar-track"><div class="bar-fill fuel-fill" id="fuelBar" style="width:0%"></div></div>
-        </div>
-        <div class="ledger-row">
-          <div class="lr-top"><span class="lr-label">Maintenance</span><span class="lr-amt" id="tblMaint">€0.00</span></div>
-          <div class="bar-track"><div class="bar-fill maint-fill" id="maintBar" style="width:0%"></div></div>
-        </div>
-        <div class="ledger-row">
-          <div class="lr-top"><span class="lr-label">Tyres</span><span class="lr-amt" id="tblTyre">€0.00</span></div>
-          <div class="bar-track"><div class="bar-fill tyre-fill" id="tyreBar" style="width:0%"></div></div>
-        </div>
-        <div class="ledger-row">
-          <div class="lr-top"><span class="lr-label">Tolls &amp; extras</span><span class="lr-amt" id="tblToll">€0.00</span></div>
-          <div class="bar-track"><div class="bar-fill toll-fill" id="tollBar" style="width:0%"></div></div>
-        </div>
+      <div class="bars" id="barsWrap">
+        <div class="bar-row"><span class="label">Fuel</span><div class="bar-track"><div class="bar-fill fuel-fill" id="fuelBar" style="width:0%"></div></div><span class="amount" id="fuelAmt">€0.00</span></div>
+        <div class="bar-row"><span class="label">Maint.</span><div class="bar-track"><div class="bar-fill maint-fill" id="maintBar" style="width:0%"></div></div><span class="amount" id="maintAmt">€0.00</span></div>
+        <div class="bar-row"><span class="label">Tyres</span><div class="bar-track"><div class="bar-fill tyre-fill" id="tyreBar" style="width:0%"></div></div><span class="amount" id="tyreAmt">€0.00</span></div>
+        <div class="bar-row"><span class="label">Tolls+</span><div class="bar-track"><div class="bar-fill toll-fill" id="tollBar" style="width:0%"></div></div><span class="amount" id="tollAmt">€0.00</span></div>
       </div>
+
+      <table class="breakdown" id="singleBreakdown">
+        <tbody>
+          <tr><td>Fuel</td><td id="tblFuel">€0.00</td></tr>
+          <tr><td>Maintenance</td><td id="tblMaint">€0.00</td></tr>
+          <tr><td>Tyres</td><td id="tblTyre">€0.00</td></tr>
+          <tr><td>Tolls &amp; extras</td><td id="tblToll">€0.00</td></tr>
+        </tbody>
+      </table>
 
       <div class="compare-list" id="compareList" hidden></div>
 
@@ -886,29 +911,6 @@
     'Lucid': ['Air','Gravity']
   };
 
-  var pureEvMakes = ['tesla', 'rivian', 'lucid', 'polestar'];
-  var exactEvModels = ['ix', 'i4', 'i7', 'id.3', 'id.4', 'id.5', 'id.7', 'ev6', 'ev9', 'taycan', 'ariya', 'zoe', 'leaf', 'bolt', 'inster', 'model 3', 'model s', 'model x', 'model y', 'e-golf'];
-  var substrEvModels = ['e-tron', 'ioniq', 'enyaq', 'electric', 'e:ny1', 'eqs', 'eqe', 'eqa', 'eqb', 'niro ev', 'kona electric', 'e-2008', 'ami'];
-  var hybridKeywords = ['hybrid', 'phev', 'plug-in', 'plug in', 'gte', 'e-hybrid', 'recharge', 'prius', 'crz', 'cr-z'];
-  function isLikelyElectric(make, model) {
-    var m = (make || '').trim().toLowerCase();
-    var mo = (model || '').trim().toLowerCase();
-    if (pureEvMakes.indexOf(m) !== -1) return true;
-    if (!mo) return false;
-    if (exactEvModels.indexOf(mo) !== -1) return true;
-    return substrEvModels.some(function (k) { return mo.indexOf(k) !== -1; });
-  }
-  function isLikelyHybrid(make, model, trim) {
-    var text = [make, model, trim].map(function (s) { return (s || '').trim().toLowerCase(); }).join(' ');
-    if (!text.trim()) return false;
-    return hybridKeywords.some(function (k) { return text.indexOf(k) !== -1; });
-  }
-  function classifyFuelType(make, model, trim) {
-    if (isLikelyElectric(make, model)) return 'electric';
-    if (isLikelyHybrid(make, model, trim)) return 'hybrid';
-    return 'liquid';
-  }
-
   var vehModelListEl = document.getElementById('vehModelList');
   function setModelOptions(models) {
     vehModelListEl.innerHTML = models.map(function (m) {
@@ -971,8 +973,6 @@
 
     var userEdited = {};
     VEH.forEach(function (i) { userEdited[i] = { consumption: false, fuelPrice: false, maintAnnual: false, tyreSetCost: false }; });
-    var fuelTypeEdited = {};
-    VEH.forEach(function (i) { fuelTypeEdited[i] = false; });
     var distEdited = false;
 
     function fuelDefaults(fuelType, metric) {
@@ -980,11 +980,6 @@
         return metric
           ? { consumption: 16, consUnit: 'kWh/100km', priceUnit: '/kWh', price: 0.32 }
           : { consumption: 26, consUnit: 'kWh/100mi', priceUnit: '/kWh', price: 0.32 };
-      }
-      if (fuelType === 'hybrid') {
-        return metric
-          ? { consumption: 4.8, consUnit: 'L/100km', priceUnit: '/L', price: 1.75 }
-          : { consumption: 50, consUnit: 'mpg', priceUnit: '/gal', price: 6.60 };
       }
       return metric
         ? { consumption: 7.5, consUnit: 'L/100km', priceUnit: '/L', price: 1.75 }
@@ -1032,7 +1027,7 @@
       var ft = v.fuelType.value;
       var cons = parseFloat(v.consumption.value) || 0;
       var price = parseFloat(v.fuelPrice.value) || 0;
-      if (ft !== 'electric' && !metric) {
+      if (ft === 'liquid' && !metric) {
         return cons > 0 ? (dist / cons) * price : 0;
       }
       return (dist / 100) * cons * price;
@@ -1086,12 +1081,17 @@
         $('totalReadout').textContent = curr + ' ' + fmt(r0.total);
         $('perUnitReadout').textContent = curr + r0.perUnit.toFixed(3) + ' / ' + distU;
         $('singleBreakdown').hidden = false;
+        $('barsWrap').hidden = false;
         $('compareList').hidden = true;
 
         $('tblFuel').textContent = curr + fmt(r0.fuelCost);
         $('tblMaint').textContent = curr + fmt(r0.maintCost);
         $('tblTyre').textContent = curr + fmt(r0.tyreCost);
         $('tblToll').textContent = curr + fmt(r0.tollCost);
+        $('fuelAmt').textContent = curr + fmt(r0.fuelCost);
+        $('maintAmt').textContent = curr + fmt(r0.maintCost);
+        $('tyreAmt').textContent = curr + fmt(r0.tyreCost);
+        $('tollAmt').textContent = curr + fmt(r0.tollCost);
         var max = Math.max(r0.fuelCost, r0.maintCost, r0.tyreCost, r0.tollCost, 0.0001);
         $('fuelBar').style.width = (r0.fuelCost / max * 100) + '%';
         $('maintBar').style.width = (r0.maintCost / max * 100) + '%';
@@ -1103,6 +1103,7 @@
         $('totalReadout').textContent = curr + ' ' + fmt(cheapest.total);
         $('perUnitReadout').textContent = vehicleName(cheapest.i) + ' — ' + curr + cheapest.perUnit.toFixed(3) + ' / ' + distU;
         $('singleBreakdown').hidden = true;
+        $('barsWrap').hidden = true;
 
         var list = $('compareList');
         list.hidden = false;
@@ -1233,32 +1234,16 @@
     [tolls, extras, reimbRate].forEach(function (el) { el.addEventListener('input', calculate); });
     currencyInput.addEventListener('input', function () { updateUnitLabels(); calculate(); });
 
-    function applyFuelTypeDefaults(i) {
-      var v = veh(i);
-      var metric = unitSystem.value === 'metric';
-      var d = fuelDefaults(v.fuelType.value, metric);
-      if (!userEdited[i].consumption) v.consumption.value = d.consumption;
-      if (!userEdited[i].fuelPrice) v.fuelPrice.value = d.price;
-      v.tagCons.hidden = true; v.tagFuelPrice.hidden = true;
-      updateUnitLabels();
-      calculate();
-    }
-
-    function maybeAutoDetectFuelType(i) {
-      if (fuelTypeEdited[i]) return; // respect an explicit manual choice
-      var v = veh(i);
-      var detected = classifyFuelType(v.make.value, v.model.value, v.trim.value);
-      if (v.fuelType.value !== detected) {
-        v.fuelType.value = detected;
-        applyFuelTypeDefaults(i);
-      }
-    }
-
     VEH.forEach(function (i) {
       var v = veh(i);
       v.fuelType.addEventListener('change', function () {
-        fuelTypeEdited[i] = true;
-        applyFuelTypeDefaults(i);
+        var metric = unitSystem.value === 'metric';
+        var d = fuelDefaults(v.fuelType.value, metric);
+        if (!userEdited[i].consumption) v.consumption.value = d.consumption;
+        if (!userEdited[i].fuelPrice) v.fuelPrice.value = d.price;
+        v.tagCons.hidden = true; v.tagFuelPrice.hidden = true;
+        updateUnitLabels();
+        calculate();
       });
       [v.consumption, v.fuelPrice, v.maintAnnual, v.maintDistance, v.tyreSetCost, v.tyreLife].forEach(function (el) {
         el.addEventListener('input', calculate);
@@ -1267,9 +1252,7 @@
       v.fuelPrice.addEventListener('input', function () { userEdited[i].fuelPrice = true; v.tagFuelPrice.hidden = true; delete v.tagFuelPrice.dataset.source; });
       v.maintAnnual.addEventListener('input', function () { userEdited[i].maintAnnual = true; v.tagMaint.hidden = true; delete v.tagMaint.dataset.source; });
       v.tyreSetCost.addEventListener('input', function () { userEdited[i].tyreSetCost = true; v.tagTyre.hidden = true; delete v.tagTyre.dataset.source; });
-      v.make.addEventListener('input', function () { applyVehicleTierDefaults(i); maybeAutoDetectFuelType(i); });
-      v.model.addEventListener('input', function () { maybeAutoDetectFuelType(i); });
-      v.trim.addEventListener('input', function () { maybeAutoDetectFuelType(i); });
+      v.make.addEventListener('input', function () { applyVehicleTierDefaults(i); });
     });
 
     // ---- Google Maps link ----
@@ -1384,7 +1367,6 @@
 
       VEH.forEach(function (i) {
         var v = veh(i);
-        if (!v.lookupBtn) return; // AI auto-fill button removed for now
         v.lookupBtn.addEventListener('click', function () {
           var make = (v.make.value || '').trim(), model = (v.model.value || '').trim();
           var trim = (v.trim.value || '').trim(), year = (v.year.value || '').trim();
@@ -1593,7 +1575,6 @@
         v.maintAnnual.value = data.maintAnnual || 0; v.maintDistance.value = data.maintDistance || 1;
         v.tyreSetCost.value = data.tyreSetCost || 0; v.tyreLife.value = data.tyreLife || 1;
         userEdited[i] = { consumption: true, fuelPrice: true, maintAnnual: true, tyreSetCost: true };
-        fuelTypeEdited[i] = true;
       });
 
       $('assumptions').hidden = true;
