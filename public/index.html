@@ -1354,14 +1354,46 @@
       [v.consumption, v.fuelPrice, v.maintAnnual, v.maintDistance, v.tyreSetCost, v.tyreLife].forEach(function (el) {
         el.addEventListener('input', calculate);
       });
-      v.consumption.addEventListener('input', function () { userEdited[i].consumption = true; v.tagCons.hidden = true; });
+      v.consumption.addEventListener('input', function () { userEdited[i].consumption = true; v.tagCons.hidden = true; delete v.tagCons.dataset.source; });
       v.fuelPrice.addEventListener('input', function () { userEdited[i].fuelPrice = true; v.tagFuelPrice.hidden = true; delete v.tagFuelPrice.dataset.source; });
       v.maintAnnual.addEventListener('input', function () { userEdited[i].maintAnnual = true; v.tagMaint.hidden = true; delete v.tagMaint.dataset.source; });
       v.tyreSetCost.addEventListener('input', function () { userEdited[i].tyreSetCost = true; v.tagTyre.hidden = true; delete v.tagTyre.dataset.source; });
-      v.make.addEventListener('input', function () { applyVehicleTierDefaults(i); maybeAutoDetectFuelType(i); });
-      v.model.addEventListener('input', function () { maybeAutoDetectFuelType(i); });
-      v.trim.addEventListener('input', function () { maybeAutoDetectFuelType(i); });
+      v.make.addEventListener('input', function () { applyVehicleTierDefaults(i); maybeAutoDetectFuelType(i); scheduleConsumptionFetch(i); });
+      v.model.addEventListener('input', function () { maybeAutoDetectFuelType(i); scheduleConsumptionFetch(i); });
+      v.trim.addEventListener('input', function () { maybeAutoDetectFuelType(i); scheduleConsumptionFetch(i); });
+      v.year.addEventListener('input', function () { scheduleConsumptionFetch(i); });
     });
+
+    // ---- live fuel consumption (US EPA / FuelEconomy.gov) ----
+    // US-market vehicles only -- a car never sold in the US just comes back
+    // "not found" and the existing static/tier default is left alone.
+    var consumptionDebounce = {};
+    function scheduleConsumptionFetch(i) {
+      clearTimeout(consumptionDebounce[i]);
+      consumptionDebounce[i] = setTimeout(function () { fetchConsumption(i); }, 700);
+    }
+    function fetchConsumption(i) {
+      var v = veh(i);
+      var make = v.make.value.trim(), model = v.model.value.trim();
+      if (!make || !model || userEdited[i].consumption) return;
+      fetch('/api/consumption', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ make: make, model: model, trim: v.trim.value.trim(), year: v.year.value.trim() })
+      })
+        .then(function (res) { return res.ok ? res.json() : null; })
+        .then(function (data) {
+          if (!data || !data.found || userEdited[i].consumption) return;
+          var metric = unitSystem.value === 'metric';
+          v.consumption.value = round(metric ? data.l100km : data.mpgCombined, 1);
+          v.tagCons.dataset.source = 'live';
+          v.tagCons.innerHTML = '<a href="https://www.fueleconomy.gov/" target="_blank" rel="noopener" style="color:inherit; text-decoration:underline;">Live \u00b7 EPA (' + data.matchedYear + ')</a>';
+          v.tagCons.title = data.exactTrimMatch ? '' : 'Closest EPA match: ' + data.matchedModel + ' ' + data.matchedTrim;
+          v.tagCons.hidden = false;
+          calculate();
+        })
+        .catch(function () { /* offline or no match \u2014 leave the existing value as-is */ });
+    }
 
     // ---- Google Maps link ----
     function updateMapsLink() {
