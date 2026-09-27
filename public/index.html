@@ -167,6 +167,13 @@
   .num-input input.text-left { text-align: left; font-family: var(--font-body); }
   .num-input .unit { font-family: var(--font-mono); font-size: 12px; color: var(--muted); padding: 0 10px 0 4px; white-space: nowrap; }
   .num-input:focus-within { border-color: var(--blue); }
+  .location-check {
+    display: flex; align-items: center; justify-content: center;
+    width: 18px; height: 18px; margin-right: 8px; flex-shrink: 0;
+    border-radius: 50%; background: #1FA05A; color: #fff;
+    font-size: 11px; line-height: 1;
+  }
+  .location-check[hidden] { display: none; }
 
   select.unit-select {
     width: 100%; background: var(--panel-2); border: 1px solid var(--line); border-radius: var(--radius-sm);
@@ -394,12 +401,14 @@
               <label for="journeyFrom">From</label>
               <div class="num-input">
                 <input type="text" id="journeyFrom" value="Munich, Germany" list="destinationsList" autocomplete="off" class="text-left">
+                <span class="location-check" id="journeyFromCheck" hidden title="Location recognized">&#10003;</span>
               </div>
             </div>
             <div>
               <label for="journeyTo">To</label>
               <div class="num-input">
                 <input type="text" id="journeyTo" value="Salzburg, Austria" list="destinationsList" autocomplete="off" class="text-left">
+                <span class="location-check" id="journeyToCheck" hidden title="Location recognized">&#10003;</span>
               </div>
             </div>
           </div>
@@ -1346,8 +1355,14 @@
       calculate();
     }
     var routeDebounce = null;
+    function setLocationChecks(state) {
+      // state: true = confirmed, false = not confirmed (typing or failed)
+      $('journeyFromCheck').hidden = !state;
+      $('journeyToCheck').hidden = !state;
+    }
     function scheduleRouteFetch() {
       var from = journeyFromEl.value.trim(), to = journeyToEl.value.trim();
+      setLocationChecks(false);
       if (!from || !to) return;
       clearTimeout(routeDebounce);
       routeDebounce = setTimeout(function () {
@@ -1358,9 +1373,12 @@
               lastRouteKm = data.distanceKm;
               applyRegionFromCountry(data.fromCountry);
               applyRouteDistance();
+              setLocationChecks(true);
+            } else {
+              setLocationChecks(false);
             }
           })
-          .catch(function () { /* offline: leave existing distance as-is */ });
+          .catch(function () { setLocationChecks(false); /* offline: leave existing distance as-is */ });
       }, 600);
     }
     [journeyFromEl, journeyToEl].forEach(function (el) { el.addEventListener('input', scheduleRouteFetch); });
