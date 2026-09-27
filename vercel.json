@@ -1,0 +1,28 @@
+{
+  "rewrites": [
+    {
+      "source": "/buy-a-car/",
+      "destination": "/buy-a-car/index.html"
+    },
+    {
+      "source": "/trips-and-commutes/",
+      "destination": "/trips-and-commutes/index.html"
+    },
+    {
+      "source": "/how-it-works/",
+      "destination": "/how-it-works/index.html"
+    },
+    {
+      "source": "/vehicle-running-costs/",
+      "destination": "/vehicle-running-costs/index.html"
+    },
+    {
+      "source": "/example-report/",
+      "destination": "/example-report/index.html"
+    },
+    {
+      "source": "/methodology/",
+      "destination": "/methodology/index.html"
+    }
+  ]
+}
