@@ -380,7 +380,26 @@
   details.fine-tune[open] summary::before { content: '\2212'; }
   details.fine-tune summary:hover { color: var(--text); }
 
-  footer.legend { margin-top: 26px; color: var(--muted); font-size: 12px; line-height: 1.6; }
+  /* ---------- Site navigation ---------- */
+  .top-actions { flex-wrap: wrap; justify-content: flex-end; }
+  .top-nav { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 7px; }
+  .top-nav a {
+    padding: 7px 10px; border: 1px solid transparent; border-radius: var(--radius-sm);
+    color: var(--muted); font-size: 12.5px; font-weight: 500; text-decoration: none;
+  }
+  .top-nav a:hover { border-color: var(--line); background: var(--panel); color: var(--navy); }
+  .top-nav a[aria-current="page"] { border-color: var(--line); background: var(--panel); color: var(--navy); }
+  @media (max-width: 1080px) {
+    header.top { flex-direction: column; align-items: flex-start; }
+    .top-actions { justify-content: flex-start; }
+    .top-nav { justify-content: flex-start; }
+  }
+
+  /* ---------- Footer ---------- */
+  footer.legend { margin-top: 26px; padding-top: 22px; border-top: 1px solid var(--line); color: var(--muted); font-size: 12px; line-height: 1.6; }
+  .footer-links { display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 14px; }
+  .footer-links a { color: var(--muted); text-decoration: none; }
+  .footer-links a:hover { color: var(--blue); text-decoration: underline; }
 
   @media (max-width: 480px) {
     .row.two, .row { grid-template-columns: 1fr; }
@@ -410,6 +429,15 @@
       </div>
     </div>
     <div class="top-actions">
+      <nav class="top-nav" aria-label="Main navigation">
+      <a href="/" aria-current="page">Calculator</a>
+      <a href="/buy-a-car/">Buy a Car</a>
+      <a href="/trips-and-commutes/">Trips &amp; Commutes</a>
+      <a href="/how-it-works/">How It Works</a>
+      <a href="/vehicle-running-costs/">Running Costs</a>
+      <a href="/example-report/">Example Report</a>
+      <a href="/methodology/">Methodology</a>
+      </nav>
       <button class="theme-toggle" id="themeToggle" type="button">dark / light</button>
     </div>
   </header>
@@ -1041,6 +1069,15 @@
   </section>
 
   <footer class="legend">
+    <div class="footer-links">
+      <a href="/">Calculator</a>
+      <a href="/buy-a-car/">Buy a Car</a>
+      <a href="/trips-and-commutes/">Trips &amp; Commutes</a>
+      <a href="/how-it-works/">How It Works</a>
+      <a href="/vehicle-running-costs/">Running Costs</a>
+      <a href="/example-report/">Example Report</a>
+      <a href="/methodology/">Methodology</a>
+    </div>
     Figures are estimates based on what you enter — actual costs vary with driving conditions, vehicle condition, and local prices. Not tax or legal advice on mileage reimbursement — check your local rules (e.g. IRS standard mileage rate, HMRC AMAP) for statutory figures.<br>
     European fuel prices: <a href="https://www.fuel-prices.eu/" target="_blank" rel="noopener" style="color:inherit;">fuel-prices.eu</a>, based on the EU Commission Weekly Oil Bulletin (CC BY 4.0).
   </footer>
