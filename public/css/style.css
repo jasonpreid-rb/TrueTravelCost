@@ -585,3 +585,25 @@ padding: 20px;
 }
 
 }
+
+/* --------------------------------
+Additions: current-page nav state, hero button, tables
+-------------------------------- */
+
+.top-nav a[aria-current="page"] {
+border-color: var(--line);
+background: var(--panel);
+color: var(--navy);
+}
+
+.page-hero .button {
+margin-top: 24px;
+}
+
+.panel .tag {
+margin-right: 6px;
+}
+
+.content th.number {
+font-family: var(--font-display);
+}
