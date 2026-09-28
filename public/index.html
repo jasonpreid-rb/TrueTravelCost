@@ -1280,7 +1280,62 @@
     VEH.forEach(function (i) { fuelTypeEdited[i] = false; });
     var distEdited = false;
 
+    // ---- regional fuel & energy prices (snapshot, Sep 2026) ----
+    // Per litre in LOCAL currency (p = petrol/hybrid, d = diesel); e = EV energy per kWh (household
+    // rate x1.25 as a blend of home and public charging). Sources: EU Weekly Oil Bulletin (EU),
+    // EIA (US), DESNZ (UK), StatCan (CA), METI (JP), PPAC (IN), ANP (BR); NZ/AU/CH/NO/SG/CN/KR/ZA/MX
+    // derived from GlobalPetrolPrices-style USD/L figures at approx. Sep 2026 exchange rates.
+    // Diesel for CA/NZ/AU/SG/CN/KR/MX and most electricity rates outside Europe are estimates.
+    // Pump prices move fast -- refresh this table, or feed live prices in via /api/route.
+    var fuelByCountry = {
+      DE: { p: 2.36, d: 2.46, e: 0.48 }, FR: { p: 2.17, d: 2.32, e: 0.32 }, ES: { p: 1.87, d: 1.86, e: 0.33 },
+      IT: { p: 2.08, d: 2.22, e: 0.37 }, NL: { p: 2.43, d: 2.53, e: 0.32 }, BE: { p: 1.98, d: 2.32, e: 0.44 },
+      AT: { p: 1.89, d: 2.22, e: 0.41 }, IE: { p: 1.89, d: 2.01, e: 0.51 }, PT: { p: 2.07, d: 2.18, e: 0.3 },
+      GR: { p: 2.16, d: 2.15, e: 0.3 }, FI: { p: 2.32, d: 2.53, e: 0.28 }, LU: { p: 1.79, d: 2.15, e: 0.33 },
+      EE: { p: 1.91, d: 2.09, e: 0.29 }, LV: { p: 1.98, d: 2.12, e: 0.31 }, LT: { p: 1.92, d: 2.21, e: 0.24 },
+      SK: { p: 1.81, d: 1.95, e: 0.23 }, SI: { p: 1.64, d: 1.88, e: 0.27 }, HR: { p: 1.74, d: 1.94, e: 0.21 },
+      CY: { p: 1.65, d: 1.94, e: 0.35 }, MT: { p: 1.34, d: 1.22, e: 0.16 }, BG: { p: 1.62, d: 1.88, e: 0.17 },
+      RO: { p: 1.89, d: 2.02, e: 0.36 }, DK: { p: 19.1, d: 18.87, e: 3.09 }, SE: { p: 16.61, d: 22.0, e: 3.73 },
+      PL: { p: 7.74, d: 8.63, e: 1.44 }, CZ: { p: 44.8, d: 49.2, e: 9.9 }, HU: { p: 675.5, d: 766.3, e: 53.3 },
+      US: { p: 1.18, d: 1.73, e: 0.22 }, GB: { p: 1.72, d: 1.95, e: 0.34 }, CA: { p: 1.85, d: 2.05, e: 0.2 },
+      JP: { p: 169.9, d: 160, e: 38.8 }, IN: { p: 102.1, d: 90, e: 10.0 }, BR: { p: 6.54, d: 6.65, e: 1.06 },
+      NZ: { p: 3.22, d: 3.09, e: 0.41 }, AU: { p: 2.35, d: 2.54, e: 0.5 }, CH: { p: 2.05, d: 2.05, e: 0.34 },
+      NO: { p: 32.85, d: 32.85, e: 2.83 }, SG: { p: 3.17, d: 2.92, e: 0.41 }, CN: { p: 9.57, d: 9.09, e: 0.69 },
+      KR: { p: 2101.0, d: 1996.0, e: 225.0 }, ZA: { p: 29.4, d: 29.4, e: 3.5 }, MX: { p: 30.54, d: 29.01, e: 2.5 }
+    };
+    var LITRES_PER_GAL = { GB: 4.54609 }; // UK uses imperial gallons; everywhere else here US gallons
+    var FUEL_EU_FALLBACK = { p: 2.05, d: 2.15, e: 0.40, gal: 3.78541, mpg: 1 };
+    var fuelRegion = FUEL_EU_FALLBACK;
+    function fuelPriceFor(fuelType, metric) {
+      if (fuelType === 'electric') return fuelRegion.e;
+      var perL = fuelType === 'diesel' ? fuelRegion.d : fuelRegion.p;
+      return metric ? perL : perL * fuelRegion.gal;
+    }
     function fuelDefaults(fuelType, metric) {
+      var d = fuelDefaultsBase(fuelType, metric);
+      d.price = round(fuelPriceFor(fuelType, metric), 2);
+      if (!metric && fuelType !== 'electric') d.consumption = Math.round(d.consumption * fuelRegion.mpg); // UK mpg is imperial
+      return d;
+    }
+    function setFuelRegion(cc) {
+      var f = fuelByCountry[cc];
+      fuelRegion = f ? { p: f.p, d: f.d, e: f.e, gal: LITRES_PER_GAL[cc] || 3.78541, mpg: cc === 'GB' ? 1.2009 : 1 } : FUEL_EU_FALLBACK;
+      var metric = unitSystem.value === 'metric';
+      VEH.forEach(function (i) {
+        var v = veh(i), d = fuelDefaults(v.fuelType.value, metric);
+        if (!userEdited[i].fuelPrice && v.tagFuelPrice.dataset.source !== 'ai') {
+          v.fuelPrice.value = d.price;
+          v.tagFuelPrice.dataset.source = 'table';
+          v.tagFuelPrice.textContent = 'Typical \u00b7 Sep 2026';
+          v.tagFuelPrice.hidden = false;
+        }
+        if (!userEdited[i].consumption && !v.tagCons.dataset.source) v.consumption.value = d.consumption;
+      });
+      updateUnitLabels();
+      calculate();
+    }
+
+    function fuelDefaultsBase(fuelType, metric) {
       if (fuelType === 'electric') {
         return metric
           ? { consumption: 16, consUnit: 'kWh/100km', priceUnit: '/kWh', price: 0.32 }
@@ -1791,6 +1846,7 @@
     unitSystem.addEventListener('change', applyRouteDistance);
     scheduleRouteFetch();
 
+    setFuelRegion(null); // start from current EU-average pump prices rather than the old hard-coded HTML values
     updateUnitLabels();
     calculate();
 
@@ -1951,10 +2007,10 @@
     // local price level for servicing / tyres relative to Europe (1 = same).
     // These are rough planning figures -- edit here if you want to tune them.
     var costByCountry = {
-      US: { fx: 1.15, m: 1.0,  t: 0.9  }, GB: { fx: 0.86, m: 1.1,  t: 1.0  },
-      NZ: { fx: 1.95, m: 1.0,  t: 1.05 }, AU: { fx: 1.75, m: 1.0,  t: 1.0  },
-      CA: { fx: 1.6,  m: 0.95, t: 0.95 }, JP: { fx: 170,  m: 0.85, t: 0.9  },
-      CN: { fx: 8.2,  m: 0.6,  t: 0.8  }, CH: { fx: 0.93, m: 1.4,  t: 1.2  },
+      US: { fx: 1.14, m: 1.0,  t: 0.9  }, GB: { fx: 0.86, m: 1.1,  t: 1.0  },
+      NZ: { fx: 2.0,  m: 1.0,  t: 1.05 }, AU: { fx: 1.76, m: 1.0,  t: 1.0  },
+      CA: { fx: 1.6,  m: 0.95, t: 0.95 }, JP: { fx: 176,  m: 0.85, t: 0.9  },
+      CN: { fx: 8.2,  m: 0.6,  t: 0.8  }, CH: { fx: 0.94, m: 1.4,  t: 1.2  },
       SE: { fx: 11,   m: 1.0,  t: 1.0  }, NO: { fx: 11.7, m: 1.3,  t: 1.1  },
       DK: { fx: 7.46, m: 1.2,  t: 1.1  }, PL: { fx: 4.25, m: 0.6,  t: 0.85 },
       CZ: { fx: 24.5, m: 0.6,  t: 0.85 }, HU: { fx: 395,  m: 0.6,  t: 0.85 },
@@ -1971,6 +2027,7 @@
     function setCostRegion(cc) {
       costRegion = costByCountry[cc] || { fx: 1, m: 1, t: 1 };
       VEH.forEach(applyVehicleTierDefaults); // only touches fields the user hasn't edited and AI hasn't filled
+      setFuelRegion(cc);
     }
     function niceRound(n) { // 2 significant figures keeps big currencies (JPY, KRW, HUF) readable
       if (n < 100) return Math.round(n);
