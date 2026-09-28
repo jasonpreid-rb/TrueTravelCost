@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
+Disallow: /api/
 
-Sitemap: https://truetravelcost.com/sitemap.xml
+Sitemap: https://www.truetravelcost.com/sitemap.xml
