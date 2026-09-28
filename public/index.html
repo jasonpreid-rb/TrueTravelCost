@@ -1551,7 +1551,11 @@
     unitSystem.addEventListener('change', onUnitSystemChange);
     distance.addEventListener('input', function () { distEdited = true; calculate(); });
     [tolls, extras, reimbRate].forEach(function (el) { el.addEventListener('input', calculate); });
-    currencyInput.addEventListener('input', function () { updateUnitLabels(); calculate(); });
+    currencyInput.addEventListener('input', function () {
+      updateUnitLabels(); calculate();
+      var sym = currencyInput.value.trim();
+      if (sym === '\u20ac' || symbolToCountry[sym]) setCostRegion(symbolToCountry[sym] || null);
+    });
 
     function applyFuelTypeDefaults(i) {
       var v = veh(i);
@@ -1708,6 +1712,7 @@
       var wasMetric = unitSystem.value === 'metric';
       unitSystem.value = region.metric ? 'metric' : 'imperial';
       if (wasMetric !== region.metric) onUnitSystemChange(); else { updateUnitLabels(); calculate(); }
+      setCostRegion(countryCode);
     }
 
     // ---- live fuel price (fuel-prices.eu, EU Commission Weekly Oil Bulletin) ----
@@ -1941,6 +1946,37 @@
       'Ferrari': 'exotic', 'Lamborghini': 'exotic', 'Aston Martin': 'exotic', 'Bentley': 'exotic',
       'Rolls-Royce': 'exotic', 'Maserati': 'exotic', 'McLaren': 'exotic', 'Bugatti': 'exotic'
     };
+    // Regional scaling for servicing & tyre defaults. The tier numbers below are
+    // euro-scale (Western Europe). fx = approx. local currency per 1 EUR; m / t =
+    // local price level for servicing / tyres relative to Europe (1 = same).
+    // These are rough planning figures -- edit here if you want to tune them.
+    var costByCountry = {
+      US: { fx: 1.15, m: 1.0,  t: 0.9  }, GB: { fx: 0.86, m: 1.1,  t: 1.0  },
+      NZ: { fx: 1.95, m: 1.0,  t: 1.05 }, AU: { fx: 1.75, m: 1.0,  t: 1.0  },
+      CA: { fx: 1.6,  m: 0.95, t: 0.95 }, JP: { fx: 170,  m: 0.85, t: 0.9  },
+      CN: { fx: 8.2,  m: 0.6,  t: 0.8  }, CH: { fx: 0.93, m: 1.4,  t: 1.2  },
+      SE: { fx: 11,   m: 1.0,  t: 1.0  }, NO: { fx: 11.7, m: 1.3,  t: 1.1  },
+      DK: { fx: 7.46, m: 1.2,  t: 1.1  }, PL: { fx: 4.25, m: 0.6,  t: 0.85 },
+      CZ: { fx: 24.5, m: 0.6,  t: 0.85 }, HU: { fx: 395,  m: 0.6,  t: 0.85 },
+      SG: { fx: 1.5,  m: 1.3,  t: 1.2  }, IN: { fx: 100,  m: 0.35, t: 0.6  },
+      ZA: { fx: 20.5, m: 0.6,  t: 0.9  }, MX: { fx: 21,   m: 0.5,  t: 0.85 },
+      BR: { fx: 6.3,  m: 0.6,  t: 0.9  }, KR: { fx: 1600, m: 0.8,  t: 0.9  }
+    };
+    var symbolToCountry = {
+      '$': 'US', '\u00a3': 'GB', 'NZ$': 'NZ', 'A$': 'AU', 'C$': 'CA', '\u00a5': 'JP', 'CHF': 'CH',
+      'kr': 'SE', 'z\u0142': 'PL', 'K\u010d': 'CZ', 'Ft': 'HU', 'S$': 'SG', '\u20b9': 'IN',
+      'R': 'ZA', 'R$': 'BR', '\u20a9': 'KR'
+    };
+    var costRegion = { fx: 1, m: 1, t: 1 }; // Europe / EUR baseline
+    function setCostRegion(cc) {
+      costRegion = costByCountry[cc] || { fx: 1, m: 1, t: 1 };
+      VEH.forEach(applyVehicleTierDefaults); // only touches fields the user hasn't edited and AI hasn't filled
+    }
+    function niceRound(n) { // 2 significant figures keeps big currencies (JPY, KRW, HUF) readable
+      if (n < 100) return Math.round(n);
+      var mag = Math.pow(10, Math.floor(Math.log10(n)) - 1);
+      return Math.round(n / mag) * mag;
+    }
     var tierDefaults = {
       economy:    { maint: 550,  tyreCost: 320,  tyreLife: 45000 },
       mainstream: { maint: 900,  tyreCost: 480,  tyreLife: 40000 },
@@ -1955,10 +1991,10 @@
       var d = tierDefaults[tier];
       var changed = false;
       if (!userEdited[i].maintAnnual && v.tagMaint.dataset.source !== 'ai') {
-        v.maintAnnual.value = d.maint; v.tagMaint.textContent = 'Typical for class'; v.tagMaint.dataset.source = 'tier'; v.tagMaint.hidden = false; changed = true;
+        v.maintAnnual.value = niceRound(d.maint * costRegion.fx * costRegion.m); v.tagMaint.textContent = 'Typical for class'; v.tagMaint.dataset.source = 'tier'; v.tagMaint.hidden = false; changed = true;
       }
       if (!userEdited[i].tyreSetCost && v.tagTyre.dataset.source !== 'ai') {
-        v.tyreSetCost.value = d.tyreCost; v.tyreLife.value = d.tyreLife; v.tagTyre.textContent = 'Typical for class'; v.tagTyre.dataset.source = 'tier'; v.tagTyre.hidden = false; changed = true;
+        v.tyreSetCost.value = niceRound(d.tyreCost * costRegion.fx * costRegion.t); v.tyreLife.value = unitSystem.value === 'metric' ? d.tyreLife : Math.round(d.tyreLife * 0.621371 / 1000) * 1000; v.tagTyre.textContent = 'Typical for class'; v.tagTyre.dataset.source = 'tier'; v.tagTyre.hidden = false; changed = true;
       }
       if (changed) calculate();
     }
