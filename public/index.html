@@ -1332,7 +1332,7 @@
       return d;
     }
     function setFuelRegion(cc) {
-      var f = fuelByCountry[cc];
+      var f = fuelByCountry[cc], oldMpg = fuelRegion.mpg;
       fuelRegion = f ? { p: f.p, d: f.d, e: f.e, gal: LITRES_PER_GAL[cc] || 3.78541, mpg: cc === 'GB' ? 1.2009 : 1 } : FUEL_EU_FALLBACK;
       var metric = unitSystem.value === 'metric';
       VEH.forEach(function (i) {
@@ -1344,6 +1344,9 @@
           v.tagFuelPrice.hidden = false;
         }
         if (!userEdited[i].consumption && !v.tagCons.dataset.source) v.consumption.value = d.consumption;
+        else if (!userEdited[i].consumption && v.tagCons.dataset.source === 'live' && !metric && oldMpg !== fuelRegion.mpg && v.fuelType.value !== 'electric') {
+          v.consumption.value = round((parseFloat(v.consumption.value) || 0) * fuelRegion.mpg / oldMpg, 1);
+        }
       });
       updateUnitLabels();
       calculate();
@@ -1602,6 +1605,12 @@
     updateAddButton();
 
     // ---- unit system change ----
+    function convertConsumption(val, fuelType, toMetric) {
+      if (!val) return val;
+      if (fuelType === 'electric') return toMetric ? val / 1.609344 : val * 1.609344; // kWh/100mi <-> kWh/100km
+      var K = 235.214583;                                                              // L/100km <-> US mpg
+      return toMetric ? K / (val / fuelRegion.mpg) : (K / val) * fuelRegion.mpg;
+    }
     function onUnitSystemChange() {
       var metric = unitSystem.value === 'metric';
       if (!distEdited) distance.value = metric ? 500 : 300;
@@ -1609,7 +1618,12 @@
         var i = VEH[idx];
         var v = veh(i);
         var d = fuelDefaults(v.fuelType.value, metric);
-        if (!userEdited[i].consumption) v.consumption.value = d.consumption;
+        if (!userEdited[i].consumption) {
+          if (v.tagCons.dataset.source === 'live' && v.consumption.dataset.metric === (metric ? '0' : '1')) {
+            v.consumption.value = round(convertConsumption(parseFloat(v.consumption.value) || 0, v.fuelType.value, metric), 1);
+            v.consumption.dataset.metric = metric ? '1' : '0';
+          } else if (v.tagCons.dataset.source !== 'live') v.consumption.value = d.consumption;
+        }
         if (!userEdited[i].fuelPrice) v.fuelPrice.value = d.price;
         v.maintDistance.value = metric ? 15000 : 10000;
         v.tyreLife.value = metric ? 40000 : 25000;
@@ -1641,6 +1655,7 @@
     function maybeAutoDetectFuelType(i) {
       if (fuelTypeEdited[i]) return; // respect an explicit manual choice
       var v = veh(i);
+      if (v.tagCons.dataset.source === 'live') return; // the database already told us the fuel type for this car
       var detected = classifyFuelType(v.make.value, v.model.value, v.trim.value);
       if (v.fuelType.value !== detected) {
         v.fuelType.value = detected;
@@ -1676,7 +1691,7 @@
       clearTimeout(consumptionDebounce[i]);
       consumptionDebounce[i] = setTimeout(function () { fetchConsumption(i); }, 700);
     }
-    var lastConsKey = {};
+    var lastConsKey = {}, liveCar = {};
     function revertLiveConsumption(i) {
       // a figure that came from the database belongs to the old make/model/trim -- don't leave it behind
       var v = veh(i);
@@ -1694,10 +1709,23 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ make: make, model: model, trim: v.trim.value.trim(), year: v.year.value.trim() })
       })
-        .then(function (res) { return res.ok ? res.json() : null; })
-        .then(function (data) {
+        .then(function (res) {
+          return res.json().catch(function () { return null; }).then(function (body) { return { ok: res.ok, body: body }; });
+        })
+        .then(function (r) {
           if (lastConsKey[i] !== key || userEdited[i].consumption) return; // superseded by newer input
-          if (!data || !data.found) { revertLiveConsumption(i); return; }
+          var data = r.body;
+          // A timeout, rate-limit or server error says nothing about the car: keep whatever figure we already have.
+          if (!r.ok && !(data && data.found === false)) return;
+          if (!data || !data.found) {
+            // Same make+model, but this trim/year isn't in the database: keep the closest earlier match rather than snapping to the generic default.
+            var lc = liveCar[i];
+            if (lc && lc.make === make.toLowerCase() && lc.model === model.toLowerCase() && v.tagCons.dataset.source === 'live') return;
+            liveCar[i] = null;
+            revertLiveConsumption(i);
+            return;
+          }
+          liveCar[i] = { make: make.toLowerCase(), model: model.toLowerCase() };
           // the database knows whether this engine is diesel / petrol / hybrid / electric
           if (data.fuelType && !fuelTypeEdited[i] && v.fuelType.value !== data.fuelType) {
             v.fuelType.value = data.fuelType;
@@ -1705,7 +1733,8 @@
           }
           var metric = unitSystem.value === 'metric';
           if (data.unit === 'kwh') v.consumption.value = round(metric ? data.kwh100km : data.kwh100mi, 1); // electric: kWh, not MPGe
-          else v.consumption.value = round(metric ? data.l100km : data.mpgCombined, 1);
+          else v.consumption.value = round(metric ? data.l100km : data.mpgCombined * fuelRegion.mpg, 1);
+          v.consumption.dataset.metric = metric ? '1' : '0';
           v.tagCons.dataset.source = 'live';
           v.tagCons.innerHTML = '<a href="https://www.fueleconomy.gov/" target="_blank" rel="noopener" style="color:inherit; text-decoration:underline;">Live \u00b7 EPA (' + data.matchedYear + ')</a>';
           v.tagCons.title = data.exactTrimMatch ? '' : 'Closest EPA match: ' + data.matchedModel + ' ' + data.matchedTrim;
