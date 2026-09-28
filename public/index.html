@@ -381,7 +381,6 @@
   details.fine-tune summary:hover { color: var(--text); }
 
   /* ---------- Site navigation ---------- */
-  .top-actions { flex-wrap: wrap; justify-content: flex-end; }
   .top-nav { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 7px; }
   .top-nav a {
     padding: 7px 10px; border: 1px solid transparent; border-radius: var(--radius-sm);
@@ -389,11 +388,6 @@
   }
   .top-nav a:hover { border-color: var(--line); background: var(--panel); color: var(--navy); }
   .top-nav a[aria-current="page"] { border-color: var(--line); background: var(--panel); color: var(--navy); }
-  @media (max-width: 1080px) {
-    header.top { flex-direction: column; align-items: flex-start; }
-    .top-actions { justify-content: flex-start; }
-    .top-nav { justify-content: flex-start; }
-  }
 
   /* ---------- Footer ---------- */
   footer.legend { margin-top: 26px; padding-top: 22px; border-top: 1px solid var(--line); color: var(--muted); font-size: 12px; line-height: 1.6; }
@@ -401,11 +395,58 @@
   .footer-links a { color: var(--muted); text-decoration: none; }
   .footer-links a:hover { color: var(--blue); text-decoration: underline; }
 
+  /* ---------- Compact layout: keep the calculator above the fold ---------- */
+  .wrap { padding: 16px 24px 60px; }
+  header.top {
+    display: grid; grid-template-columns: auto 1fr auto; align-items: center;
+    column-gap: 16px; padding: 0 0 14px; border-bottom: 1px solid var(--line);
+  }
+  .site-logo { width: 44px; height: 44px; }
+  .wordmark-block { gap: 2px; padding-left: 12px; }
+  .brand { gap: 12px; }
+  .brand .wordmark { font-size: 19px; white-space: nowrap; }
+  .brand .tagline { font-size: 12px; }
+  .brand .motto { display: none; }
+  .top-nav { justify-self: end; flex-wrap: nowrap; gap: 2px; }
+  .top-nav a { padding: 6px 8px; font-size: 12px; white-space: nowrap; }
+
+  .hero {
+    display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 8px 20px;
+    border: none; padding: 16px 0 0; margin-bottom: 18px;
+  }
+  .hero h1 { grid-column: 1; grid-row: 1; font-size: clamp(22px, 2.6vw, 28px); max-width: none; margin: 0; }
+  .audience-switch { grid-column: 2; grid-row: 1; margin: 0; }
+  .audience-switch button { padding: 6px 13px; font-size: 12.5px; }
+  .hero p.lead { grid-column: 1 / -1; grid-row: 2; font-size: 13.5px; line-height: 1.5; max-width: none; margin: 0; }
+  .capability-strip.below { margin-top: 26px; }
+
+  @media (max-width: 1240px) {
+    header.top { grid-template-columns: 1fr auto; row-gap: 10px; }
+    .brand { grid-column: 1; grid-row: 1; }
+    .top-actions { grid-column: 2; grid-row: 1; }
+    .top-nav {
+      grid-column: 1 / -1; grid-row: 2; justify-self: stretch; justify-content: flex-start;
+      overflow-x: auto; padding-bottom: 2px; scrollbar-width: none;
+    }
+    .top-nav::-webkit-scrollbar { display: none; }
+  }
+  @media (max-width: 700px) {
+    .wrap { padding: 12px 16px 50px; }
+    .hero { grid-template-columns: 1fr; padding-top: 12px; margin-bottom: 14px; }
+    .audience-switch { grid-column: 1; grid-row: 1; display: flex; width: 100%; }
+    .audience-switch button { flex: 1; font-size: 12px; padding: 7px 6px; line-height: 1.25; }
+    .hero h1 { grid-row: 2; }
+    .hero p.lead { grid-row: 3; }
+  }
+
   @media (max-width: 480px) {
     .row.two, .row { grid-template-columns: 1fr; }
     .vehicles-head { flex-direction: column; align-items: flex-start; }
     header.top { flex-wrap: wrap; }
-    .site-logo { width: 52px; height: 52px; }
+    .site-logo { width: 40px; height: 40px; }
+    .brand { min-width: 0; }
+    .brand .tagline { display: none; }
+    .theme-toggle { padding: 6px 9px; font-size: 11.5px; white-space: nowrap; }
     .wordmark-block { padding-left: 12px; }
     .brand .wordmark { font-size: 18px; }
     .brand .motto { display: none; }
@@ -428,8 +469,7 @@
         <div class="motto">Compute &middot; Compare &middot; Commute</div>
       </div>
     </div>
-    <div class="top-actions">
-      <nav class="top-nav" aria-label="Main navigation">
+    <nav class="top-nav" aria-label="Main navigation">
       <a href="/" aria-current="page">Calculator</a>
       <a href="/buy-a-car/">Buy a Car</a>
       <a href="/trips-and-commutes/">Trips &amp; Commutes</a>
@@ -437,7 +477,8 @@
       <a href="/vehicle-running-costs/">Running Costs</a>
       <a href="/example-report/">Example Report</a>
       <a href="/methodology/">Methodology</a>
-      </nav>
+    </nav>
+    <div class="top-actions">
       <button class="theme-toggle" id="themeToggle" type="button">dark / light</button>
     </div>
   </header>
@@ -449,12 +490,6 @@
     </div>
     <h1 id="heroHeading">What a drive really costs</h1>
     <p class="lead" id="heroLead">Fuel is only part of it. Add in servicing, tyre wear and tolls, and see the real cost of a commute, a holiday drive, or any route you're planning — for one car, or up to three side by side.</p>
-    <div class="capability-strip">
-      <span class="cap-chip">Fuel, maintenance, tyres &amp; tolls</span>
-      <span class="cap-chip">Compare up to 3 vehicles</span>
-      <span class="cap-chip">Auto currency &amp; units</span>
-      <span class="cap-chip">Mileage reimbursement check</span>
-    </div>
   </div>
 
   <div class="grid">
@@ -1067,6 +1102,13 @@
     <p class="hint">Visible to anyone with access to this page. Click one to load it back into the calculator.</p>
     <div id="savedTripsList"></div>
   </section>
+
+  <div class="capability-strip below">
+    <span class="cap-chip">Fuel, maintenance, tyres &amp; tolls</span>
+    <span class="cap-chip">Compare up to 3 vehicles</span>
+    <span class="cap-chip">Auto currency &amp; units</span>
+    <span class="cap-chip">Mileage reimbursement check</span>
+  </div>
 
   <footer class="legend">
     <div class="footer-links">
