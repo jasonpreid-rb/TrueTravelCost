@@ -1666,7 +1666,60 @@
 
       return { i: i, fuelCost: fuelCost, maintCost: maintCost, tyreCost: tyreCost, ownCost: ownCost, tollCost: tollCost, total: total, perUnit: perUnit };
     }
+    var calculatorStartedTracked = false;
+    var calculationCompletedTracked = false;
 
+    function trackCalculatorUsage() {
+      if (typeof gtag !== 'function') return;
+
+      var dist = parseFloat(distance.value) || 0;
+
+      var validVehicles = [];
+
+      for (var idx = 0; idx < activeCount; idx++) {
+        var i = VEH[idx];
+
+        if (vehicleEntered(i)) {
+          validVehicles.push(i);
+        }
+      }
+
+      if (!calculatorStartedTracked && (dist > 0 || validVehicles.length > 0)) {
+        calculatorStartedTracked = true;
+
+        gtag('event', 'calculator_started', {
+          vehicle_count: validVehicles.length
+        });
+      }
+
+      if (!calculationCompletedTracked && dist > 0 && validVehicles.length > 0) {
+        calculationCompletedTracked = true;
+
+        var fuelTypes = validVehicles.map(function (i) {
+          return veh(i).fuelType.value;
+        });
+
+        gtag('event', 'calculation_completed', {
+          vehicle_count: validVehicles.length,
+          fuel_types: fuelTypes.join(','),
+          distance_band:
+            dist < 100 ? '0-99' :
+            dist < 500 ? '100-499' :
+            dist < 1000 ? '500-999' :
+            dist < 2000 ? '1000-1999' :
+            '2000+',
+          round_trip: roundTrip.checked,
+          unit_system: unitSystem.value
+        });
+      }
+    }
+
+    function calculate() {
+      var metric = unitSystem.value === 'metric';
+      var curr = currencyInput.value || '€';
+      var distU = metric ? 'km' : 'mi';
+      var dist = parseFloat(distance.value) || 0;
+      var tollCost = (parseFloat(tolls.value) || 0) + (parseFloat(extras.value) || 0);
     function calculate() {
       var metric = unitSystem.value === 'metric';
       var curr = currencyInput.value || '€';
@@ -1686,7 +1739,8 @@
 
       var filled = results.filter(function (r) { return !r.empty; });
       var cheapest = (filled.length ? filled : results).slice().sort(function (a, b) { return a.total - b.total; })[0];
-
+      trackCalculatorUsage();
+      
       // best-value highlighting
       VEH.forEach(function (i) {
         var v = veh(i);
