@@ -175,6 +175,8 @@
     font-family: var(--font-mono); font-size: 15px; padding: 10px 30px 10px 10px;
     cursor: pointer;
   }
+  .select-wrap select:required:invalid { color: var(--muted); opacity: .75; }
+  .select-wrap select option { color: var(--text); }
   .select-wrap::after {
     content: ''; position: absolute; right: 12px; top: 50%; width: 8px; height: 8px;
     border-right: 1.5px solid var(--muted); border-bottom: 1.5px solid var(--muted);
@@ -679,14 +681,15 @@
             <div>
               <label for="vehYear1">Year</label>
               <div class="num-input select-wrap">
-                <select id="vehYear1">
+                <select id="vehYear1" required>
+                  <option value="" selected disabled hidden>e.g. 2021</option>
                   <option value="2027">2027</option>
                   <option value="2026">2026</option>
                   <option value="2025">2025</option>
                   <option value="2024">2024</option>
                   <option value="2023">2023</option>
                   <option value="2022">2022</option>
-                  <option value="2021" selected>2021</option>
+                  <option value="2021">2021</option>
                   <option value="2020">2020</option>
                   <option value="2019">2019</option>
                   <option value="2018">2018</option>
@@ -822,14 +825,15 @@
             <div>
               <label for="vehYear2">Year</label>
               <div class="num-input select-wrap">
-                <select id="vehYear2">
+                <select id="vehYear2" required>
+                  <option value="" selected disabled hidden>e.g. 2021</option>
                   <option value="2027">2027</option>
                   <option value="2026">2026</option>
                   <option value="2025">2025</option>
                   <option value="2024">2024</option>
                   <option value="2023">2023</option>
                   <option value="2022">2022</option>
-                  <option value="2021" selected>2021</option>
+                  <option value="2021">2021</option>
                   <option value="2020">2020</option>
                   <option value="2019">2019</option>
                   <option value="2018">2018</option>
@@ -965,13 +969,14 @@
             <div>
               <label for="vehYear3">Year</label>
               <div class="num-input select-wrap">
-                <select id="vehYear3">
+                <select id="vehYear3" required>
+                  <option value="" selected disabled hidden>e.g. 2021</option>
                   <option value="2027">2027</option>
                   <option value="2026">2026</option>
                   <option value="2025">2025</option>
                   <option value="2024">2024</option>
                   <option value="2023">2023</option>
-                  <option value="2022" selected>2022</option>
+                  <option value="2022">2022</option>
                   <option value="2021">2021</option>
                   <option value="2020">2020</option>
                   <option value="2019">2019</option>
@@ -1556,8 +1561,15 @@
       return (dist / 100) * cons * price;
     }
 
+    function vehicleEntered(i) {
+      var v = veh(i);
+      return !!((v.make.value || '').trim() && (v.model.value || '').trim());
+    }
+
     function calcVehicle(i, dist, tollCost, metric) {
       var v = veh(i);
+      // no vehicle entered yet -> everything stays at zero
+      if (!vehicleEntered(i)) return { i: i, fuelCost: 0, maintCost: 0, tyreCost: 0, tollCost: 0, total: 0, perUnit: 0, empty: true };
       var mAnnual = parseFloat(v.maintAnnual.value) || 0;
       var mDist = parseFloat(v.maintDistance.value) || 1;
       var tSet = parseFloat(v.tyreSetCost.value) || 0;
@@ -1588,12 +1600,13 @@
         v.vcAmt.textContent = curr + fmt(r.total);
       }
 
-      var cheapest = results.slice().sort(function (a, b) { return a.total - b.total; })[0];
+      var filled = results.filter(function (r) { return !r.empty; });
+      var cheapest = (filled.length ? filled : results).slice().sort(function (a, b) { return a.total - b.total; })[0];
 
       // best-value highlighting
       VEH.forEach(function (i) {
         var v = veh(i);
-        var isBest = activeCount > 1 && cheapest && cheapest.i === i;
+        var isBest = filled.length > 1 && cheapest && cheapest.i === i;
         v.card.classList.toggle('is-best', !!isBest);
       });
 
@@ -1617,7 +1630,7 @@
         $('tollBar').style.width = (r0.tollCost / max * 100) + '%';
       } else {
         // comparison readouts
-        $('meterHeading').textContent = 'Cheapest of ' + activeCount;
+        $('meterHeading').textContent = filled.length > 1 ? 'Cheapest of ' + filled.length : 'Total for this trip';
         $('totalReadout').textContent = curr + ' ' + fmt(cheapest.total);
         $('perUnitReadout').textContent = vehicleName(cheapest.i) + ' — ' + curr + cheapest.perUnit.toFixed(3) + ' / ' + distU;
         $('singleBreakdown').hidden = true;
@@ -1626,9 +1639,9 @@
         list.hidden = false;
         list.innerHTML = '';
         var maxTotal = Math.max.apply(null, results.map(function (r) { return r.total; }).concat([0.0001]));
-        var sorted = results.slice().sort(function (a, b) { return a.total - b.total; });
+        var sorted = results.slice().sort(function (a, b) { return (a.empty - b.empty) || (a.total - b.total); });
         sorted.forEach(function (r) {
-          var isBest = cheapest && r.i === cheapest.i;
+          var isBest = filled.length > 1 && cheapest && r.i === cheapest.i;
           var row = document.createElement('div');
           row.className = 'compare-row' + (isBest ? ' is-best' : '');
           var top = document.createElement('div');
@@ -1656,7 +1669,7 @@
           var per = document.createElement('div');
           per.className = 'cr-per-unit';
           per.textContent = curr + r.perUnit.toFixed(3) + ' / ' + distU +
-            (isBest ? '' : '  ·  +' + curr + fmt(r.total - cheapest.total) + ' vs. cheapest');
+            ((isBest || r.empty) ? '' : '  ·  +' + curr + fmt(r.total - cheapest.total) + ' vs. cheapest');
           row.appendChild(top); row.appendChild(track); row.appendChild(per);
           list.appendChild(row);
         });
@@ -1668,7 +1681,8 @@
     function renderReimbursement(results, curr, distU, dist) {
       var rateV = parseFloat(reimbRate.value);
       var out = $('reimbOutput');
-      if (!rateV || dist <= 0) { out.hidden = true; return; }
+      results = results.filter(function (r) { return !r.empty; });
+      if (!rateV || dist <= 0 || !results.length) { out.hidden = true; return; }
       out.hidden = false;
       var received = rateV * dist;
       var list = $('reimbList');
@@ -1803,6 +1817,8 @@
       v.fuelPrice.addEventListener('input', function () { userEdited[i].fuelPrice = true; v.tagFuelPrice.hidden = true; delete v.tagFuelPrice.dataset.source; });
       v.maintAnnual.addEventListener('input', function () { userEdited[i].maintAnnual = true; v.tagMaint.hidden = true; delete v.tagMaint.dataset.source; });
       v.tyreSetCost.addEventListener('input', function () { userEdited[i].tyreSetCost = true; v.tagTyre.hidden = true; delete v.tagTyre.dataset.source; });
+      v.make.addEventListener('input', calculate);
+      v.model.addEventListener('input', calculate);
       v.make.addEventListener('input', function () { applyVehicleTierDefaults(i); maybeAutoDetectFuelType(i); scheduleConsumptionFetch(i); scheduleTrimFetch(i); });
       v.model.addEventListener('input', function () { maybeAutoDetectFuelType(i); scheduleConsumptionFetch(i); scheduleTrimFetch(i); });
       v.trim.addEventListener('input', function () { maybeAutoDetectFuelType(i); scheduleConsumptionFetch(i); });
