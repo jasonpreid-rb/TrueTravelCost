@@ -751,14 +751,14 @@
             <div>
               <label for="consumption1" id="consLabel1">Consumption<span class="estimated-tag" id="tagCons1" hidden>AI est.</span></label>
               <div class="num-input">
-                <input type="number" id="consumption1" value="7.5" min="0" step="0.1">
+                <input type="number" id="consumption1" value="0" min="0" step="0.1">
                 <span class="unit" id="consUnitLabel1">L/100km</span>
               </div>
             </div>
             <div>
               <label for="fuelPrice1" id="fuelPriceLabel1">Fuel price<span class="estimated-tag" id="tagFuelPrice1" hidden>AI est.</span></label>
               <div class="num-input">
-                <input type="number" id="fuelPrice1" value="1.75" min="0" step="0.01">
+                <input type="number" id="fuelPrice1" value="0" min="0" step="0.01">
                 <span class="unit" id="fuelPriceUnitLabel1">€/L</span>
               </div>
             </div>
@@ -767,7 +767,7 @@
             <div>
               <label for="maintAnnual1">Annual maintenance<span class="estimated-tag" id="tagMaint1" hidden>AI est.</span></label>
               <div class="num-input">
-                <input type="number" id="maintAnnual1" value="900" min="0" step="10">
+                <input type="number" id="maintAnnual1" value="0" min="0" step="10">
                 <span class="unit" id="maintCurrencyLabel1">€</span>
               </div>
             </div>
@@ -783,7 +783,7 @@
             <div>
               <label for="tyreSetCost1">Tyre set cost<span class="estimated-tag" id="tagTyre1" hidden>AI est.</span></label>
               <div class="num-input">
-                <input type="number" id="tyreSetCost1" value="480" min="0" step="10">
+                <input type="number" id="tyreSetCost1" value="0" min="0" step="10">
                 <span class="unit" id="tyreCurrencyLabel1">€</span>
               </div>
             </div>
@@ -895,14 +895,14 @@
             <div>
               <label for="consumption2" id="consLabel2">Consumption<span class="estimated-tag" id="tagCons2" hidden>AI est.</span></label>
               <div class="num-input">
-                <input type="number" id="consumption2" value="6.0" min="0" step="0.1">
+                <input type="number" id="consumption2" value="0" min="0" step="0.1">
                 <span class="unit" id="consUnitLabel2">L/100km</span>
               </div>
             </div>
             <div>
               <label for="fuelPrice2" id="fuelPriceLabel2">Fuel price<span class="estimated-tag" id="tagFuelPrice2" hidden>AI est.</span></label>
               <div class="num-input">
-                <input type="number" id="fuelPrice2" value="1.75" min="0" step="0.01">
+                <input type="number" id="fuelPrice2" value="0" min="0" step="0.01">
                 <span class="unit" id="fuelPriceUnitLabel2">€/L</span>
               </div>
             </div>
@@ -911,7 +911,7 @@
             <div>
               <label for="maintAnnual2">Annual maintenance<span class="estimated-tag" id="tagMaint2" hidden>AI est.</span></label>
               <div class="num-input">
-                <input type="number" id="maintAnnual2" value="550" min="0" step="10">
+                <input type="number" id="maintAnnual2" value="0" min="0" step="10">
                 <span class="unit" id="maintCurrencyLabel2">€</span>
               </div>
             </div>
@@ -927,7 +927,7 @@
             <div>
               <label for="tyreSetCost2">Tyre set cost<span class="estimated-tag" id="tagTyre2" hidden>AI est.</span></label>
               <div class="num-input">
-                <input type="number" id="tyreSetCost2" value="320" min="0" step="10">
+                <input type="number" id="tyreSetCost2" value="0" min="0" step="10">
                 <span class="unit" id="tyreCurrencyLabel2">€</span>
               </div>
             </div>
@@ -1039,14 +1039,14 @@
             <div>
               <label for="consumption3" id="consLabel3">Consumption<span class="estimated-tag" id="tagCons3" hidden>AI est.</span></label>
               <div class="num-input">
-                <input type="number" id="consumption3" value="15.5" min="0" step="0.1">
+                <input type="number" id="consumption3" value="0" min="0" step="0.1">
                 <span class="unit" id="consUnitLabel3">kWh/100km</span>
               </div>
             </div>
             <div>
               <label for="fuelPrice3" id="fuelPriceLabel3">Energy price<span class="estimated-tag" id="tagFuelPrice3" hidden>AI est.</span></label>
               <div class="num-input">
-                <input type="number" id="fuelPrice3" value="0.32" min="0" step="0.01">
+                <input type="number" id="fuelPrice3" value="0" min="0" step="0.01">
                 <span class="unit" id="fuelPriceUnitLabel3">€/kWh</span>
               </div>
             </div>
@@ -1055,7 +1055,7 @@
             <div>
               <label for="maintAnnual3">Annual maintenance<span class="estimated-tag" id="tagMaint3" hidden>AI est.</span></label>
               <div class="num-input">
-                <input type="number" id="maintAnnual3" value="750" min="0" step="10">
+                <input type="number" id="maintAnnual3" value="0" min="0" step="10">
                 <span class="unit" id="maintCurrencyLabel3">€</span>
               </div>
             </div>
@@ -1071,7 +1071,7 @@
             <div>
               <label for="tyreSetCost3">Tyre set cost<span class="estimated-tag" id="tagTyre3" hidden>AI est.</span></label>
               <div class="num-input">
-                <input type="number" id="tyreSetCost3" value="750" min="0" step="10">
+                <input type="number" id="tyreSetCost3" value="0" min="0" step="10">
                 <span class="unit" id="tyreCurrencyLabel3">€</span>
               </div>
             </div>
@@ -1566,6 +1566,38 @@
       return !!((v.make.value || '').trim() && (v.model.value || '').trim());
     }
 
+    // Until a vehicle (make + model) is entered, its cost inputs read 0; they are re-filled with
+    // sensible defaults the moment it is. Anything the person typed themselves is left alone.
+    var zeroedVeh = {};
+    function syncEmptyVehicles() {
+      var metric = unitSystem.value === 'metric';
+      VEH.forEach(function (i) {
+        var v = veh(i);
+        if (!vehicleEntered(i)) {
+          zeroedVeh[i] = true;
+          var pairs = [['consumption', 'tagCons'], ['fuelPrice', 'tagFuelPrice'], ['maintAnnual', 'tagMaint'], ['tyreSetCost', 'tagTyre']];
+          pairs.forEach(function (pr) {
+            if (userEdited[i][pr[0]]) return;
+            if (v[pr[0]].value !== '0') v[pr[0]].value = 0;
+            v[pr[1]].hidden = true;
+            delete v[pr[1]].dataset.source;
+          });
+        } else if (zeroedVeh[i]) {
+          zeroedVeh[i] = false;
+          var d = fuelDefaults(v.fuelType.value, metric);
+          if (!userEdited[i].consumption) v.consumption.value = d.consumption;
+          if (!userEdited[i].fuelPrice) {
+            v.fuelPrice.value = d.price;
+            v.tagFuelPrice.dataset.source = 'table';
+            v.tagFuelPrice.textContent = 'Typical \u00b7 Sep 2026';
+            v.tagFuelPrice.hidden = false;
+          }
+          applyLiveFuelPriceToVehicle(i);
+          applyVehicleTierDefaults(i);
+        }
+      });
+    }
+
     function calcVehicle(i, dist, tollCost, metric) {
       var v = veh(i);
       // no vehicle entered yet -> everything stays at zero
@@ -1591,6 +1623,7 @@
       var dist = parseFloat(distance.value) || 0;
       var tollCost = (parseFloat(tolls.value) || 0) + (parseFloat(extras.value) || 0);
 
+      syncEmptyVehicles();
       var results = [];
       for (var idx = 0; idx < activeCount; idx++) {
         var i = VEH[idx];
@@ -2366,11 +2399,23 @@
       return lines.join('\n');
     }
 
+    // Saved comparisons: the shared `db` runtime only exists when the page is hosted inside Claude.
+    // On the live site (Vercel) we fall back to this browser's localStorage.
     var db = null;
+    var LS_KEY = 'ttc-saved-trips';
+    function lsRead() {
+      try { var a = JSON.parse(localStorage.getItem(LS_KEY) || '[]'); return Array.isArray(a) ? a : []; }
+      catch (e) { return []; }
+    }
+    function lsWrite(arr) {
+      try { localStorage.setItem(LS_KEY, JSON.stringify(arr)); return true; }
+      catch (e) { return false; }
+    }
+    function renderLocalTrips() { renderSavedTrips(lsRead()); }
     Promise.resolve((typeof claude !== 'undefined' && claude.use) ? claude.use('db').catch(function () { return null; }) : null)
       .then(function (d) {
         db = d;
-        if (!db) { saveTripBtn.disabled = true; return; }
+        if (!db) { renderLocalTrips(); return; }
         try {
           db.collection('trips').orderBy('savedAt', 'desc').limit(20).onSnapshot(
             function (snap) { renderSavedTrips(snap.docs || []); },
@@ -2407,10 +2452,16 @@
     }
 
     saveTripBtn.addEventListener('click', function () {
-      if (!db) return;
+      var snap = fieldSnapshot(); snap.savedAt = Date.now();
+      if (!db) {
+        // local (this browser only)
+        var arr = lsRead(); arr.unshift(snap); arr = arr.slice(0, 20);
+        if (lsWrite(arr)) { renderSavedTrips(arr); setMeterStatus('Saved in this browser.', 'ok'); }
+        else setMeterStatus('Couldn\u2019t save \u2014 browser storage is unavailable.', 'err');
+        return;
+      }
       saveTripBtn.disabled = true;
       setMeterStatus('Saving\u2026');
-      var snap = fieldSnapshot(); snap.savedAt = Date.now();
       db.collection('trips').add(snap).then(function () {
         setMeterStatus('Saved \u2014 visible to anyone with this page open.', 'ok');
       }).catch(function (e) {
