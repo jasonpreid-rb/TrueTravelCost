@@ -26,7 +26,7 @@ function unavailable(res, currency, reason, detail) {
   return res.status(200).json({ tollStatus: 'unavailable', tollTotal: null, currency, reason });
 }
 
-module.exports = async function handler(req, res) {
+export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'method_not_allowed' });
   const key = process.env.HERE_API_KEY;
   if (!key) return res.status(200).json({ tollStatus: 'unavailable', tollTotal: null, reason: 'HERE_API_KEY is not set on the server' });
@@ -65,4 +65,4 @@ module.exports = async function handler(req, res) {
   } catch (e) {
     return unavailable(res, currency, 'exception: ' + (e && e.message), e && e.stack);
   }
-};
+}
