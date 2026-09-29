@@ -1994,11 +1994,11 @@
           '<span class="rs-text">Planning route<span class="rs-dots"><span>.</span><span>.</span><span>.</span></span></span>';
       } else if (kind === 'needs') {
         el.innerHTML = '<span class="rs-icon"><span class="rs-glyph"><i>!</i></span></span>' +
-          '<span class="rs-text"><b>More details needed</b>' +
-          '<small>Add a town, region or country to each location \u2014 e.g. \u201cHamilton, NZ\u201d.</small></span>';
+          '<span class="rs-text"><b>More details required</b>' +
+          '<small>Try adding a state or country \u2014 e.g. \u201cHamilton, NZ\u201d.</small></span>';
       } else {
         el.innerHTML = '<span class="rs-icon"><span class="rs-glyph"><i>\u00d7</i></span></span>' +
-          '<span class="rs-text"><b>Couldn\u2019t plan the route</b><small>Check your connection and try again, or enter the distance yourself.</small></span>';
+          '<span class="rs-text"><b>More details required</b><small>Try adding a state or country \u2014 e.g. \u201cHamilton, NZ\u201d.</small></span>';
       }
       el.hidden = false;
     }
@@ -2027,14 +2027,14 @@
               setRouteStatus('');
             } else {
               setLocationChecks(false);
-              // 5xx = server trouble; anything else means we couldn't resolve/route the locations
-              setRouteStatus(r.status >= 500 ? 'error' : 'needs');
+              // any failed lookup (including the API erroring on an unresolvable place) = ask for more detail
+              setRouteStatus('needs');
             }
           })
           .catch(function () {
             if (reqId !== routeReq) return;
             setLocationChecks(false);
-            setRouteStatus('error');
+            setRouteStatus('needs');
             /* offline: leave existing distance as-is */
           });
       }, 600);
