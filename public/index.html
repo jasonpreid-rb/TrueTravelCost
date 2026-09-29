@@ -357,6 +357,8 @@
   .maint-fill { background: var(--navy); }
   .tyre-fill { background: var(--gold); }
   .toll-fill { background: var(--red); }
+  .own-fill { background: var(--muted); }
+  .ledger-row[hidden], .empty-note[hidden] { display: none; }
 
   /* Reimbursement ledger */
   .reimb-panel { margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--line); }
@@ -599,6 +601,10 @@
             <label class="checkline"><input type="checkbox" id="autoRegion" checked><span>Auto-detect currency &amp; units from the journey</span></label>
           </div>
 
+          <div class="row single" style="margin-bottom: 10px;">
+            <label class="checkline"><input type="checkbox" id="includeOwn"><span>Include ownership costs &mdash; depreciation, insurance, registration &amp; finance</span></label>
+          </div>
+
           <div class="row two" id="manualCurrencyRow" hidden>
             <div>
               <label for="currency">Currency symbol</label>
@@ -795,6 +801,15 @@
               </div>
             </div>
           </div>
+          <div class="row single" id="ownRow1" hidden>
+            <div>
+              <label for="ownAnnual1">Ownership cost / year<span class="estimated-tag" id="tagOwn1" hidden>Typical for class</span></label>
+              <div class="num-input">
+                <input type="number" id="ownAnnual1" value="0" min="0" step="100">
+                <span class="unit" id="ownCurrencyLabel1">€</span>
+              </div>
+            </div>
+          </div>
           <div class="vc-mini-total">
             <span class="vc-name">Total for this trip</span>
             <span class="vc-amt" id="vcAmt1">€0.00</span>
@@ -936,6 +951,15 @@
               <div class="num-input">
                 <input type="number" id="tyreLife2" list="tyreLifeHelperList" value="45000" min="1" step="1000">
                 <span class="unit" id="tyreLifeUnitLabel2">km</span>
+              </div>
+            </div>
+          </div>
+          <div class="row single" id="ownRow2" hidden>
+            <div>
+              <label for="ownAnnual2">Ownership cost / year<span class="estimated-tag" id="tagOwn2" hidden>Typical for class</span></label>
+              <div class="num-input">
+                <input type="number" id="ownAnnual2" value="0" min="0" step="100">
+                <span class="unit" id="ownCurrencyLabel2">€</span>
               </div>
             </div>
           </div>
@@ -1083,6 +1107,15 @@
               </div>
             </div>
           </div>
+          <div class="row single" id="ownRow3" hidden>
+            <div>
+              <label for="ownAnnual3">Ownership cost / year<span class="estimated-tag" id="tagOwn3" hidden>Typical for class</span></label>
+              <div class="num-input">
+                <input type="number" id="ownAnnual3" value="0" min="0" step="100">
+                <span class="unit" id="ownCurrencyLabel3">€</span>
+              </div>
+            </div>
+          </div>
           <div class="vc-mini-total">
             <span class="vc-name">Total for this trip</span>
             <span class="vc-amt" id="vcAmt3">€0.00</span>
@@ -1112,6 +1145,10 @@
           <div class="lr-top"><span class="lr-label">Tyres</span><span class="lr-amt" id="tblTyre">€0.00</span></div>
           <div class="bar-track"><div class="bar-fill tyre-fill" id="tyreBar" style="width:0%"></div></div>
         </div>
+        <div class="ledger-row" id="ownLedgerRow" hidden>
+          <div class="lr-top"><span class="lr-label">Ownership</span><span class="lr-amt" id="tblOwn">€0.00</span></div>
+          <div class="bar-track"><div class="bar-fill own-fill" id="ownBar" style="width:0%"></div></div>
+        </div>
         <div class="ledger-row">
           <div class="lr-top"><span class="lr-label">Tolls &amp; extras</span><span class="lr-amt" id="tblToll">€0.00</span></div>
           <div class="bar-track"><div class="bar-fill toll-fill" id="tollBar" style="width:0%"></div></div>
@@ -1121,6 +1158,7 @@
       <div class="compare-list" id="compareList" hidden></div>
 
       <p class="empty-note">Maintenance and tyre costs are spread per distance unit from the annual figures, then applied to this trip's distance.</p>
+      <p class="empty-note" id="ownNote" hidden>Ownership costs (depreciation, insurance, registration, finance) are yearly figures spread over your annual distance, so they add most for low-mileage drivers.</p>
 
       <div class="reimb-panel" id="reimbOutput" hidden>
         <h3>Reimbursement check</h3>
@@ -1173,7 +1211,7 @@
       <a href="/example-report/">Example Report</a>
       <a href="/methodology/">Methodology</a>
     </div>
-    Figures are estimates based on what you enter — actual costs vary with driving conditions, vehicle condition, and local prices. Not tax or legal advice on mileage reimbursement — check your local rules (e.g. IRS standard mileage rate, HMRC AMAP) for statutory figures.<br>
+    Figures are estimates based on what you enter — actual costs vary with driving conditions, vehicle condition, and local prices. Default servicing, tyre and ownership figures are anchored to AAA&rsquo;s <em>Your Driving Costs 2025</em> (US) and scaled for other regions, so treat them as starting points. Not tax or legal advice on mileage reimbursement — check your local rules (e.g. IRS standard mileage rate, HMRC AMAP) for statutory figures.<br>
     European fuel prices: <a href="https://www.fuel-prices.eu/" target="_blank" rel="noopener" style="color:inherit;">fuel-prices.eu</a>, based on the EU Commission Weekly Oil Bulletin (CC BY 4.0).
   </footer>
 
@@ -1394,6 +1432,7 @@
     var distance = $('distance'), unitSystem = $('unitSystem'), distUnitLabel = $('distUnitLabel');
     var autoRegion = $('autoRegion'), manualCurrencyRow = $('manualCurrencyRow'), currencyInput = $('currency');
     var tolls = $('tolls'), extras = $('extras');
+    var includeOwn = $('includeOwn');
     var reimbRate = $('reimbRate'), reimbRateUnitLabel = $('reimbRateUnitLabel');
     var addVehicleBtn = $('addVehicleBtn');
 
@@ -1416,12 +1455,13 @@
         tyreLife: $('tyreLife' + i), tyreLifeLabel: $('tyreLifeLabel' + i), tyreLifeUnitLabel: $('tyreLifeUnitLabel' + i),
         lookupBtn: $('lookupBtn' + i), lookupStatus: $('lookupStatus' + i),
         tagCons: $('tagCons' + i), tagFuelPrice: $('tagFuelPrice' + i), tagMaint: $('tagMaint' + i), tagTyre: $('tagTyre' + i),
+        ownRow: $('ownRow' + i), ownAnnual: $('ownAnnual' + i), ownCurrencyLabel: $('ownCurrencyLabel' + i), tagOwn: $('tagOwn' + i),
         vcAmt: $('vcAmt' + i), bestFlag: $('bestFlag' + i)
       };
     }
 
     var userEdited = {};
-    VEH.forEach(function (i) { userEdited[i] = { consumption: false, fuelPrice: false, maintAnnual: false, tyreSetCost: false }; });
+    VEH.forEach(function (i) { userEdited[i] = { consumption: false, fuelPrice: false, maintAnnual: false, tyreSetCost: false, ownAnnual: false }; });
     var fuelTypeEdited = {};
     VEH.forEach(function (i) { fuelTypeEdited[i] = false; });
     var distEdited = false;
@@ -1546,6 +1586,7 @@
         v.tyreLifeUnitLabel.textContent = distU;
         v.maintCurrencyLabel.textContent = curr;
         v.tyreCurrencyLabel.textContent = curr;
+        v.ownCurrencyLabel.textContent = curr;
       }
     }
 
@@ -1575,7 +1616,7 @@
         var v = veh(i);
         if (!vehicleEntered(i)) {
           zeroedVeh[i] = true;
-          var pairs = [['consumption', 'tagCons'], ['fuelPrice', 'tagFuelPrice'], ['maintAnnual', 'tagMaint'], ['tyreSetCost', 'tagTyre']];
+          var pairs = [['consumption', 'tagCons'], ['fuelPrice', 'tagFuelPrice'], ['maintAnnual', 'tagMaint'], ['tyreSetCost', 'tagTyre'], ['ownAnnual', 'tagOwn']];
           pairs.forEach(function (pr) {
             if (userEdited[i][pr[0]]) return;
             if (v[pr[0]].value !== '0') v[pr[0]].value = 0;
@@ -1601,7 +1642,7 @@
     function calcVehicle(i, dist, tollCost, metric) {
       var v = veh(i);
       // no vehicle entered yet -> everything stays at zero
-      if (!vehicleEntered(i)) return { i: i, fuelCost: 0, maintCost: 0, tyreCost: 0, tollCost: 0, total: 0, perUnit: 0, empty: true };
+      if (!vehicleEntered(i)) return { i: i, fuelCost: 0, maintCost: 0, tyreCost: 0, ownCost: 0, tollCost: 0, total: 0, perUnit: 0, empty: true };
       var mAnnual = parseFloat(v.maintAnnual.value) || 0;
       var mDist = parseFloat(v.maintDistance.value) || 1;
       var tSet = parseFloat(v.tyreSetCost.value) || 0;
@@ -1610,10 +1651,11 @@
       var fuelCost = fuelCostFor(i, dist, metric);
       var maintCost = (mAnnual / mDist) * dist;
       var tyreCost = (tSet / tLife) * dist;
-      var total = fuelCost + maintCost + tyreCost + tollCost;
+      var ownCost = includeOwn.checked ? ((parseFloat(v.ownAnnual.value) || 0) / mDist) * dist : 0;
+      var total = fuelCost + maintCost + tyreCost + ownCost + tollCost;
       var perUnit = dist > 0 ? total / dist : 0;
 
-      return { i: i, fuelCost: fuelCost, maintCost: maintCost, tyreCost: tyreCost, tollCost: tollCost, total: total, perUnit: perUnit };
+      return { i: i, fuelCost: fuelCost, maintCost: maintCost, tyreCost: tyreCost, ownCost: ownCost, tollCost: tollCost, total: total, perUnit: perUnit };
     }
 
     function calculate() {
@@ -1656,11 +1698,15 @@
         $('tblMaint').textContent = curr + fmt(r0.maintCost);
         $('tblTyre').textContent = curr + fmt(r0.tyreCost);
         $('tblToll').textContent = curr + fmt(r0.tollCost);
-        var max = Math.max(r0.fuelCost, r0.maintCost, r0.tyreCost, r0.tollCost, 0.0001);
+        $('ownLedgerRow').hidden = !includeOwn.checked;
+        $('ownNote').hidden = !includeOwn.checked;
+        $('tblOwn').textContent = curr + fmt(r0.ownCost);
+        var max = Math.max(r0.fuelCost, r0.maintCost, r0.tyreCost, r0.ownCost, r0.tollCost, 0.0001);
         $('fuelBar').style.width = (r0.fuelCost / max * 100) + '%';
         $('maintBar').style.width = (r0.maintCost / max * 100) + '%';
         $('tyreBar').style.width = (r0.tyreCost / max * 100) + '%';
         $('tollBar').style.width = (r0.tollCost / max * 100) + '%';
+        $('ownBar').style.width = (r0.ownCost / max * 100) + '%';
       } else {
         // comparison readouts
         $('meterHeading').textContent = filled.length > 1 ? 'Cheapest of ' + filled.length : 'Total for this trip';
@@ -1726,7 +1772,7 @@
         row.className = 'reimb-row';
         var name = document.createElement('span');
         name.className = 'rr-name';
-        name.textContent = (activeCount > 1 ? vehicleName(r.i) : 'This trip') + ' — costs ' + curr + fmt(r.total);
+        name.textContent = (activeCount > 1 ? vehicleName(r.i) : 'This trip') + ' — costs ' + curr + fmt(r.total) + (includeOwn.checked ? ' (incl. ownership)' : '');
         var verdict = document.createElement('span');
         verdict.className = 'rr-verdict ' + (diff >= 0 ? 'pos' : 'neg');
         verdict.textContent = (diff >= 0 ? '+' : '−') + curr + fmt(Math.abs(diff)) + (diff >= 0 ? ' surplus' : ' shortfall');
@@ -1772,7 +1818,7 @@
     });
     function copyVehicleValues(from, to) {
       var a = veh(from), b = veh(to);
-      ['make','model','trim','year','fuelType','consumption','fuelPrice','maintAnnual','maintDistance','tyreSetCost','tyreLife'].forEach(function (f) {
+      ['make','model','trim','year','fuelType','consumption','fuelPrice','maintAnnual','maintDistance','tyreSetCost','tyreLife','ownAnnual'].forEach(function (f) {
         b[f].value = a[f].value;
       });
     }
@@ -1799,13 +1845,18 @@
           } else if (v.tagCons.dataset.source !== 'live') v.consumption.value = d.consumption;
         }
         if (!userEdited[i].fuelPrice) v.fuelPrice.value = d.price;
-        v.maintDistance.value = metric ? 15000 : 10000;
+        v.maintDistance.value = 15000; // AAA's basis year is 15,000 mi; the class defaults below are calibrated to it
         v.tyreLife.value = metric ? 40000 : 25000;
+        applyVehicleTierDefaults(i);   // re-derive class defaults for the new unit system (skips anything typed by hand)
       }
       updateUnitLabels();
       calculate();
     }
     unitSystem.addEventListener('change', onUnitSystemChange);
+    includeOwn.addEventListener('change', function () {
+      VEH.forEach(function (i) { veh(i).ownRow.hidden = !includeOwn.checked; });
+      calculate();
+    });
     distance.addEventListener('input', function () { distEdited = true; calculate(); });
     [tolls, extras, reimbRate].forEach(function (el) { el.addEventListener('input', calculate); });
     currencyInput.addEventListener('input', function () {
@@ -1842,18 +1893,20 @@
       v.fuelType.addEventListener('change', function () {
         fuelTypeEdited[i] = true;
         applyFuelTypeDefaults(i);
+        applyVehicleTierDefaults(i);
       });
-      [v.consumption, v.fuelPrice, v.maintAnnual, v.maintDistance, v.tyreSetCost, v.tyreLife].forEach(function (el) {
+      [v.consumption, v.fuelPrice, v.maintAnnual, v.maintDistance, v.tyreSetCost, v.tyreLife, v.ownAnnual].forEach(function (el) {
         el.addEventListener('input', calculate);
       });
       v.consumption.addEventListener('input', function () { userEdited[i].consumption = true; v.tagCons.hidden = true; delete v.tagCons.dataset.source; });
       v.fuelPrice.addEventListener('input', function () { userEdited[i].fuelPrice = true; v.tagFuelPrice.hidden = true; delete v.tagFuelPrice.dataset.source; });
       v.maintAnnual.addEventListener('input', function () { userEdited[i].maintAnnual = true; v.tagMaint.hidden = true; delete v.tagMaint.dataset.source; });
       v.tyreSetCost.addEventListener('input', function () { userEdited[i].tyreSetCost = true; v.tagTyre.hidden = true; delete v.tagTyre.dataset.source; });
+      v.ownAnnual.addEventListener('input', function () { userEdited[i].ownAnnual = true; v.tagOwn.hidden = true; delete v.tagOwn.dataset.source; });
       v.make.addEventListener('input', calculate);
       v.model.addEventListener('input', calculate);
       v.make.addEventListener('input', function () { applyVehicleTierDefaults(i); maybeAutoDetectFuelType(i); scheduleConsumptionFetch(i); scheduleTrimFetch(i); });
-      v.model.addEventListener('input', function () { maybeAutoDetectFuelType(i); scheduleConsumptionFetch(i); scheduleTrimFetch(i); });
+      v.model.addEventListener('input', function () { maybeAutoDetectFuelType(i); applyVehicleTierDefaults(i); scheduleConsumptionFetch(i); scheduleTrimFetch(i); });
       v.trim.addEventListener('input', function () { maybeAutoDetectFuelType(i); scheduleConsumptionFetch(i); });
       v.year.addEventListener('input', function () { scheduleConsumptionFetch(i); scheduleTrimFetch(i); });
       v.year.addEventListener('change', function () { scheduleConsumptionFetch(i); scheduleTrimFetch(i); });
@@ -2307,7 +2360,7 @@
     // local price level for servicing / tyres relative to Europe (1 = same).
     // These are rough planning figures -- edit here if you want to tune them.
     var costByCountry = {
-      US: { fx: 1.14, m: 1.0,  t: 0.9  }, GB: { fx: 0.86, m: 1.1,  t: 1.0  },
+      US: { fx: 1.14, m: 1.0,  t: 1.0  }, GB: { fx: 0.86, m: 1.1,  t: 1.0  },
       NZ: { fx: 2.0,  m: 1.0,  t: 1.05 }, AU: { fx: 1.76, m: 1.0,  t: 1.0  },
       CA: { fx: 1.6,  m: 0.95, t: 0.95 }, JP: { fx: 176,  m: 0.85, t: 0.9  },
       CN: { fx: 8.2,  m: 0.6,  t: 0.8  }, CH: { fx: 0.94, m: 1.4,  t: 1.2  },
@@ -2334,27 +2387,97 @@
       var mag = Math.pow(10, Math.floor(Math.log10(n)) - 1);
       return Math.round(n / mag) * mag;
     }
-    var tierDefaults = {
-      economy:    { maint: 550,  tyreCost: 320,  tyreLife: 45000 },
-      mainstream: { maint: 900,  tyreCost: 480,  tyreLife: 40000 },
-      premium:    { maint: 1500, tyreCost: 750,  tyreLife: 30000 },
-      exotic:     { maint: 6500, tyreCost: 2200, tyreLife: 12000 }
+    // ---- vehicle-class defaults ----
+    // Anchored to AAA "Your Driving Costs 2025" (US, five top-selling models per class, 15,000 mi/yr):
+    //   mrt = maintenance + repairs + tyres, US cents per mile        own = depreciation + insurance + registration + finance, USD/yr
+    // tyre and life (fitted set price in USD, miles) are estimates; servicing = mrt minus tyres, so class totals match AAA.
+    var classDefaults = {
+      small:      { mrt: 10.23, tyre: 480, life: 35000, own: 5360 },
+      medium:     { mrt: 11.91, tyre: 600, life: 35000, own: 6501 },   // medium sedan
+      subsuv:     { mrt: 10.79, tyre: 560, life: 35000, own: 6480 },
+      compactsuv: { mrt: 11.64, tyre: 650, life: 35000, own: 6819 },
+      mediumsuv:  { mrt: 11.79, tyre: 780, life: 30000, own: 8618 },
+      midpickup:  { mrt: 11.44, tyre: 750, life: 35000, own: 7632 },
+      pickup:     { mrt: 11.36, tyre: 950, life: 30000, own: 10402 },  // half-ton / crew-cab
+      hybrid:     { mrt: 9.75,  tyre: 600, life: 35000, own: 6847 },
+      ev:         { mrt: 10.07, tyre: 850, life: 30000, own: 8412 },
+      average:    { mrt: 11.04, tyre: 600, life: 35000, own: 7973 }    // AAA weighted average; used when the model isn't recognised
     };
-    function applyVehicleTierDefaults(i) {
-      var v = veh(i);
+    var modelClassLists = {
+      small: ['golf','polo','corolla','yaris','aygo','civic','jazz','i10','i20','i30','elantra','rio','ceed','picanto','micra','mazda2','mazda3','impreza','108','208','308','clio','mégane','twingo','corsa','astra','fabia','octavia','scala','ibiza','leon','500','panda','tipo','c1','c3','c4','swift','ignis','colt','sandero','cooper','clubman','1 series','2 series','a1','a3','a-class','b-class','cruze','jetta','type r'],
+      medium: ['passat','camry','accord','arteon','3 series','4 series','5 series','7 series','8 series','a4','a5','a6','a7','a8','c-class','e-class','s-class','cls','insignia','superb','mazda6','s60','s90','v60','v90','giulia','malibu','is','es','ls','xe','xf','g70','g80','tlx','q50','charger','challenger','300','ct5','continental'],
+      subsuv: ['t-cross','t-roc','c-hr','puma','hr-v','kona','stonic','arona','2008','captur','juke','mokka','crossland','cx-3','cx-30','xv','crosstrek','vitara','s-cross','jimny','avenger','renegade','duster','bayon','encore','x1','x2','q2','q3','gla','ux','xc40','e-pace','tonale','countryman','corsair'],
+      compactsuv: ['rav4','tiguan','cr-v','tucson','sportage','qashqai','kuga','cx-5','forester','kadjar','austral','karoq','ateca','x3','x4','q5','glc','glb','nx','rx','xc60','3008','grandland','compass','cherokee','equinox','edge','rdx','gv70','macan','f-pace','stelvio','range rover evoque','range rover velar','envision','terrain','discovery sport','niro','outback','c5 aircross','cx-60'],
+      mediumsuv: ['highlander','pilot','santa fe','sorento','x-trail','outlander','touareg','kodiaq','tarraco','5008','x5','x6','x7','q7','q8','gle','gls','g-class','xc90','cayenne','explorer','durango','grand cherokee','wrangler','discovery','range rover sport','range rover','defender','enclave','yukon','acadia','mdx','qx60','qx55','gv80','escalade','navigator','aviator','land cruiser','pacifica'],
+      midpickup: ['hilux','ranger'],
+      pickup: ['f-150','silverado','sierra','r1t']
+    };
+    var modelClassKeys = [];
+    Object.keys(modelClassLists).forEach(function (cls) { modelClassLists[cls].forEach(function (k) { modelClassKeys.push([k, cls]); }); });
+    modelClassKeys.sort(function (a, b) { return b[0].length - a[0].length; }); // longest first: "range rover sport" before "range rover"
+    function classForModel(model) {
+      var m = (model || '').trim().toLowerCase();
+      if (!m) return null;
+      for (var n = 0; n < modelClassKeys.length; n++) {
+        var k = modelClassKeys[n][0];
+        if (m === k || m.indexOf(k + ' ') === 0) return modelClassKeys[n][1];
+      }
+      return null;
+    }
+    function vehicleClassKey(v) {
+      var ft = v.fuelType.value;
+      if (ft === 'electric') return 'ev';
+      if (ft === 'hybrid') return 'hybrid';
+      return classForModel(v.model.value) || 'average';
+    }
+    function tierFor(v) {
       var make = (v.make.value || '').trim();
       var key = Object.keys(tierByMake).find(function (k) { return k.toLowerCase() === make.toLowerCase(); });
-      var tier = tierByMake[key] || 'mainstream';
-      var d = tierDefaults[tier];
+      return tierByMake[key] || 'mainstream';
+    }
+    var PREMIUM_FACTOR = 1.5;                                            // estimate: premium brands cost more to service, tyre and own
+    var exoticDefaults = { maint: 6500, tyre: 2200, life: 12000 };       // euro-scale, km (unchanged); no ownership benchmark for these
+    function classCosts(i) {
+      var v = veh(i), tier = tierFor(v), metric = unitSystem.value === 'metric';
+      if (tier === 'exotic') {
+        return {
+          maint: niceRound(exoticDefaults.maint * costRegion.fx * costRegion.m),
+          tyre: niceRound(exoticDefaults.tyre * costRegion.fx * costRegion.t),
+          life: metric ? exoticDefaults.life : Math.round(exoticDefaults.life * 0.621371 / 1000) * 1000,
+          own: null
+        };
+      }
+      var c = classDefaults[vehicleClassKey(v)];
+      var f = tier === 'premium' ? PREMIUM_FACTOR : 1;
+      var usdPerEur = costByCountry.US.fx;                               // US is the anchor: the US region multiplies back to exact USD
+      var annualMi = metric ? 15000 * 0.621371 : 15000;                  // the default annual distance is 15,000 in either unit system
+      var maintPerMi = c.mrt / 100 - c.tyre / c.life;                    // servicing & repairs only, USD per mile
+      function local(usd, factor) { return usd / usdPerEur * costRegion.fx * factor; }
+      return {
+        maint: niceRound(local(maintPerMi * annualMi * f, costRegion.m)),
+        tyre: niceRound(local(c.tyre * f, costRegion.t)),
+        life: metric ? Math.round(c.life * 1.609344 / 1000) * 1000 : c.life,
+        own: niceRound(local(c.own * f, costRegion.m))
+      };
+    }
+    function applyVehicleTierDefaults(i) {
+      var v = veh(i);
+      var d = classCosts(i);
       var changed = false;
       if (!userEdited[i].maintAnnual && v.tagMaint.dataset.source !== 'ai') {
-        v.maintAnnual.value = niceRound(d.maint * costRegion.fx * costRegion.m); v.tagMaint.textContent = 'Typical for class'; v.tagMaint.dataset.source = 'tier'; v.tagMaint.hidden = false; changed = true;
+        v.maintAnnual.value = d.maint; v.tagMaint.textContent = 'Typical for class'; v.tagMaint.dataset.source = 'tier'; v.tagMaint.hidden = false; changed = true;
       }
       if (!userEdited[i].tyreSetCost && v.tagTyre.dataset.source !== 'ai') {
-        v.tyreSetCost.value = niceRound(d.tyreCost * costRegion.fx * costRegion.t); v.tyreLife.value = unitSystem.value === 'metric' ? d.tyreLife : Math.round(d.tyreLife * 0.621371 / 1000) * 1000; v.tagTyre.textContent = 'Typical for class'; v.tagTyre.dataset.source = 'tier'; v.tagTyre.hidden = false; changed = true;
+        v.tyreSetCost.value = d.tyre; v.tyreLife.value = d.life; v.tagTyre.textContent = 'Typical for class'; v.tagTyre.dataset.source = 'tier'; v.tagTyre.hidden = false; changed = true;
+      }
+      if (!userEdited[i].ownAnnual) {
+        v.ownAnnual.value = d.own == null ? 0 : d.own;
+        v.tagOwn.textContent = d.own == null ? 'No benchmark \u2014 enter yours' : 'Typical for class';
+        v.tagOwn.dataset.source = 'tier'; v.tagOwn.hidden = false; changed = true;
       }
       if (changed) calculate();
     }
+
     applyVehicleTierDefaults(1);
 
     // ---- audience switch (framing only) ----
@@ -2394,14 +2517,14 @@
           make: v.make.value, model: v.model.value, trim: v.trim.value, year: v.year.value, fuelType: v.fuelType.value,
           consumption: v.consumption.value, fuelPrice: v.fuelPrice.value,
           maintAnnual: v.maintAnnual.value, maintDistance: v.maintDistance.value,
-          tyreSetCost: v.tyreSetCost.value, tyreLife: v.tyreLife.value,
+          tyreSetCost: v.tyreSetCost.value, tyreLife: v.tyreLife.value, ownAnnual: v.ownAnnual.value,
           total: v.vcAmt.textContent
         });
       }
       return {
         journeyFrom: journeyFromEl.value, journeyTo: journeyToEl.value, roundTrip: roundTrip.checked,
         autoRegion: autoRegion.checked, unitSystem: unitSystem.value, currency: currencyInput.value,
-        distance: distance.value, tolls: tolls.value, extras: extras.value, reimbRate: reimbRate.value,
+        distance: distance.value, tolls: tolls.value, extras: extras.value, reimbRate: reimbRate.value, includeOwn: includeOwn.checked,
         vehicles: vehicles, totalDisplay: $('totalReadout').textContent
       };
     }
@@ -2412,6 +2535,7 @@
       autoRegion.checked = s.autoRegion !== false; manualCurrencyRow.hidden = autoRegion.checked;
       unitSystem.value = s.unitSystem || 'metric'; currencyInput.value = s.currency || '€';
       distance.value = s.distance || 0; distEdited = true;
+      includeOwn.checked = !!s.includeOwn; VEH.forEach(function (i) { veh(i).ownRow.hidden = !includeOwn.checked; });
       tolls.value = s.tolls || 0; tollsEdited = true; $('tagTolls').hidden = true; extras.value = s.extras || 0; reimbRate.value = s.reimbRate || '';
 
       var list = s.vehicles && s.vehicles.length ? s.vehicles : [{}];
@@ -2426,9 +2550,11 @@
         v.consumption.value = data.consumption || 0; v.fuelPrice.value = data.fuelPrice || 0;
         v.maintAnnual.value = data.maintAnnual || 0; v.maintDistance.value = data.maintDistance || 1;
         v.tyreSetCost.value = data.tyreSetCost || 0; v.tyreLife.value = data.tyreLife || 1;
-        userEdited[i] = { consumption: true, fuelPrice: true, maintAnnual: true, tyreSetCost: true };
+        v.ownAnnual.value = data.ownAnnual || 0;
+        userEdited[i] = { consumption: true, fuelPrice: true, maintAnnual: true, tyreSetCost: true, ownAnnual: data.ownAnnual != null }; // older saved trips have no ownership figure: let the class default fill it
         fuelTypeEdited[i] = true;
         v.make.dispatchEvent(new Event('ttc-sync'));
+        applyVehicleTierDefaults(i);
         scheduleTrimFetch(i);
       });
 
