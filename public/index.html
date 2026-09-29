@@ -2012,6 +2012,53 @@
       calculate();
     }
 
+    // ---- live tolls (HERE Routing API via /api/tolls) ----
+    var tollsEdited = false;      // once the user types in the tolls box, live data stops overwriting it
+    var lastTollOneWay = null;    // one-way toll total in the currency we asked for
+    var tollReq = 0;
+    var countryToISO = {
+      US: 'USD', GB: 'GBP', NZ: 'NZD', AU: 'AUD', CA: 'CAD', JP: 'JPY', CN: 'CNY', CH: 'CHF',
+      SE: 'SEK', NO: 'NOK', DK: 'DKK', PL: 'PLN', CZ: 'CZK', HU: 'HUF', SG: 'SGD', IN: 'INR',
+      ZA: 'ZAR', MX: 'MXN', BR: 'BRL', KR: 'KRW'
+    };
+    function isoForCurrentCurrency() {
+      var sym = currencyInput.value;
+      if (sym === '\u20ac') return 'EUR';
+      return countryToISO[symbolToCountry[sym]] || null; // unknown symbol: skip live tolls rather than guess
+    }
+    tolls.addEventListener('input', function () { tollsEdited = true; $('tagTolls').hidden = true; });
+    function applyTolls() {
+      if (lastTollOneWay == null || tollsEdited) return;
+      var total = roundTrip.checked ? lastTollOneWay * 2 : lastTollOneWay;
+      tolls.value = round(total, 0);
+      var tag = $('tagTolls');
+      tag.dataset.source = 'here'; tag.textContent = 'Live tolls'; tag.hidden = false;
+      calculate();
+    }
+    // kind: 'none' (route resolved, no tolls reported) | 'unavailable' (lookup failed). Both leave the box editable.
+    function setTollNote(kind) {
+      if (tollsEdited) return;
+      var tag = $('tagTolls');
+      tag.dataset.source = 'tier'; // muted grey pill, not the "live" colour
+      tag.textContent = kind === 'none' ? 'No tolls found' : 'Toll data unavailable';
+      tag.hidden = false;
+    }
+    function fetchTolls(from, to, reqId) {
+      var iso = isoForCurrentCurrency();
+      if (!iso || tollsEdited) return;
+      var myTollReq = ++tollReq;
+      lastTollOneWay = null; // drop the previous route's figure so the round-trip toggle can't apply stale tolls
+      fetch('/api/tolls', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ from: from, to: to, currency: iso }) })
+        .then(function (res) { return res.ok ? res.json() : null; })
+        .then(function (d) {
+          if (myTollReq !== tollReq || reqId !== routeReq) return; // stale
+          if (d && d.tollStatus === 'found' && typeof d.tollTotal === 'number') { lastTollOneWay = d.tollTotal; applyTolls(); }
+          else if (d && d.tollStatus === 'none') { lastTollOneWay = 0; applyTolls(); setTollNote('none'); }
+          else setTollNote('unavailable'); // leave the box as it was
+        })
+        .catch(function () { if (myTollReq === tollReq && reqId === routeReq) setTollNote('unavailable'); });
+    }
+
     // ---- live route distance ----
     var lastRouteKm = null;
     function applyRouteDistance() {
@@ -2072,6 +2119,7 @@
               applyRegionFromCountry(data.fromCountry);
               applyRouteDistance();
               applyLiveFuelPrice(data.fuelPrice);
+              fetchTolls(from, to, reqId);
               setLocationChecks(true);
               setRouteStatus('');
             } else {
@@ -2090,6 +2138,7 @@
     }
     [journeyFromEl, journeyToEl].forEach(function (el) { el.addEventListener('input', scheduleRouteFetch); });
     roundTrip.addEventListener('change', applyRouteDistance);
+    roundTrip.addEventListener('change', applyTolls);
     unitSystem.addEventListener('change', applyRouteDistance);
     scheduleRouteFetch();
 
@@ -2189,7 +2238,7 @@
                 distance.value = round(data.distance, 0); distEdited = false;
                 $('tagDistance').dataset.source = 'ai'; $('tagDistance').textContent = 'AI est.'; $('tagDistance').hidden = false;
               }
-              if (typeof data.estimatedTolls === 'number') { tolls.value = round(data.estimatedTolls, 0); $('tagTolls').hidden = false; }
+              if (typeof data.estimatedTolls === 'number' && $('tagTolls').dataset.source !== 'here') { tolls.value = round(data.estimatedTolls, 0); $('tagTolls').hidden = false; }
               renderAssumptions({
                 distance: distance.value, distUnit: unitSystem.value === 'metric' ? 'km' : 'miles',
                 region: typeof data.regionAssumed === 'string' ? data.regionAssumed : '',
@@ -2359,7 +2408,7 @@
       autoRegion.checked = s.autoRegion !== false; manualCurrencyRow.hidden = autoRegion.checked;
       unitSystem.value = s.unitSystem || 'metric'; currencyInput.value = s.currency || '€';
       distance.value = s.distance || 0; distEdited = true;
-      tolls.value = s.tolls || 0; extras.value = s.extras || 0; reimbRate.value = s.reimbRate || '';
+      tolls.value = s.tolls || 0; tollsEdited = true; $('tagTolls').hidden = true; extras.value = s.extras || 0; reimbRate.value = s.reimbRate || '';
 
       var list = s.vehicles && s.vehicles.length ? s.vehicles : [{}];
       activeCount = Math.min(Math.max(list.length, 1), MAX_VEH);
