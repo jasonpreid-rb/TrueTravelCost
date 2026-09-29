@@ -2049,9 +2049,13 @@
       var myTollReq = ++tollReq;
       lastTollOneWay = null; // drop the previous route's figure so the round-trip toggle can't apply stale tolls
       fetch('/api/tolls', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ from: from, to: to, currency: iso }) })
-        .then(function (res) { return res.ok ? res.json() : null; })
+        .then(function (res) {
+          if (!res.ok) console.warn('[tolls] /api/tolls returned HTTP ' + res.status + (res.status === 404 ? ' (endpoint not deployed?)' : ''));
+          return res.ok ? res.json().catch(function () { console.warn('[tolls] /api/tolls response was not JSON'); return null; }) : null;
+        })
         .then(function (d) {
           if (myTollReq !== tollReq || reqId !== routeReq) return; // stale
+          if (d && d.reason) console.warn('[tolls] unavailable:', d.reason);
           if (d && d.tollStatus === 'found' && typeof d.tollTotal === 'number') { lastTollOneWay = d.tollTotal; applyTolls(); }
           else if (d && d.tollStatus === 'none') { lastTollOneWay = 0; applyTolls(); setTollNote('none'); }
           else setTollNote('unavailable'); // leave the box as it was
