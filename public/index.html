@@ -593,7 +593,7 @@
             <div>
               <label for="distance">Distance<span class="estimated-tag" id="tagDistance" hidden>Live route</span></label>
               <div class="num-input">
-                <input type="number" id="distance" list="distanceHelperList" value="500" min="0" step="1">
+                <input type="number" id="distance" list="distanceHelperList" value="0" min="0" step="1">
                 <span class="unit" id="distUnitLabel">km</span>
               </div>
             </div>
@@ -1666,6 +1666,7 @@
 
       return { i: i, fuelCost: fuelCost, maintCost: maintCost, tyreCost: tyreCost, ownCost: ownCost, tollCost: tollCost, total: total, perUnit: perUnit };
     }
+
     var calculatorStartedTracked = false;
     var calculationCompletedTracked = false;
 
@@ -1673,20 +1674,15 @@
       if (typeof gtag !== 'function') return;
 
       var dist = parseFloat(distance.value) || 0;
-
       var validVehicles = [];
 
       for (var idx = 0; idx < activeCount; idx++) {
         var i = VEH[idx];
-
-        if (vehicleEntered(i)) {
-          validVehicles.push(i);
-        }
+        if (vehicleEntered(i)) validVehicles.push(i);
       }
 
       if (!calculatorStartedTracked && (dist > 0 || validVehicles.length > 0)) {
         calculatorStartedTracked = true;
-
         gtag('event', 'calculator_started', {
           vehicle_count: validVehicles.length
         });
@@ -1720,12 +1716,6 @@
       var distU = metric ? 'km' : 'mi';
       var dist = parseFloat(distance.value) || 0;
       var tollCost = (parseFloat(tolls.value) || 0) + (parseFloat(extras.value) || 0);
-    function calculate() {
-      var metric = unitSystem.value === 'metric';
-      var curr = currencyInput.value || '€';
-      var distU = metric ? 'km' : 'mi';
-      var dist = parseFloat(distance.value) || 0;
-      var tollCost = (parseFloat(tolls.value) || 0) + (parseFloat(extras.value) || 0);
 
       syncEmptyVehicles();
       var results = [];
@@ -1740,7 +1730,7 @@
       var filled = results.filter(function (r) { return !r.empty; });
       var cheapest = (filled.length ? filled : results).slice().sort(function (a, b) { return a.total - b.total; })[0];
       trackCalculatorUsage();
-      
+
       // best-value highlighting
       VEH.forEach(function (i) {
         var v = veh(i);
@@ -1896,7 +1886,7 @@
     }
     function onUnitSystemChange() {
       var metric = unitSystem.value === 'metric';
-      if (!distEdited) distance.value = metric ? 500 : 300;
+      if (!distEdited) distance.value = 0;
       for (var idx = 0; idx < MAX_VEH; idx++) {
         var i = VEH[idx];
         var v = veh(i);
