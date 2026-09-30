@@ -149,3 +149,6 @@ header.top {
   .brand .wordmark { font-size: 18px; white-space: nowrap; }
   .brand .motto { display: none; }
 }
+
+/* Link states: keep the brand and nav free of the default link underline on hover */
+.brand:hover, .top-nav a:hover { text-decoration: none; }
