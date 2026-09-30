@@ -17,7 +17,7 @@
 <link rel="canonical" href="https://www.truetravelcost.com/">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Calistoga&family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
@@ -49,17 +49,6 @@
     box-sizing: border-box;
     padding-top: env(safe-area-inset-top, 0px);
     padding-bottom: env(safe-area-inset-bottom, 0px);
-  }
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) {
-      --bg: #0B1420; --panel: #101B2C; --panel-2: #16223A; --line: #24344F;
-      --text: #E8ECF3; --muted: #8A96AC; --navy: #E8ECF3;
-      --blue: #6E97F0; --blue-dim: #182541;
-      --gold: #D3A24C; --gold-dim: #2A2110;
-      --green: #4CBE8B; --green-dim: #102A1F;
-      --red: #E37F72; --red-dim: #2E1613;
-      --logo-filter: invert(1) brightness(1.4);
-    }
   }
   :root[data-theme="dark"] {
     --bg: #0B1420; --panel: #101B2C; --panel-2: #16223A; --line: #24344F;
@@ -96,12 +85,13 @@
     padding-left: 16px; border-left: 1.5px solid var(--line);
   }
   .brand .wordmark {
-    font-family: var(--font-display); font-weight: 700; font-size: 24px;
-    color: var(--navy); letter-spacing: 0.01em; line-height: 1.05;
-    text-transform: uppercase;
+    font-family: 'Calistoga', Georgia, serif; font-weight: 400; font-size: 26px;
+    color: var(--navy); letter-spacing: 0; line-height: 1.05;
+    text-transform: none;
   }
   .brand .tagline {
-    font-family: var(--font-body); font-size: 12.5px; font-weight: 500;
+    font-family: 'Times New Roman', Times, serif; font-style: italic;
+    font-size: 14px; font-weight: 400;
     color: var(--muted); line-height: 1.3;
   }
   .brand .motto {
@@ -111,11 +101,34 @@
   }
   .top-actions { display: flex; align-items: center; gap: 10px; }
   .theme-toggle {
-    font-family: var(--font-mono); font-size: 12px; color: var(--muted);
-    background: transparent; border: 1px solid var(--line); border-radius: var(--radius-sm);
-    padding: 7px 11px; cursor: pointer; flex-shrink: 0;
+    --tw: 60px; --th: 32px; --td: 24px;
+    position: relative; flex-shrink: 0; cursor: pointer;
+    width: var(--tw); height: var(--th); padding: 0;
+    display: inline-flex; align-items: center; justify-content: space-between;
+    background: var(--panel-2); border: 1px solid var(--line); border-radius: 999px;
+    color: var(--muted); transition: border-color 0.2s ease, background-color 0.2s ease;
+    -webkit-tap-highlight-color: transparent;
   }
-  .theme-toggle:hover { color: var(--text); border-color: var(--muted); }
+  .theme-toggle:hover { border-color: var(--muted); }
+  .theme-toggle:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+  .theme-toggle .tt-bg { width: 14px; height: 14px; margin: 0 8px; opacity: 0.55; flex-shrink: 0; }
+  .theme-toggle svg { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .tt-thumb {
+    position: absolute; top: 50%; left: 3px; width: var(--td); height: var(--td);
+    border-radius: 50%; background: var(--panel); border: 1px solid var(--line);
+    box-shadow: 0 1px 3px rgba(11, 20, 32, 0.18); color: var(--gold);
+    display: grid; place-items: center;
+    transform: translateY(-50%);
+    transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .tt-thumb svg { grid-area: 1 / 1; width: 13px; height: 13px; transition: opacity 0.2s ease, transform 0.28s ease; }
+  .tt-thumb .tt-moon { opacity: 0; transform: rotate(-40deg) scale(0.6); }
+  :root[data-theme="dark"] .tt-thumb { transform: translate(calc(var(--tw) - var(--td) - 8px), -50%); }
+  :root[data-theme="dark"] .tt-thumb .tt-sun { opacity: 0; transform: rotate(40deg) scale(0.6); }
+  :root[data-theme="dark"] .tt-thumb .tt-moon { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) {
+    .tt-thumb, .tt-thumb svg, .theme-toggle { transition: none; }
+  }
 
   /* ---------- Hero ---------- */
   .hero {
@@ -406,10 +419,6 @@
   #shareLinkedin { --brand: #0A66C2; }
   #shareEmail { --brand: var(--blue); }
   #shareLinkedin svg { width: 17px; height: 17px; }
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) #shareX { --brand: #E8ECF3; }
-    :root:not([data-theme="light"]) #shareX:hover { color: #0F1419; }
-  }
   :root[data-theme="dark"] #shareX { --brand: #E8ECF3; }
   :root[data-theme="dark"] #shareX:hover { color: #0F1419; }
 
@@ -465,8 +474,8 @@
   .site-logo { width: 44px; height: 44px; }
   .wordmark-block { gap: 2px; padding-left: 12px; }
   .brand { gap: 12px; }
-  .brand .wordmark { font-size: 19px; white-space: nowrap; }
-  .brand .tagline { font-size: 12px; }
+  .brand .wordmark { font-size: 21px; white-space: nowrap; }
+  .brand .tagline { font-size: 13px; }
   .brand .motto { display: none; }
   .top-nav { justify-self: end; flex-wrap: nowrap; gap: 2px; }
   .top-nav a { padding: 6px 8px; font-size: 12px; white-space: nowrap; }
@@ -507,12 +516,17 @@
     .site-logo { width: 40px; height: 40px; }
     .brand { min-width: 0; }
     .brand .tagline { display: none; }
-    .theme-toggle { padding: 6px 9px; font-size: 11.5px; white-space: nowrap; }
+    .theme-toggle { --tw: 52px; --th: 28px; --td: 20px; }
+    .theme-toggle .tt-bg { width: 12px; height: 12px; margin: 0 7px; }
+    .tt-thumb svg { width: 11px; height: 11px; }
     .wordmark-block { padding-left: 12px; }
-    .brand .wordmark { font-size: 18px; }
+    .brand .wordmark { font-size: 18px; white-space: nowrap; }
     .brand .motto { display: none; }
   }
 </style>
+<script>
+  try { if (localStorage.getItem('ttc-theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark'); } catch (e) {}
+</script>
 <script>
   window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
 </script>
@@ -525,7 +539,7 @@
     <div class="brand">
       <img src="/truetravelcost-elephant-logo.png" alt="TrueTravelCost" class="site-logo">
       <div class="wordmark-block">
-        <div class="wordmark">True Travel Cost</div>
+        <div class="wordmark">TrueTravelCost.com</div>
         <div class="tagline">Know what your journey really costs.</div>
         <div class="motto">Compute &middot; Compare &middot; Commute</div>
       </div>
@@ -540,7 +554,14 @@
       <a href="/methodology/">Methodology</a>
     </nav>
     <div class="top-actions">
-      <button class="theme-toggle" id="themeToggle" type="button">dark / light</button>
+      <button class="theme-toggle" id="themeToggle" type="button" role="switch" aria-checked="false" aria-label="Dark mode" title="Switch light / dark theme">
+        <svg class="tt-bg" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+        <svg class="tt-bg" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <span class="tt-thumb" aria-hidden="true">
+          <svg class="tt-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+          <svg class="tt-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </span>
+      </button>
     </div>
   </header>
 
@@ -2724,13 +2745,18 @@
     });
 
     // ---- theme toggle ----
-    $('themeToggle').addEventListener('click', function () {
+    (function () {
       var root = document.documentElement;
-      var current = root.getAttribute('data-theme');
-      if (current === 'dark') root.setAttribute('data-theme', 'light');
-      else if (current === 'light') root.removeAttribute('data-theme');
-      else root.setAttribute('data-theme', 'dark');
-    });
+      var btn = $('themeToggle');
+      function sync() { btn.setAttribute('aria-checked', root.getAttribute('data-theme') === 'dark' ? 'true' : 'false'); }
+      sync();
+      btn.addEventListener('click', function () {
+        var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        root.setAttribute('data-theme', next);
+        try { localStorage.setItem('ttc-theme', next); } catch (e) {}
+        sync();
+      });
+    })();
   })();
 })();
 </script>
