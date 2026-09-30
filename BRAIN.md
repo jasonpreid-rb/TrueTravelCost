@@ -1,7 +1,7 @@
 # TrueTravelCost: Brain File
 
 Working knowledge for anyone (human or AI) editing truetravelcost.com. Read this first, then change things.
-Last updated: 2026-09-30.
+Last updated: 2026-09-30 (added sitemap/robots, social tags, homepage prose, SEO plan; /api/estimate is not AI).
 
 ---
 
@@ -47,6 +47,9 @@ public/                   served by Vercel. Static assets plus BUILD OUTPUT
   css/site.css            shared: colour tokens, header, nav, footer, theme toggle
   css/style.css           page styles for the inner pages
   js/site.js              theme toggle behaviour
+  sitemap.xml             all seven page URLs (update <lastmod> when a page changes; add new pages)
+  robots.txt              allows crawling, blocks /api/, points to the sitemap
+  og-image.png            1200x630 social share image (elephant logo in navy on off-white)
   *.png, favicon, site.webmanifest, etc.
 ```
 
@@ -99,12 +102,15 @@ Each page in `src/pages/` is plain HTML plus three markers:
   ```
   Without it, the default is "TrueTravelCost provides estimates for informational purposes. Actual vehicle and journey costs will vary."
 - The build fails loudly on an unresolved `{{…}}` or `<!-- @… -->` marker.
+- **Social tags:** `head.html` carries the site-wide ones (`og:type`, `og:site_name`, `og:image`, image size, `twitter:card`). `build.mjs` generates `og:title`, `og:description` and `og:url` per page from that page's own `<title>`, meta description and canonical, so never write them by hand (a hand-written tag is left alone). The build prints a WARNING if a page lacks a title, description, canonical or `<html lang>`.
+- `head.html` starts with charset and viewport, before the analytics scripts. Keep it that way.
 
 **Adding a page**
 1. Copy `src/pages/buy-a-car/index.html` to `src/pages/<slug>/index.html`, then change the title, description, canonical and `<main>`.
 2. Add the link to the nav in `src/partials/header.html` (with a `{{current:/<slug>/}}` token) and to `src/partials/footer.html`.
 3. Update the "Explore TrueTravelCost" link list at the bottom of the related pages.
-4. Build, push, preview.
+4. Add the URL to `public/sitemap.xml`.
+5. Build, push, preview.
 
 **Changing the header, footer or head:** edit the partial, rebuild, and all pages update.
 
@@ -116,15 +122,17 @@ One big file: markup, inline CSS (page-specific only) and inline JS. The shared 
 - **Vehicles:** up to 3 compared side by side. Trim and engine should come from a car database. Servicing, tyre and ownership defaults are anchored to AAA *Your Driving Costs 2025* (US) and scaled for other regions. A `PREMIUM_FACTOR` (1.5) estimates higher costs for premium brands.
 - **API routes** (`api/`, serverless):
   - `/api/route`: distance from A to B
-  - `/api/tolls`: tolls for the route. **Tolls must be 0 unless known.**
+  - `/api/tolls`: live tolls for the route via HERE Routing API v8 (`HERE_API_KEY` env var in Vercel). **Tolls must be 0 unless known.**
   - `/api/trims`: makes, models, trims and engines
   - `/api/consumption`: live fuel consumption from EPA / fueleconomy.gov
-  - `/api/estimate`: AI-assisted estimates when data is missing
+  - `/api/estimate`: fallback estimates when data is missing. **No AI is used anywhere on the site.** (TODO: document exactly what this route does here and on `/methodology/`.)
 - **Data sources:** European fuel prices from fuel-prices.eu (EU Commission Weekly Oil Bulletin, CC BY 4.0). Consumption from fueleconomy.gov. Defaults from AAA. Always keep the attribution in the footer note.
 - **Defaults:** default distance is **0**. Prefer real data (fuel price, tolls, consumption) over presets wherever it exists.
 - **Analytics (GA4, `G-WQHJCLN006`):** custom events `calculator_started` and `calculation_completed`. Don't rename them without updating the reports.
 - **Browser storage keys:** `ttc-saved-trips` (saved comparisons), `ttc-theme` (`dark` only; absence means light).
-- **Sharing:** WhatsApp, X, LinkedIn and email buttons, plus a Google Maps directions link.
+- **Sharing:** WhatsApp, X, LinkedIn and email buttons, plus a Google Maps directions link. Link previews come from the Open Graph tags (see section 5).
+- **Homepage prose:** below the capability chips and above the footer note there is a `section.about-ttc` with indexable text (what is included in the true cost, who it is for, where the numbers come from) linking to the inner pages. It exists for search; keep it factual and update it if the features change. Its CSS is in the calculator's inline `<style>`.
+- **Language:** `<html lang="en">` for now. Set it to `en-GB` or `en-US` once the primary market is decided.
 
 ## 7. Styling system
 
@@ -147,6 +155,9 @@ Rules of thumb:
 - Each page needs a unique `<title>`, meta description and canonical (`https://www.truetravelcost.com/<slug>/`, with trailing slash).
 - Tone: plain, non-alarmist, honest about uncertainty. Present figures as **estimates, not guarantees**. Don't give tax or legal advice (mileage reimbursement rules vary; cite IRS / HMRC only as examples).
 - Copy uses British spelling ("tyres", "kilometre") and € examples on the inner pages.
+- **No generic or AI-generated filler pages.** Any data-driven page (per vehicle or per commute) must show figures the site computes itself from sourced data, state the method, and carry short human-written explanation. Start with 20 to 50 useful pages, not thousands of near-duplicates.
+- **Current SEO state (2026-09-30):** site is about 5 days old; Search Console shows nothing yet. Homepage has title, description, canonical, social tags and prose. `robots.txt` and `sitemap.xml` are correct. GA4 (`G-WQHJCLN006`) loads on every page with no consent step.
+- **Market is undecided.** Data and copy currently mix US (AAA, EPA, imperial toggle), UK spelling and EU (€, fuel-prices.eu). Decide before building per-vehicle pages: US is easiest on the data side; UK/EU needs a European consumption source (WLTP) and regional cost defaults.
 
 ## 9. Working agreements
 
@@ -157,6 +168,15 @@ Rules of thumb:
 
 ## 10. Open items
 
+- [ ] Search Console: verify the domain, submit `https://www.truetravelcost.com/sitemap.xml`, request indexing for all seven pages.
+- [ ] Check share previews (LinkedIn Post Inspector, Facebook Sharing Debugger) for the homepage and one inner page.
+- [ ] Write an About page (who built it, why, where the data comes from); add to the nav and footer partials and the sitemap.
+- [ ] Decide the primary market (US vs UK/EU), then set `<html lang>`, spelling, currency and data sources to match.
+- [ ] Build the first 20 to 50 data-driven vehicle or commute pages (see section 8 rules), after the market decision.
+- [ ] Publish one linkable asset (e.g. an annual "true cost of driving" dataset for the 20 most popular cars).
+- [ ] Cookie consent for GA4 once the market is known (UK/EU rules probably apply).
+- [ ] Document what `/api/estimate` does (here and on `/methodology/`).
+- [ ] Optional: regenerate `og-image.png` with the Calistoga wordmark.
 - [ ] `/example-report/`: make it look like the paid PDF report and state how each figure is calculated. Check its dark mode (its layout hasn't been reviewed).
 - [ ] Build the paid comprehensive report / live-cost upgrade CTA.
 - [ ] Decide whether Vercel Analytics should run on every page (currently the calculator only).

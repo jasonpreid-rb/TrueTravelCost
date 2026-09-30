@@ -394,6 +394,15 @@
     .row.two, .row { grid-template-columns: 1fr; }
     .vehicles-head { flex-direction: column; align-items: flex-start; }
   }
+  /* Explanatory copy below the calculator (indexable text for search) */
+  .about-ttc { margin-top: 26px; }
+  .about-ttc h2 { font-size: 18px; line-height: 1.3; margin: 24px 0 8px; }
+  .about-ttc h2:first-child { margin-top: 0; }
+  .about-ttc p, .about-ttc li { font-size: 14.5px; line-height: 1.6; color: var(--text); }
+  .about-ttc p { margin: 0 0 12px; }
+  .about-ttc ul { margin: 0 0 12px; padding-left: 20px; }
+  .about-ttc li { margin-bottom: 4px; }
+  .about-ttc a { color: var(--blue); }
 </style>
 <script>
   window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
@@ -1102,6 +1111,24 @@
     <span class="cap-chip">Auto currency &amp; units</span>
     <span class="cap-chip">Mileage reimbursement check</span>
   </div>
+
+  <section class="panel about-ttc" aria-labelledby="aboutHeading">
+    <h2 id="aboutHeading">What is included in the true cost of driving?</h2>
+    <p>Most people think of fuel when they think of what a journey costs, but fuel is only part of the picture. Every mile also uses up servicing, tyres and a share of the car&rsquo;s value, and some routes add tolls or parking. TrueTravelCost adds these together so you can see what a trip really costs, not just what you spend at the pump.</p>
+    <ul>
+      <li><strong>Fuel or electricity</strong>, based on the vehicle&rsquo;s consumption and current local prices.</li>
+      <li><strong>Maintenance and tyres</strong>, spread across the distance you drive each year.</li>
+      <li><strong>Tolls, ferries and parking</strong>, added when they are known or when you enter them.</li>
+      <li><strong>Ownership costs</strong> such as depreciation, insurance, registration and finance, if you choose to include them.</li>
+    </ul>
+
+    <h2>Who is it for?</h2>
+    <p>If you are choosing a car, you can compare up to three vehicles on the same journey and see how they differ once running costs are counted. Our <a href="/buy-a-car/">guide to buying a car</a> explains how to use the results. If you drive to work or plan regular trips, <a href="/trips-and-commutes/">trips and commutes</a> shows how to work out what each journey costs, for example against the train.</p>
+    <p>If you reimburse staff for using their own cars, or you are the employee being reimbursed, enter the rate per distance unit and the calculator shows whether it covers the cost of running each vehicle. Reimbursement rules vary by country, so this is a comparison and not tax or legal advice.</p>
+
+    <h2>Where the numbers come from</h2>
+    <p>Fuel consumption comes from public fuel economy data where it is available, European fuel prices come from the EU Commission Weekly Oil Bulletin, and default servicing, tyre and ownership figures are anchored to published cost studies and scaled for your region. Everything is an estimate, and you can overwrite any value with your own. The <a href="/how-it-works/">how it works</a> and <a href="/methodology/">methodology</a> pages explain each step, and <a href="/vehicle-running-costs/">vehicle running costs</a> covers what drives the figures. You can also see what a finished comparison looks like in the <a href="/example-report/">example report</a>.</p>
+  </section>
 
   <footer class="legend">
     <div class="footer-links">
