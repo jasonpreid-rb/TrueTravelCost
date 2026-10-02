@@ -1072,6 +1072,9 @@
         <button class="share-icon" id="shareEmail" type="button" title="Share via email" aria-label="Share via email">
           <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
         </button>
+        <button class="share-icon" id="shareCopy" type="button" title="Copy summary" aria-label="Copy summary">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+        </button>
       </div>
       <div class="meter-actions-status" id="meterActionsStatus"></div>
     </div>
@@ -2549,6 +2552,8 @@
     function renderSavedTrips(docs) {
       if (!docs.length) { savedTripsPanel.hidden = true; return; }
       savedTripsPanel.hidden = false;
+      var hintEl = savedTripsPanel.querySelector('.hint');
+      if (hintEl && !db) hintEl.textContent = 'Saved in this browser only. Click one to load it back into the calculator.';
       savedTripsList.innerHTML = '';
       docs.forEach(function (d) {
         var data = d.data ? d.data() : d;
@@ -2592,25 +2597,71 @@
     });
 
     // ---- share ----
-    function shareUrlForCurrentTrip() {
-      var text = summaryText(fieldSnapshot());
-      return { text: text, encoded: encodeURIComponent(text) };
+    var SHARE_URL = 'https://www.truetravelcost.com/';
+    function shareLink(src) { return SHARE_URL + '?utm_source=' + src + '&utm_medium=share'; }
+    var plain = function (t) { return t; };
+    function buildShare(src, bold) {
+      var metric = unitSystem.value === 'metric', curr = currencyInput.value || '\u20ac', distU = metric ? 'km' : 'mi';
+      var dist = parseFloat(distance.value) || 0;
+      var extra = (parseFloat(tolls.value) || 0) + (parseFloat(extras.value) || 0);
+      var rs = [];
+      for (var k = 0; k < activeCount; k++) { if (vehicleEntered(VEH[k])) rs.push(calcVehicle(VEH[k], dist, extra, metric)); }
+      if (!rs.length || dist <= 0) return null;
+      var from = journeyFromEl.value.trim(), to = journeyToEl.value.trim();
+      var place = from && to ? 'From ' + from + ' to ' + to : 'Journey';
+      var route = place + ', ' + (roundTrip.checked ? 'round trip, ' : '') + Math.round(dist).toLocaleString() + ' ' + distU;
+      var per = function (r) { return curr + r.perUnit.toFixed(3) + '/' + distU; };
+      var name = function (r) { return vehicleName(r.i).replace(/\s+/g, ' ').trim(); };
+      var sorted = rs.slice().sort(function (x, y) { return x.total - y.total; });
+      var best = sorted[0];
+      var L = [bold('TrueTravelCost \u2014 journey cost estimate'), '', route, ''];
+      if (rs.length === 1) {
+        var r = rs[0];
+        L.push(name(r) + ': ' + bold(curr + fmt(r.total)) + ' (' + per(r) + ')', '');
+        L.push('Fuel / energy: ' + curr + fmt(r.fuelCost), 'Maintenance: ' + curr + fmt(r.maintCost), 'Tyres: ' + curr + fmt(r.tyreCost));
+        if (includeOwn.checked) L.push('Ownership: ' + curr + fmt(r.ownCost));
+        L.push('Tolls & extras: ' + curr + fmt(r.tollCost));
+      } else {
+        L.push('Cost per vehicle, same journey:');
+        sorted.forEach(function (r, n) {
+          L.push((n + 1) + '. ' + name(r) + ' \u2014 ' + bold(curr + fmt(r.total)) + ' (' + per(r) + ')' + (r === best ? ' (lowest cost)' : ''));
+        });
+      }
+      L.push('', 'Includes fuel or energy, maintenance and tyres' + (includeOwn.checked ? ', ownership costs' : '') + ', plus any tolls and parking entered. An estimate based on the figures entered.');
+      L.push('', 'Run your own comparison: ' + shareLink(src));
+      var short = place + ', ' + Math.round(dist).toLocaleString() + ' ' + distU + (roundTrip.checked ? ' round trip' : '') + ': ' +
+        (rs.length > 1 ? curr + fmt(best.total) + ' for the lowest-cost of ' + rs.length + ' vehicles' : name(best) + ' ' + curr + fmt(best.total)) +
+        '. True cost incl. servicing, tyres & tolls.';
+      return { text: L.join('\n'), short: short, subject: 'Journey cost estimate: ' + (from && to ? from + ' to ' + to : 'your journey') };
+    }
+    function withShare(src, bold, fn) {
+      var s = buildShare(src, bold);
+      if (!s) { setMeterStatus('Enter a journey and a vehicle first.', 'err'); return; }
+      setMeterStatus('', ''); fn(s);
     }
     $('shareWhatsapp').addEventListener('click', function () {
-      var s = shareUrlForCurrentTrip();
-      window.open('https://wa.me/?text=' + s.encoded, '_blank', 'noopener');
+      withShare('whatsapp', function (t) { return '*' + t + '*'; }, function (s) { window.open('https://wa.me/?text=' + encodeURIComponent(s.text), '_blank', 'noopener'); });
     });
     $('shareX').addEventListener('click', function () {
-      var s = shareUrlForCurrentTrip();
-      window.open('https://twitter.com/intent/tweet?text=' + s.encoded, '_blank', 'noopener');
+      withShare('x', plain, function (s) { window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(s.short) + '&url=' + encodeURIComponent(shareLink('x')), '_blank', 'noopener'); });
     });
     $('shareLinkedin').addEventListener('click', function () {
-      var s = shareUrlForCurrentTrip();
-      window.open('https://www.linkedin.com/sharing/share-offsite/?url=' + encodeURIComponent(location.href) + '&summary=' + s.encoded, '_blank', 'noopener');
+      window.open('https://www.linkedin.com/sharing/share-offsite/?url=' + encodeURIComponent(shareLink('linkedin')), '_blank', 'noopener');
     });
     $('shareEmail').addEventListener('click', function () {
-      var s = shareUrlForCurrentTrip();
-      location.href = 'mailto:?subject=' + encodeURIComponent('Trip cost comparison') + '&body=' + s.encoded;
+      withShare('email', plain, function (s) { location.href = 'mailto:?subject=' + encodeURIComponent(s.subject) + '&body=' + encodeURIComponent(s.text.replace(/\n/g, '\r\n')); });
+    });
+    $('shareCopy').addEventListener('click', function () {
+      withShare('copy', plain, function (s) {
+        var done = function () { setMeterStatus('Summary copied.', 'ok'); };
+        var fallback = function () {
+          var ta = document.createElement('textarea'); ta.value = s.text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+          document.body.appendChild(ta); ta.select();
+          try { document.execCommand('copy') ? done() : setMeterStatus('Couldn\u2019t copy.', 'err'); } catch (e) { setMeterStatus('Couldn\u2019t copy.', 'err'); }
+          document.body.removeChild(ta);
+        };
+        if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(s.text).then(done, fallback); else fallback();
+      });
     });
 
   })();
