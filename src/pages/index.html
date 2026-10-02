@@ -2598,7 +2598,12 @@
 
     // ---- share ----
     var SHARE_URL = 'https://www.truetravelcost.com/';
-    function shareLink(src) { return SHARE_URL + '?utm_source=' + src + '&utm_medium=share'; }
+    function shareLink(src) { return SHARE_URL + '?ref=' + src; }
+    // visits that arrive through a shared link are reported as a share_visit event (wa, x, em, li, cp)
+    try {
+      var shareRef = new URLSearchParams(location.search).get('ref');
+      if (shareRef && /^[a-z]{1,4}$/.test(shareRef) && typeof gtag === 'function') gtag('event', 'share_visit', { share_channel: shareRef });
+    } catch (e) { /* ignore */ }
     var plain = function (t) { return t; };
     function buildShare(src, bold) {
       var metric = unitSystem.value === 'metric', curr = currencyInput.value || '\u20ac', distU = metric ? 'km' : 'mi';
@@ -2640,19 +2645,19 @@
       setMeterStatus('', ''); fn(s);
     }
     $('shareWhatsapp').addEventListener('click', function () {
-      withShare('whatsapp', function (t) { return '*' + t + '*'; }, function (s) { window.open('https://wa.me/?text=' + encodeURIComponent(s.text), '_blank', 'noopener'); });
+      withShare('wa', function (t) { return '*' + t + '*'; }, function (s) { window.open('https://wa.me/?text=' + encodeURIComponent(s.text), '_blank', 'noopener'); });
     });
     $('shareX').addEventListener('click', function () {
       withShare('x', plain, function (s) { window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(s.short) + '&url=' + encodeURIComponent(shareLink('x')), '_blank', 'noopener'); });
     });
     $('shareLinkedin').addEventListener('click', function () {
-      window.open('https://www.linkedin.com/sharing/share-offsite/?url=' + encodeURIComponent(shareLink('linkedin')), '_blank', 'noopener');
+      window.open('https://www.linkedin.com/sharing/share-offsite/?url=' + encodeURIComponent(shareLink('li')), '_blank', 'noopener');
     });
     $('shareEmail').addEventListener('click', function () {
-      withShare('email', plain, function (s) { location.href = 'mailto:?subject=' + encodeURIComponent(s.subject) + '&body=' + encodeURIComponent(s.text.replace(/\n/g, '\r\n')); });
+      withShare('em', plain, function (s) { location.href = 'mailto:?subject=' + encodeURIComponent(s.subject) + '&body=' + encodeURIComponent(s.text.replace(/\n/g, '\r\n')); });
     });
     $('shareCopy').addEventListener('click', function () {
-      withShare('copy', plain, function (s) {
+      withShare('cp', plain, function (s) {
         var done = function () { setMeterStatus('Summary copied.', 'ok'); };
         var fallback = function () {
           var ta = document.createElement('textarea'); ta.value = s.text; ta.style.position = 'fixed'; ta.style.opacity = '0';
