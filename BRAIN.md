@@ -21,9 +21,10 @@ A car trip cost calculator at **truetravelcost.com**. It shows what driving *rea
 | Wordmark | **TrueTravelCost.com**, Calistoga (Google Fonts), mixed case |
 | Tagline | *Know what your journey really costs.* Times New Roman italic, small, under the wordmark |
 | Motto | Compute · Compare · Commute (in the header markup but hidden by CSS) |
-| Logo | Elephant head, `/truetravelcost-elephant-logo.png` |
+| Logo | Elephant head, `/truetravelcost-elephant-logo.png` (navy, transparent). The header paints it with a CSS mask, so it is navy in light mode and lime in dark mode. Favicons, app icons: navy elephant on an acid-lime tile. og-image: lime elephant on deep navy |
 | Body fonts | IBM Plex Sans (body), IBM Plex Mono (numbers), Space Grotesk (headings) |
 | Default theme | **Light.** It never follows the OS. Dark is opt-in via the toggle. |
+| Palette | Deep navy `#071A2B`, near-black `#05080B`, off-white `#F5F7F4`, acid lime `#B7F000`, muted blue-grey `#71808D`. Lime is a fill/highlight colour (buttons, markers, active nav, dark-mode accent); never use it as text on off-white. Derived tints (panel, line, muted text) are in `site.css`. Updated 2026-10-04 |
 
 ## 3. Repository layout
 

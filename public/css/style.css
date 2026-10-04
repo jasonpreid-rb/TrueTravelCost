@@ -24,6 +24,9 @@ text-decoration: none;
 
 a:hover {
 text-decoration: underline;
+text-decoration-color: var(--lime);
+text-decoration-thickness: 2px;
+text-underline-offset: 3px;
 }
 
 :focus-visible {
@@ -330,12 +333,12 @@ justify-content: center;
 margin-top: 8px;
 padding: 11px 17px;
 
-background: var(--blue);
+background: var(--lime);
 border-radius: var(--radius-sm);
 
-color: #FFFFFF;
+color: var(--lime-ink);
 font-size: 13px;
-font-weight: 500;
+font-weight: 600;
 }
 
 .button:hover {
@@ -437,6 +440,4 @@ border: 1px solid var(--line);
 color: var(--text);
 }
 
-:root[data-theme="dark"] .button {
-color: #0B1420;
-}
+/* .button is lime with near-black text in both themes (see site.css) */

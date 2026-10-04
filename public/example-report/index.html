@@ -20,6 +20,7 @@
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <link rel="manifest" href="/site.webmanifest">
+<meta name="theme-color" content="#071A2B">
 <!-- Social sharing: site-wide values. Per-page og:title, og:description and og:url are added per page. -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="TrueTravelCost">
@@ -65,15 +66,15 @@
       font: inherit;
       font-weight: 600;
       padding: 9px 16px;
-      border: 1px solid #0e5a54;
-      background: #0e5a54;
-      color: #fff;
+      border: 1px solid #071A2B;
+      background: #B7F000;
+      color: #05080B;
       border-radius: 6px;
       cursor: pointer;
     }
 
-    .rpt-btn:hover { background: #0b4a45; }
-    .rpt-btn:focus-visible { outline: 3px solid #8fbfc2; outline-offset: 2px; }
+    .rpt-btn:hover { background: #A5DA00; }
+    .rpt-btn:focus-visible { outline: 3px solid #71808D; outline-offset: 2px; }
 
     .rpt-stack {
       display: flex;
@@ -84,16 +85,16 @@
     }
 
     .rpt-page {
-      --ink: #16232b;
-      --muted: #5c6b73;
-      --rule: #d5dde0;
-      --tint: #f2f6f6;
-      --accent: #0e5a54;
-      --c-fuel: #16232b;
-      --c-tolls: #7d8b93;
-      --c-maint: #2f7f86;
-      --c-tyres: #8fbfc2;
-      --c-dep: #c7871c;
+      --ink: #05080B;
+      --muted: #55646F;
+      --rule: #D9DFDB;
+      --tint: #F1F4F0;
+      --accent: #071A2B;
+      --c-fuel: #05080B;
+      --c-tolls: #71808D;
+      --c-maint: #3E566B;
+      --c-tyres: #A9B6C0;
+      --c-dep: #B7F000;
 
       position: relative;
       box-sizing: border-box;
@@ -106,7 +107,7 @@
       font-family: "IBM Plex Sans", system-ui, sans-serif;
       font-size: 13px;
       line-height: 1.55;
-      box-shadow: 0 1px 3px rgba(22, 35, 43, 0.18), 0 8px 28px rgba(22, 35, 43, 0.12);
+      box-shadow: 0 1px 3px rgba(5, 8, 11, 0.18), 0 8px 28px rgba(5, 8, 11, 0.12);
     }
 
     .rpt-page * { box-sizing: border-box; }
@@ -159,8 +160,8 @@
       padding: 2px 9px;
       border: 1px solid var(--c-dep);
       border-radius: 999px;
-      color: #7a520b;
-      background: #fbf3e2;
+      color: #3F5200;
+      background: #EDF6CF;
       font-size: 11.5px;
       font-weight: 600;
     }
@@ -201,7 +202,7 @@
     .rpt-page .num { text-align: right; white-space: nowrap; }
     .rpt-page tr.total td,
     .rpt-page tr.total th { font-weight: 700; border-top: 2px solid var(--ink); border-bottom: 2px solid var(--ink); background: var(--tint); }
-    .rpt-page td.best { background: #e4f1ee; font-weight: 700; }
+    .rpt-page td.best { background: #E9F4CC; font-weight: 700; }
 
     .rpt-work {
       display: block;
@@ -302,9 +303,9 @@
 
     .rpt-bar-line .lab { color: var(--muted); }
     .rpt-bar-line .val { text-align: right; font-variant-numeric: tabular-nums; }
-    .rpt-track { height: 14px; background: #eef2f3; display: flex; overflow: hidden; }
+    .rpt-track { height: 14px; background: #ECF0EC; display: flex; overflow: hidden; }
     .rpt-track > i { display: block; height: 100%; flex-shrink: 0; }
-    .rpt-fill-fuel { background: #9fb0b8; }
+    .rpt-fill-fuel { background: #A9B6C0; }
     .rpt-fill-true { background: var(--accent); }
 
     .rpt-legend {
@@ -391,7 +392,7 @@
 
 <header class="top">
     <a href="/" class="brand" aria-label="TrueTravelCost home">
-      <img src="/truetravelcost-elephant-logo.png" alt="TrueTravelCost" class="site-logo">
+      <span class="site-logo" role="img" aria-label="TrueTravelCost"></span>
       <div class="wordmark-block">
         <div class="wordmark">TrueTravelCost.com</div>
         <div class="tagline">Know what your journey really costs.</div>

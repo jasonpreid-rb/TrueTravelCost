@@ -34,7 +34,7 @@
     padding: 7px 15px; border-radius: 999px; border: none; background: transparent;
     color: var(--muted); cursor: pointer;
   }
-  .audience-switch button.active { background: var(--panel); color: var(--navy); box-shadow: 0 1px 2px rgba(16,25,43,0.08); }
+  .audience-switch button.active { background: var(--panel); color: var(--navy); box-shadow: 0 1px 2px rgba(5,8,11,0.08); }
   .hero h1 {
     font-family: var(--font-display); font-weight: 700; color: var(--navy);
     font-size: clamp(30px, 4.2vw, 44px); letter-spacing: -0.015em; margin: 0 0 12px; max-width: 18ch;
@@ -97,7 +97,7 @@
   .location-check {
     display: flex; align-items: center; justify-content: center;
     width: 18px; height: 18px; margin-right: 8px; flex-shrink: 0;
-    border-radius: 50%; background: #1FA05A; color: #fff;
+    border-radius: 50%; background: var(--green); color: var(--on-blue);
     font-size: 11px; line-height: 1;
   }
   .location-check[hidden] { display: none; }
@@ -121,7 +121,7 @@
   .maps-link:hover { border-color: var(--blue); }
 
   .estimated-tag {
-    display: inline-block; font-family: var(--font-mono); font-size: 10.5px; color: #fff;
+    display: inline-block; font-family: var(--font-mono); font-size: 10.5px; color: var(--on-blue);
     background: var(--blue); border-radius: 3px; padding: 1px 5px; margin-left: 6px; vertical-align: middle;
   }
   .estimated-tag[hidden] { display: none; }
@@ -171,7 +171,7 @@
   .vehicle-card select.unit-select { font-size: 12.5px; padding: 8px; }
 
   .lookup-btn {
-    font-family: var(--font-body); font-size: 13px; font-weight: 500; color: #fff; background: var(--blue);
+    font-family: var(--font-body); font-size: 13px; font-weight: 600; color: var(--lime-ink); background: var(--lime);
     border: none; border-radius: var(--radius-sm); padding: 9px 12px; cursor: pointer; width: 100%;
   }
   .lookup-btn:hover { filter: brightness(1.08); }
@@ -242,7 +242,7 @@
   .vehicle-card.is-best .best-flag { display: inline-block; }
 
   /* ---------- Results / comparison panel ---------- */
-  .meter { position: sticky; top: 20px; background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius-md); padding: 22px; box-shadow: 0 8px 24px rgba(16,25,43,0.06); }
+  .meter { position: sticky; top: 20px; background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius-md); padding: 22px; box-shadow: 0 8px 24px rgba(5,8,11,0.07); }
   .meter h2 { font-family: var(--font-display); font-size: 13px; font-weight: 600; margin: 0 0 2px; color: var(--muted); }
   .meter .total-readout { font-family: var(--font-mono); font-size: clamp(30px, 5vw, 40px); font-weight: 600; letter-spacing: -0.01em; margin: 6px 0 2px; line-height: 1.1; word-break: break-word; color: var(--navy); }
   .meter .per-unit { font-family: var(--font-mono); font-size: 13px; color: var(--muted); margin-bottom: 18px; }
@@ -305,12 +305,12 @@
   .share-icon:active { transform: translateY(0); }
   .share-icon svg { width: 18px; height: 18px; }
   #shareWhatsapp { --brand: #1FAF54; }
-  #shareX { --brand: #0F1419; }
+  #shareX { --brand: #05080B; }
   #shareLinkedin { --brand: #0A66C2; }
   #shareEmail { --brand: var(--blue); }
   #shareLinkedin svg { width: 17px; height: 17px; }
-  :root[data-theme="dark"] #shareX { --brand: #E8ECF3; }
-  :root[data-theme="dark"] #shareX:hover { color: #0F1419; }
+  :root[data-theme="dark"] #shareX { --brand: #F5F7F4; }
+  :root[data-theme="dark"] #shareX:hover, :root[data-theme="dark"] #shareEmail:hover { color: #05080B; }
 
   .meter-actions-status { font-family: var(--font-mono); font-size: 11.5px; color: var(--muted); margin-top: 8px; min-height: 14px; }
   .meter-actions-status.ok { color: var(--green); }

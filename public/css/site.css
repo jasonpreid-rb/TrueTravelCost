@@ -1,25 +1,35 @@
 /* TrueTravelCost - shared site styles: theme tokens, header, navigation, footer, theme toggle.
  Loaded on every page (injected by build.mjs). Page-specific styles stay in the page. */
 
+/* Brand palette
+   Deep navy #071A2B  | Near-black #05080B | Off-white #F5F7F4 | Acid lime #B7F000 | Muted blue-grey #71808D
+   Acid lime is a fill and highlight colour. On off-white it is too light to carry text, so in light mode
+   text and links use navy; lime is used for buttons, markers and active states, and as the accent in dark mode.
+   A few tints are derived from the palette (panel, line, muted text) to keep text at accessible contrast. */
 :root {
-  --bg: #F5F6F8;
+  --lime: #B7F000;
+  --lime-ink: #05080B;
+  --slate: #71808D;
+
+  --bg: #F5F7F4;
   --panel: #FFFFFF;
-  --panel-2: #F0F2F5;
-  --line: #DCE0E6;
-  --text: #10192B;
-  --muted: #5B6472;
-  --navy: #10233F;
-  --blue: #2354C9;
-  --blue-dim: #E5ECFB;
-  --gold: #A9772B;
-  --gold-dim: #F6EFDD;
-  --green: #16794C;
-  --green-dim: #E4F3EA;
+  --panel-2: #ECF0EC;
+  --line: #D9DFDB;
+  --text: #05080B;
+  --muted: #55646F;
+  --navy: #071A2B;
+  --blue: #071A2B;
+  --blue-dim: #E7ECEF;
+  --on-blue: #F5F7F4;
+  --gold: #4F6900;
+  --gold-dim: #EDF6CF;
+  --green: #3E6B00;
+  --green-dim: #E9F4CC;
   --red: #B23A2E;
   --red-dim: #FBEAE7;
+  --logo-color: #071A2B;
   --radius-sm: 6px;
   --radius-md: 10px;
-  --logo-filter: none;
   --font-display: 'Space Grotesk', sans-serif;
   --font-body: 'IBM Plex Sans', sans-serif;
   --font-mono: 'IBM Plex Mono', monospace;
@@ -28,13 +38,13 @@
   padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 :root[data-theme="dark"] {
-  --bg: #0B1420; --panel: #101B2C; --panel-2: #16223A; --line: #24344F;
-  --text: #E8ECF3; --muted: #8A96AC; --navy: #E8ECF3;
-  --blue: #6E97F0; --blue-dim: #182541;
-  --gold: #D3A24C; --gold-dim: #2A2110;
-  --green: #4CBE8B; --green-dim: #102A1F;
-  --red: #E37F72; --red-dim: #2E1613;
-  --logo-filter: invert(1) brightness(1.4);
+  --bg: #05080B; --panel: #071A2B; --panel-2: #0B2236; --line: #1A3247;
+  --text: #F5F7F4; --muted: #8493A0; --navy: #F5F7F4;
+  --blue: #B7F000; --blue-dim: #1C3426; --on-blue: #05080B;
+  --gold: #B7F000; --gold-dim: #1C3426;
+  --green: #B7F000; --green-dim: #1C3426;
+  --red: #E88A7E; --red-dim: #2B1A1C;
+  --logo-color: #B7F000;
 }
 
 /* ---------- Header, navigation and footer (shared) ---------- */
@@ -44,7 +54,13 @@ header.top {
   gap: 20px; padding: 4px 0 22px;
 }
 .brand { display: flex; align-items: center; gap: 18px; text-decoration: none; color: inherit; }
-.site-logo { width: 72px; height: 72px; object-fit: contain; filter: var(--logo-filter); flex-shrink: 0; }
+/* Logo is painted from the PNG's shape, so it follows the theme (navy in light mode, lime in dark mode) */
+.site-logo {
+  display: block; width: 72px; height: 72px; flex-shrink: 0;
+  background-color: var(--logo-color);
+  -webkit-mask: url('/truetravelcost-elephant-logo.png') center / contain no-repeat;
+  mask: url('/truetravelcost-elephant-logo.png') center / contain no-repeat;
+}
 .wordmark-block {
   display: flex; flex-direction: column; gap: 4px;
   padding-left: 16px; border-left: 1.5px solid var(--line);
@@ -61,7 +77,7 @@ header.top {
 }
 .brand .motto {
   font-family: var(--font-display); font-size: 10.5px; font-weight: 600;
-  letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold);
+  letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted);
   margin-top: 1px;
 }
 .top-actions { display: flex; align-items: center; gap: 10px; }
@@ -81,7 +97,7 @@ header.top {
 .tt-thumb {
   position: absolute; top: 50%; left: 3px; width: var(--td); height: var(--td);
   border-radius: 50%; background: var(--panel); border: 1px solid var(--line);
-  box-shadow: 0 1px 3px rgba(11, 20, 32, 0.18); color: var(--gold);
+  box-shadow: 0 1px 3px rgba(5, 8, 11, 0.22); color: var(--gold);
   display: grid; place-items: center;
   transform: translateY(-50%);
   transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
@@ -103,13 +119,13 @@ header.top {
   color: var(--muted); font-size: 12.5px; font-weight: 500; text-decoration: none;
 }
 .top-nav a:hover { border-color: var(--line); background: var(--panel); color: var(--navy); }
-.top-nav a[aria-current="page"] { border-color: var(--line); background: var(--panel); color: var(--navy); }
+.top-nav a[aria-current="page"] { border-color: var(--line); background: var(--panel); color: var(--navy); box-shadow: inset 0 -2px 0 var(--lime); }
 
 /* ---------- Footer ---------- */
 footer.legend { margin-top: 26px; padding-top: 22px; border-top: 1px solid var(--line); color: var(--muted); font-size: 12px; line-height: 1.6; }
 .footer-links { display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 14px; }
 .footer-links a { color: var(--muted); text-decoration: none; }
-.footer-links a:hover { color: var(--blue); text-decoration: underline; }
+.footer-links a:hover { color: var(--navy); text-decoration: underline; text-decoration-color: var(--lime); text-decoration-thickness: 2px; text-underline-offset: 3px; }
 
 
 /* ---------- Compact header (shared across all pages) ---------- */
@@ -117,7 +133,7 @@ header.top {
   display: grid; grid-template-columns: auto 1fr auto; align-items: center;
   column-gap: 16px; padding: 0 0 14px; border-bottom: 1px solid var(--line);
 }
-.site-logo { width: 44px; height: 44px; }
+.site-logo { width: 50px; height: 50px; }
 .wordmark-block { gap: 2px; padding-left: 12px; }
 .brand { gap: 12px; }
 .brand .wordmark { font-size: 21px; white-space: nowrap; }
@@ -139,7 +155,7 @@ header.top {
 
 @media (max-width: 480px) {
   header.top { flex-wrap: wrap; }
-  .site-logo { width: 40px; height: 40px; }
+  .site-logo { width: 44px; height: 44px; }
   .brand { min-width: 0; }
   .brand .tagline { display: none; }
   .theme-toggle { --tw: 52px; --th: 28px; --td: 20px; }
@@ -152,3 +168,17 @@ header.top {
 
 /* Link states: keep the brand and nav free of the default link underline on hover */
 .brand:hover, .top-nav a:hover { text-decoration: none; }
+
+/* ---------- Brand accents (shared; loads after style.css so these win) ---------- */
+.eyebrow { color: var(--muted); display: inline-flex; align-items: center; gap: 8px; }
+.eyebrow::before { content: ''; width: 8px; height: 8px; background: var(--lime); border-radius: 2px; flex-shrink: 0; }
+.feature-number { color: var(--muted); }
+.button { background: var(--lime); color: var(--lime-ink); font-weight: 600; }
+.highlight { border-left-color: var(--lime); }
+.formula strong { color: var(--lime); }
+/* Call-to-action: deep navy panel with a lime top edge, same in light and dark */
+.cta { background: #071A2B; border: 1px solid #071A2B; border-top: 3px solid var(--lime); }
+.cta h2 { color: #F5F7F4; }
+.cta p { color: #AEB9C2; }
+:root[data-theme="dark"] .cta { border-color: var(--line); border-top-color: var(--lime); }
+::selection { background: var(--lime); color: var(--lime-ink); }
