@@ -1,6 +1,12 @@
 /* TrueTravelCost - shared site styles: theme tokens, header, navigation, footer, theme toggle.
  Loaded on every page (injected by build.mjs). Page-specific styles stay in the page. */
 
+/* Self-hosted fonts (no requests to Google): Inter, Calistoga (wordmark), JetBrains Mono */
+@font-face { font-family: 'Inter'; font-style: normal; font-display: swap; font-weight: 100 900; src: url('/fonts/inter-latin-ext-wght-normal.woff2') format('woff2'); unicode-range: U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF; }
+@font-face { font-family: 'Inter'; font-style: normal; font-display: swap; font-weight: 100 900; src: url('/fonts/inter-latin-wght-normal.woff2') format('woff2'); unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD; }
+@font-face { font-family: 'Calistoga'; font-style: normal; font-display: swap; font-weight: 400; src: url('/fonts/calistoga-latin-400-normal.woff2') format('woff2'); unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD; }
+@font-face { font-family: 'JetBrains Mono'; font-style: normal; font-display: swap; font-weight: 100 800; src: url('/fonts/jetbrains-mono-latin-wght-normal.woff2') format('woff2'); unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD; }
+
 /* Brand palette
    Deep navy #071A2B  | Near-black #05080B | Off-white #F5F7F4 | Acid lime #B7F000 | Muted blue-grey #71808D
    Acid lime is a fill and highlight colour. On off-white it is too light to carry text, so in light mode
@@ -28,11 +34,16 @@
   --red: #B23A2E;
   --red-dim: #FBEAE7;
   --logo-color: #071A2B;
-  --radius-sm: 6px;
-  --radius-md: 10px;
-  --font-display: 'Space Grotesk', sans-serif;
-  --font-body: 'IBM Plex Sans', sans-serif;
-  --font-mono: 'IBM Plex Mono', monospace;
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --field-h: 46px;
+  --field-radius: 10px;
+  --field-line: #C5CDC8;
+  --ring: 0 0 0 3px color-mix(in srgb, var(--lime) 55%, transparent);
+  --font-display: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-body: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  color-scheme: light;
   box-sizing: border-box;
   padding-top: env(safe-area-inset-top, 0px);
   padding-bottom: env(safe-area-inset-bottom, 0px);
@@ -45,6 +56,9 @@
   --green: #B7F000; --green-dim: #1C3426;
   --red: #E88A7E; --red-dim: #2B1A1C;
   --logo-color: #B7F000;
+  --field-line: #2B4660;
+  --ring: 0 0 0 3px color-mix(in srgb, var(--lime) 28%, transparent);
+  color-scheme: dark;
 }
 
 /* ---------- Header, navigation and footer (shared) ---------- */
@@ -182,3 +196,9 @@ header.top {
 .cta p { color: #AEB9C2; }
 :root[data-theme="dark"] .cta { border-color: var(--line); border-top-color: var(--lime); }
 ::selection { background: var(--lime); color: var(--lime-ink); }
+
+/* ---------- Type: Inter throughout, tighter headings, tabular figures for numbers ---------- */
+body { font-feature-settings: 'cv11' 1, 'ss03' 1; }
+h1, h2, h3 { letter-spacing: -0.02em; }
+.content h2, .content h3, .feature h3 { letter-spacing: -0.015em; }
+td.number, th.number, .number { font-variant-numeric: tabular-nums; }

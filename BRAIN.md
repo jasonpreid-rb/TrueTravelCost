@@ -22,7 +22,7 @@ A car trip cost calculator at **truetravelcost.com**. It shows what driving *rea
 | Tagline | *Know what your journey really costs.* Times New Roman italic, small, under the wordmark |
 | Motto | Compute · Compare · Commute (in the header markup but hidden by CSS) |
 | Logo | Elephant head, `/truetravelcost-elephant-logo.png` (navy, transparent). The header paints it with a CSS mask, so it is navy in light mode and lime in dark mode. Favicons, app icons: navy elephant on an acid-lime tile. og-image: lime elephant on deep navy |
-| Body fonts | IBM Plex Sans (body), IBM Plex Mono (numbers), Space Grotesk (headings) |
+| Fonts | **Inter** (body, headings, numbers with tabular figures), **JetBrains Mono** (small labels only), Calistoga (wordmark). Self-hosted in `public/fonts/` and declared in `site.css`; no Google Fonts requests. Updated 2026-10-04 |
 | Default theme | **Light.** It never follows the OS. Dark is opt-in via the toggle. |
 | Palette | Deep navy `#071A2B`, near-black `#05080B`, off-white `#F5F7F4`, acid lime `#B7F000`, muted blue-grey `#71808D`. Lime is a fill/highlight colour (buttons, markers, active nav, dark-mode accent); never use it as text on off-white. Derived tints (panel, line, muted text) are in `site.css`. Updated 2026-10-04 |
 
@@ -149,6 +149,8 @@ Rules of thumb:
 - Theme: `data-theme="dark"` on `<html>` is the only switch. The saved choice is applied by an inline script in `head.html` before first paint, and `site.js` handles the toggle.
 - Header markup lives **inside `.wrap`**, as does the footer. Don't move them outside.
 - Check every change at about 390px wide (there must be no horizontal scroll) and in dark mode.
+
+Form system (calculator, `src/pages/index.html`): fields are 46px tall (44px in vehicle cards), 16px text (stops iOS zoom on focus), white field on the card, left-aligned values with the unit pinned right, 10px radius, navy border plus lime focus ring (lime border in dark mode). Tokens `--field-h`, `--field-radius`, `--field-line`, `--ring` live in `site.css`. Selects and checkboxes are custom-drawn so they match in both themes.
 
 ## 8. Content and SEO conventions
 
