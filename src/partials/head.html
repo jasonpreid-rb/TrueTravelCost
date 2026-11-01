@@ -12,6 +12,7 @@
 <!-- Affiliate network tracking / site verification (Travelpayouts). Consider loading this only after cookie consent once a consent banner is in place. -->
 <script>
   (function () {
+    if (/[?&]embed=1(&|$)/.test(location.search)) return; // not needed inside partner embeds
     var script = document.createElement("script");
     script.async = 1;
     script.setAttribute("data-cmp-ab", "2");
