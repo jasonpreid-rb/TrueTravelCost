@@ -15,6 +15,7 @@
 <!-- Affiliate network tracking / site verification (Travelpayouts). Consider loading this only after cookie consent once a consent banner is in place. -->
 <script>
   (function () {
+    if (/[?&]embed=1(&|$)/.test(location.search)) return; // not needed inside partner embeds
     var script = document.createElement("script");
     script.async = 1;
     script.setAttribute("data-cmp-ab", "2");
@@ -44,6 +45,7 @@
   try { if (localStorage.getItem('ttc-theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark'); } catch (e) {}
 </script>
 <script src="/js/site.js" defer></script>
+<script src="/js/embed.js"></script>
 <title>TrueTravelCost — What Driving Really Costs</title>
 <meta name="description" content="Work out the true cost of a drive — fuel, servicing, tyres and tolls — to compare cars, plan a trip, or check whether your mileage reimbursement covers the real cost.">
 <link rel="canonical" href="https://www.truetravelcost.com/">

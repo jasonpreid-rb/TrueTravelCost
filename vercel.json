@@ -24,6 +24,21 @@
     {
       "source": "/methodology/",
       "destination": "/methodology/index.html"
+    },
+    {
+      "source": "/embed-info/",
+      "destination": "/embed-info/index.html"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/",
+      "has": [
+        { "type": "query", "key": "embed", "value": "1" }
+      ],
+      "headers": [
+        { "key": "X-Robots-Tag", "value": "noindex, follow" }
+      ]
     }
   ]
 }
