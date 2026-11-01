@@ -12,6 +12,16 @@
 
   gtag('config', 'G-WQHJCLN006');
 </script>
+<!-- Affiliate network tracking / site verification (Travelpayouts). Consider loading this only after cookie consent once a consent banner is in place. -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.async = 1;
+    script.setAttribute("data-cmp-ab", "2");
+    script.src = "https://emrld.ltd/NTk0MTg5.js?t=594189";
+    document.head.appendChild(script);
+  })();
+</script>
 <!-- Vercel Speed Insights. Turn it on in the Vercel dashboard: your project > Speed Insights > Enable. -->
 <script>window.si = window.si || function () { (window.siq = window.siq || []).push(arguments); };</script>
 <script defer src="/_vercel/speed-insights/script.js"></script>
@@ -539,6 +549,22 @@
   .about-ttc ul { margin: 0 0 12px; padding-left: 20px; }
   .about-ttc li { margin-bottom: 4px; }
   .about-ttc a { color: var(--blue); }
+
+  /* ---------- Trip suggestions (partner links) ---------- */
+  .alt-trips { margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--line); }
+  .alt-trips[hidden], .alt-group[hidden] { display: none; }
+  .alt-head { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 4px 12px; margin: 0 0 8px; }
+  .alt-title { font-family: var(--font-body); font-size: 13px; font-weight: 600; color: var(--text); margin: 0; }
+  .alt-note { font-size: 11.5px; color: var(--muted); margin: 0; }
+  .alt-group + .alt-group { margin-top: 16px; }
+  .alt-list { border: 1px solid var(--line); border-radius: var(--radius-md); overflow: hidden; background: var(--panel); }
+  .alt-row { display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 10px 14px; color: var(--text); text-decoration: none; font-size: 13.5px; line-height: 1.4; }
+  .alt-row + .alt-row { border-top: 1px solid var(--line); }
+  .alt-row:hover { background: var(--panel-2); }
+  .alt-row svg { width: 18px; height: 18px; flex: none; fill: none; stroke: var(--muted); stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+  .alt-row .alt-label { flex: 1; min-width: 0; }
+  .alt-row .alt-cta { flex: none; font-size: 12.5px; color: var(--muted); white-space: nowrap; }
+  .alt-row:hover .alt-cta { color: var(--blue); }
 </style>
 <script>
   window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
@@ -1282,6 +1308,23 @@
         </button>
       </div>
       <div class="meter-actions-status" id="meterActionsStatus"></div>
+
+      <div class="alt-trips" id="altTrips" hidden>
+        <div class="alt-group" id="altGroupTrip" hidden>
+          <div class="alt-head">
+            <h3 class="alt-title">Other ways to make this trip</h3>
+            <p class="alt-note">Partner links. We may earn a commission.</p>
+          </div>
+          <div class="alt-list" id="altListTrip"></div>
+        </div>
+        <div class="alt-group" id="altGroupDrive" hidden>
+          <div class="alt-head">
+            <h3 class="alt-title">If you're driving</h3>
+            <p class="alt-note" id="altNoteDrive">Partner links. We may earn a commission.</p>
+          </div>
+          <div class="alt-list" id="altListDrive"></div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -1871,6 +1914,104 @@
       });
     }
 
+    // ---------- Trip suggestions (partner links) ----------
+    // Paste an approved affiliate URL into `url` to switch a row on. Rows with an empty url never show.
+    // countries: '*' = show everywhere, or a list of ISO country codes, e.g. ['DE', 'AT'].
+    // minKm: only show the row when the trip is at least this long (omit for no minimum).
+    var PARTNERS = [
+      { id: 'flights', partner: 'aviasales', group: 'trip', icon: 'plane', label: 'Compare flights for this route', cta: 'Search',
+        url: 'https://aviasales.tpm.li/0JNAJ7qN', countries: '*', minKm: 300 },
+      { id: 'train', partner: '', group: 'trip', icon: 'train', label: 'Compare train and coach fares', cta: 'Search',
+        url: '', countries: '*' },
+      { id: 'rental', partner: '', group: 'trip', icon: 'car', label: 'Rent a car instead', cta: 'Compare',
+        url: '', countries: '*' },
+      { id: 'stay', partner: '', group: 'drive', icon: 'bed', label: 'Find a place to stay', stayLabel: 'Find a place to stay in {dest}', cta: 'Search',
+        url: '', countries: '*' },
+      { id: 'cover', partner: '', group: 'drive', icon: 'shield', label: 'Compare trip and breakdown cover', cta: 'Compare',
+        url: '', countries: '*' }
+    ];
+    var ALT_ICONS = {
+      plane: '<path d="M16 10h4a2 2 0 0 1 0 4h-4l-4 7h-3l2-7H7l-2 2H2l2-4-2-4h3l2 2h4L9 3h3z"/>',
+      train: '<rect x="5" y="3" width="14" height="14" rx="3"/><path d="M5 11h14M8 17l-2 4M16 17l2 4M9 14h.01M15 14h.01"/>',
+      car: '<path d="M5 17H3v-5l2-5h10l4 5h2v5h-2M9 17h6"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/>',
+      bed: '<path d="M3 7v11M3 14h18M21 18v-7a3 3 0 0 0-3-3h-7v6"/><circle cx="7" cy="11" r="1.5"/>',
+      shield: '<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/>'
+    };
+    var userCountry = null;
+
+    function altDestination() {
+      var raw = (journeyToEl.value || '').split(',')[0].trim();
+      return raw;
+    }
+
+    function buildAltRow(item, dest) {
+      var a = document.createElement('a');
+      a.className = 'alt-row';
+      a.href = item.url;
+      a.target = '_blank';
+      a.rel = 'sponsored noopener noreferrer';
+      a.setAttribute('data-alt-id', item.id);
+      a.setAttribute('data-alt-partner', item.partner || item.id);
+      var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      svg.setAttribute('viewBox', '0 0 24 24');
+      svg.setAttribute('aria-hidden', 'true');
+      svg.innerHTML = ALT_ICONS[item.icon] || '';
+      var label = document.createElement('span');
+      label.className = 'alt-label';
+      label.textContent = (item.stayLabel && dest) ? item.stayLabel.replace('{dest}', dest) : item.label;
+      var cta = document.createElement('span');
+      cta.className = 'alt-cta';
+      cta.textContent = item.cta + ' \u2197';
+      a.appendChild(svg); a.appendChild(label); a.appendChild(cta);
+      return a;
+    }
+
+    function renderAlternatives(hasResult, dist, metric) {
+      var wrap = $('altTrips');
+      if (!wrap) return;
+      var km = metric ? dist : dist * 1.609344;
+      var dest = altDestination();
+      var lists = { trip: $('altListTrip'), drive: $('altListDrive') };
+      var groups = { trip: $('altGroupTrip'), drive: $('altGroupDrive') };
+      lists.trip.innerHTML = ''; lists.drive.innerHTML = '';
+      var shown = { trip: 0, drive: 0 };
+      if (hasResult && dist > 0) {
+        PARTNERS.forEach(function (item) {
+          if (!item.url) return;
+          if (item.minKm && km < item.minKm) return;
+          if (item.countries !== '*') {
+            if (!userCountry || item.countries.indexOf(userCountry) === -1) return;
+          }
+          lists[item.group].appendChild(buildAltRow(item, dest));
+          shown[item.group]++;
+        });
+      }
+      groups.trip.hidden = shown.trip === 0;
+      groups.drive.hidden = shown.drive === 0;
+      $('altNoteDrive').hidden = shown.trip > 0;
+      wrap.hidden = (shown.trip + shown.drive) === 0;
+    }
+
+    document.addEventListener('click', function (e) {
+      var a = e.target.closest ? e.target.closest('a[data-alt-id]') : null;
+      if (!a || typeof gtag !== 'function') return;
+      gtag('event', 'affiliate_click', {
+        placement: a.getAttribute('data-alt-id'),
+        partner: a.getAttribute('data-alt-partner'),
+        country: userCountry || 'unknown',
+        distance_km: Math.round((unitSystem.value === 'metric' ? 1 : 1.609344) * (parseFloat(distance.value) || 0))
+      });
+    });
+
+    try {
+      fetch('/api/geo', { cache: 'no-store' })
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (d) {
+          if (d && /^[A-Z]{2}$/.test(d.country || '')) { userCountry = d.country; calculate(); }
+        })
+        .catch(function () {});
+    } catch (err) {}
+
     function calculate() {
       var metric = unitSystem.value === 'metric';
       var curr = currencyInput.value || '€';
@@ -1970,6 +2111,7 @@
       }
 
       renderReimbursement(results, curr, distU, dist);
+      renderAlternatives(filled.length > 0, dist, metric);
     }
 
     function renderReimbursement(results, curr, distU, dist) {
