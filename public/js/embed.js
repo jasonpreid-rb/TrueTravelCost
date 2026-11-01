@@ -39,6 +39,9 @@
     'html.ttc-embed .wrap { max-width: none !important; padding: 12px 14px 8px !important; }',
     'html.ttc-embed .hero { padding-top: 0 !important; margin-bottom: 12px !important; }',
     'html.ttc-embed .meter { position: static !important; }',
+    // Narrow frames: let grid columns shrink below their content width, and let the share icons wrap.
+    'html.ttc-embed .grid > * { min-width: 0 !important; }',
+    'html.ttc-embed .share-row { flex-wrap: wrap; }',
     'html.ttc-embed .ttc-embed-credit { margin: 14px 0 0; padding-top: 10px; border-top: 1px solid var(--line, #d9dfe3);',
     '  font-size: 12px; line-height: 1.5; text-align: center; color: var(--muted, #71808D); }',
     'html.ttc-embed .ttc-embed-credit a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }',
