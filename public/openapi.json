@@ -5,7 +5,7 @@
     "version": "1.1.0",
     "description": "Estimate the true cost of a car trip: fuel or electricity, maintenance, tyres, tolls and optional ownership costs. Best coverage in Europe. Amounts are in EUR and are estimates based on vehicle-class averages."
   },
-  "servers": [{ "url": "https://truetravelcost.com" }],
+  "servers": [{ "url": "https://www.truetravelcost.com" }],
   "paths": {
     "/api/v1/trip-cost": {
       "post": {
