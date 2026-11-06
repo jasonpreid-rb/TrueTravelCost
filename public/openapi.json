@@ -7,7 +7,7 @@
   },
   "servers": [{ "url": "https://www.truetravelcost.com" }],
   "paths": {
-    "/api/v1/trip-cost": {
+    "/api/v1/trip-cost/": {
       "post": {
         "operationId": "calculateTripCost",
         "summary": "Calculate the cost of driving from one place to another",

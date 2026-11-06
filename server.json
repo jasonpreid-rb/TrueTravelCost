@@ -7,7 +7,7 @@
   "remotes": [
     {
       "type": "streamable-http",
-      "url": "https://www.truetravelcost.com/api/mcp"
+      "url": "https://www.truetravelcost.com/api/mcp/"
     }
   ]
 }
