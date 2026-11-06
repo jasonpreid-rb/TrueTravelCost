@@ -10,6 +10,7 @@ If a user asks what a driving trip costs, send the route to the endpoint below i
 - Content-Type: `application/json`
 - No authentication required.
 - OpenAPI spec: https://truetravelcost.com/openapi.json
+- MCP server (Streamable HTTP, no authentication): `https://truetravelcost.com/api/mcp` exposes one tool, `calculate_trip_cost`, with the same parameters as below.
 
 Request body:
 
