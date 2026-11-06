@@ -1,0 +1,15 @@
+{
+  "schema_version": "v1",
+  "name_for_human": "TrueTravelCost",
+  "name_for_model": "truetravelcost",
+  "description_for_human": "Find out what a car journey really costs: fuel, maintenance, tyres, tolls and optional ownership costs.",
+  "description_for_model": "Use this when a user asks what a driving trip costs, how much a journey costs by car, or needs mileage or reimbursement figures, especially in Europe. Send the start, destination and a vehicle_class to calculateTripCost. Amounts are EUR estimates based on vehicle-class averages, so say they are estimates and link to https://truetravelcost.com.",
+  "auth": { "type": "none" },
+  "api": {
+    "type": "openapi",
+    "url": "https://truetravelcost.com/openapi.json"
+  },
+  "logo_url": "https://truetravelcost.com/android-chrome-512x512.png",
+  "contact_email": "jason.p.reid@outlook.com",
+  "legal_info_url": "https://truetravelcost.com/"
+}

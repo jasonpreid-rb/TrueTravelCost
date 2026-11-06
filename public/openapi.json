@@ -1,0 +1,103 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "TrueTravelCost API",
+    "version": "1.1.0",
+    "description": "Estimate the true cost of a car trip: fuel or electricity, maintenance, tyres, tolls and optional ownership costs. Best coverage in Europe. Amounts are in EUR and are estimates based on vehicle-class averages."
+  },
+  "servers": [{ "url": "https://truetravelcost.com" }],
+  "paths": {
+    "/api/v1/trip-cost": {
+      "post": {
+        "operationId": "calculateTripCost",
+        "summary": "Calculate the cost of driving from one place to another",
+        "description": "Use when a user asks what a driving trip costs, how much a journey costs by car, or for mileage or reimbursement figures.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/TripRequest" },
+              "example": {
+                "from": "Munich, Germany",
+                "to": "Salzburg, Austria",
+                "vehicle_class": "compact_suv",
+                "include_ownership_costs": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Cost estimate",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/TripResponse" } } }
+          },
+          "400": { "description": "Invalid input", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } } },
+          "422": { "description": "Location or route not found", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } } },
+          "502": { "description": "Upstream routing error", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } } }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "TripRequest": {
+        "type": "object",
+        "required": ["from", "to"],
+        "properties": {
+          "from": { "type": "string", "description": "Start location. Include the country, e.g. 'Munich, Germany'." },
+          "to": { "type": "string", "description": "Destination, e.g. 'Salzburg, Austria'." },
+          "vehicle_class": {
+            "type": "string",
+            "default": "compact_car",
+            "enum": ["compact_car", "sedan", "small_suv", "compact_suv", "suv", "pickup", "hybrid", "electric"]
+          },
+          "fuel_type": { "type": "string", "enum": ["petrol", "diesel"], "description": "Only for classes other than hybrid and electric. Default petrol." },
+          "include_ownership_costs": { "type": "boolean", "default": false, "description": "Add depreciation, insurance and registration/finance." },
+          "round_trip": { "type": "boolean", "default": false, "description": "Double the distance, tolls and costs." },
+          "premium": { "type": "boolean", "default": false, "description": "Premium brand: servicing, tyres and ownership cost more." },
+          "fuel_price": { "type": "number", "description": "Optional override: EUR per litre or per kWh." }
+        }
+      },
+      "TripResponse": {
+        "type": "object",
+        "properties": {
+          "status": { "type": "string", "enum": ["success"] },
+          "currency": { "type": "string", "example": "EUR" },
+          "from": { "type": "string" },
+          "to": { "type": "string" },
+          "vehicle_class": { "type": "string" },
+          "round_trip": { "type": "boolean" },
+          "distance_km": { "type": "number" },
+          "duration_min": { "type": "integer" },
+          "total_trip_cost": { "type": "number" },
+          "cost_per_km": { "type": "number" },
+          "include_ownership_costs": { "type": "boolean" },
+          "breakdown": {
+            "type": "object",
+            "properties": {
+              "fuel": { "type": "number" },
+              "maintenance": { "type": "number" },
+              "tyres": { "type": "number" },
+              "tolls_and_extras": { "type": "number" },
+              "ownership": { "type": "number", "description": "Only when include_ownership_costs is true." }
+            }
+          },
+          "assumptions": { "type": "object" },
+          "warnings": { "type": "array", "items": { "type": "string" } },
+          "source": { "type": "string" },
+          "note": { "type": "string" }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "status": { "type": "string", "enum": ["error"] },
+          "error": {
+            "type": "object",
+            "properties": { "code": { "type": "string" }, "message": { "type": "string" } }
+          }
+        }
+      }
+    }
+  }
+}
