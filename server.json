@@ -1,0 +1,13 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "com.truetravelcost/trip-cost",
+  "title": "TrueTravelCost",
+  "description": "Estimate what a car trip really costs: fuel, servicing, tyres, tolls and ownership. Best in Europe.",
+  "version": "1.0.0",
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://truetravelcost.com/api/mcp"
+    }
+  ]
+}

@@ -1,2 +1,5 @@
 .vercel
 .env*
+
+key.pem
+mcp-publisher.exe
