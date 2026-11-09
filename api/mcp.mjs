@@ -25,7 +25,7 @@ const TOOL = {
   title: 'Calculate car trip cost',
   description:
     'Estimate the true cost of driving from one place to another: fuel or electricity, maintenance, tyres, tolls and optionally ownership costs (depreciation, insurance, registration). ' +
-    'Best coverage in Europe. Returns EUR figures with a breakdown. Estimates use vehicle-class averages; motorway vignettes (e.g. Austria, Switzerland) may not be included.',
+    'Best coverage in Europe. Returns EUR figures with a breakdown. Estimates use vehicle-class averages. Motorway vignettes for Austria, Switzerland, Czechia, Slovakia and Slovenia are included in tolls_and_extras (see the vignettes list); other vignette countries such as Hungary are flagged in warnings but not yet priced.',
   inputSchema: {
     type: 'object',
     properties: {

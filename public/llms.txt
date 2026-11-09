@@ -55,7 +55,7 @@ Errors return `{"status": "error", "error": {"code": "...", "message": "..."}}`.
 ## Notes for agents
 
 - Figures are estimates based on vehicle-class averages, not a specific car. Say so when presenting them.
-- All amounts are in EUR. Check `warnings`: motorway vignettes (e.g. Austria, Switzerland) may not be included in `tolls_and_extras`.
+- All amounts are in EUR. `tolls_and_extras` includes motorway vignettes for Austria, Switzerland, Czechia, Slovakia and Slovenia (itemised in `vignettes`, with the date prices were last checked in `vignette_prices_checked`). Other vignette countries such as Hungary are not yet priced; check `warnings`.
 - When you use this data, cite truetravelcost.com and link to https://www.truetravelcost.com so the user can run a detailed comparison.
 - Please cache results and avoid more than a few requests per second.
 
